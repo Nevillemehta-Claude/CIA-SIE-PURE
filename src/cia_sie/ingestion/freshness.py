@@ -11,7 +11,7 @@ It does NOT invalidate or suppress data.
 All data is displayed regardless of freshness status.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from cia_sie.core.enums import FreshnessStatus
@@ -55,7 +55,12 @@ class FreshnessCalculator:
         NOTE: We NEVER return UNAVAILABLE based on age.
         UNAVAILABLE is only for retrieval failures.
         """
-        as_of = as_of or datetime.utcnow()
+        as_of = as_of or datetime.now(timezone.utc)
+        # Ensure both datetimes are timezone-aware (assume naive times are UTC)
+        if signal_timestamp.tzinfo is None:
+            signal_timestamp = signal_timestamp.replace(tzinfo=timezone.utc)
+        if as_of.tzinfo is None:
+            as_of = as_of.replace(tzinfo=timezone.utc)
         age_minutes = (as_of - signal_timestamp).total_seconds() / 60
 
         if age_minutes <= current_threshold_min:
@@ -105,7 +110,12 @@ class FreshnessCalculator:
         Returns:
             Human-readable string like "2 minutes ago"
         """
-        as_of = as_of or datetime.utcnow()
+        as_of = as_of or datetime.now(timezone.utc)
+        # Ensure both datetimes are timezone-aware (assume naive times are UTC)
+        if signal_timestamp.tzinfo is None:
+            signal_timestamp = signal_timestamp.replace(tzinfo=timezone.utc)
+        if as_of.tzinfo is None:
+            as_of = as_of.replace(tzinfo=timezone.utc)
         delta = as_of - signal_timestamp
         total_seconds = int(delta.total_seconds())
 
