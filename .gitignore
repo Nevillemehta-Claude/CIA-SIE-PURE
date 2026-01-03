@@ -1,0 +1,176 @@
+# ============================================
+# CIA-SIE .gitignore
+# Updated: 01 January 2026 (Forensic Cleanup)
+# ============================================
+
+# -----------------------
+# Python
+# -----------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# -----------------------
+# Virtual Environments
+# -----------------------
+venv/
+ENV/
+env/
+.venv/
+
+# -----------------------
+# IDE / Editor
+# -----------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# -----------------------
+# Environment / Secrets (CRITICAL)
+# -----------------------
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+*.pem
+*.key
+*_secret*
+*_credentials*
+credentials.json
+secrets.json
+
+# -----------------------
+# API Keys (CRITICAL)
+# -----------------------
+# Never commit API keys
+anthropic_key.txt
+api_keys.txt
+ngrok.yml
+ngrok_config.yml
+
+# -----------------------
+# Database
+# -----------------------
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+data/*.xlsx
+
+# -----------------------
+# Logs
+# -----------------------
+logs/
+*.log
+nohup.out
+
+# -----------------------
+# Runtime / PID Files
+# -----------------------
+*.pid
+.*.pid
+
+# -----------------------
+# Test / Coverage
+# -----------------------
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# -----------------------
+# Type Checking
+# -----------------------
+.mypy_cache/
+.ruff_cache/
+.pytype/
+
+# -----------------------
+# Node.js / Frontend
+# -----------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+
+# Frontend build outputs
+frontend/dist/
+frontend/.vite/
+
+# -----------------------
+# OS Files
+# -----------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# -----------------------
+# Temporary Files
+# -----------------------
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# -----------------------
+# ngrok
+# -----------------------
+ngrok.log
+.ngrok/
+.ngrok_url
+
+# -----------------------
+# Session / Cache
+# -----------------------
+.cache/
+*.session
+SESSION_CONTEXT_SAVE.md
+SESSION_LOG_*.md
+context/sessions/SESSION_*.md
+
+# -----------------------
+# Backups (exclude from repo)
+# -----------------------
+*_BACKUP/
+*_backup/
+*.backup.*
+
+# -----------------------
+# Files to KEEP (explicit inclusion)
+# -----------------------
+# These patterns are negated to ensure key files are tracked:
+# !data/.gitkeep
+# !logs/.gitkeep

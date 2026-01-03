@@ -1,0 +1,91 @@
+@startuml Constitutional Rules Decision Tree
+!theme cerulean
+title CIA-SIE - Constitutional Rules Enforcement
+
+skinparam backgroundColor #FEFEFE
+skinparam activityBackgroundColor #FFFFFF
+
+start
+
+:Receive AI Output;
+
+partition "**RULE 1: Decision-Support ONLY**" #E3F2FD {
+    if (Contains "should"?) then (YES)
+        #FFCDD2:VIOLATION;
+        :Replace with descriptive;
+    else (NO)
+    endif
+
+    if (Contains "recommend"?) then (YES)
+        #FFCDD2:VIOLATION;
+        :Replace with descriptive;
+    else (NO)
+    endif
+
+    if (Contains "suggest"?) then (YES)
+        #FFCDD2:VIOLATION;
+        :Replace with descriptive;
+    else (NO)
+    endif
+
+    if (Contains "must" / "buy" / "sell" imperative?) then (YES)
+        #FFCDD2:VIOLATION;
+        :Replace with descriptive;
+    else (NO)
+    endif
+
+    #C8E6C9:Rule 1 PASSED;
+}
+
+partition "**RULE 2: Never Resolve Contradictions**" #FFF9C4 {
+    if (Contradiction exists in data?) then (YES)
+        if (AI resolves it\n"Despite X, Y is stronger") then (YES)
+            #FFCDD2:VIOLATION;
+            :Rewrite to show both equally;
+        else (NO)
+            #C8E6C9:Rule 2 PASSED;
+        endif
+    else (NO)
+        #C8E6C9:Rule 2 PASSED;
+    endif
+}
+
+partition "**RULE 3: Descriptive NOT Prescriptive**" #F3E5F5 {
+    if (Contains interpretation\n"RSI suggests...") then (YES)
+        #FFCDD2:VIOLATION;
+        :Convert to pure data\n"RSI is at 75";
+    else (NO)
+    endif
+
+    if (Implies action\n"The trend indicates...") then (YES)
+        #FFCDD2:VIOLATION;
+        :Convert to observation\n"The trend shows...";
+    else (NO)
+    endif
+
+    #C8E6C9:Rule 3 PASSED;
+}
+
+:Add Mandatory Disclaimer;
+note right
+  **REQUIRED TEXT:**
+  "This narrative is AI-generated
+  for informational purposes only.
+  It does NOT constitute financial advice.
+  All trading decisions are solely yours."
+end note
+
+#C8E6C9:Output Compliant Narrative;
+
+stop
+
+legend right
+  | Color | Meaning |
+  |<#C8E6C9>| Compliant / Pass |
+  |<#FFCDD2>| Violation / Fail |
+  |<#FFF9C4>| Rule 2 Zone |
+  |<#F3E5F5>| Rule 3 Zone |
+  |<#E3F2FD>| Rule 1 Zone |
+endlegend
+
+@enduml

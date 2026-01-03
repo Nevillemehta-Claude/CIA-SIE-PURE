@@ -1,0 +1,99 @@
+@startuml CIA-SIE Entity Relationship Diagram
+!theme cerulean
+title CIA-SIE - Data Model Entity Relationship
+
+skinparam backgroundColor #FEFEFE
+skinparam linetype ortho
+
+entity "INSTRUMENT" as instrument {
+    * id : UUID <<PK>>
+    --
+    * symbol : VARCHAR(20) <<UK>>
+    * name : VARCHAR(100)
+    * exchange : VARCHAR(20)
+    * instrument_type : ENUM
+    * is_active : BOOLEAN
+    * created_at : TIMESTAMP
+    * updated_at : TIMESTAMP
+}
+
+entity "SILO" as silo {
+    * id : UUID <<PK>>
+    --
+    * instrument_id : UUID <<FK>>
+    * name : VARCHAR(100)
+    description : TEXT
+    * timeframe_group : VARCHAR(50)
+    metadata : JSON
+    * created_at : TIMESTAMP
+    * updated_at : TIMESTAMP
+}
+
+entity "CHART" as chart {
+    * id : UUID <<PK>>
+    --
+    * silo_id : UUID <<FK>>
+    * timeframe : VARCHAR(10)
+    * chart_type : ENUM
+    tradingview_url : TEXT
+    * is_active : BOOLEAN
+    settings : JSON
+    * created_at : TIMESTAMP
+    * updated_at : TIMESTAMP
+}
+
+entity "SIGNAL" as signal {
+    * id : UUID <<PK>>
+    --
+    * chart_id : UUID <<FK>>
+    * signal_type : ENUM
+    * direction : ENUM
+    * price : DECIMAL
+    strength : DECIMAL
+    * indicator_name : VARCHAR(50)
+    indicator_data : JSON
+    * source : VARCHAR(50)
+    * timestamp : TIMESTAMP
+    * created_at : TIMESTAMP
+}
+
+entity "EXPOSURE" as exposure {
+    * id : UUID <<PK>>
+    --
+    * instrument_id : UUID <<FK>>
+    * exposure_type : ENUM
+    * signal_ids : JSON
+    * description : TEXT
+    * severity : ENUM
+    * created_at : TIMESTAMP
+    resolved_at : TIMESTAMP
+}
+
+entity "NARRATIVE" as narrative {
+    * id : UUID <<PK>>
+    --
+    * instrument_id : UUID <<FK>>
+    * content : TEXT
+    * disclaimer : TEXT
+    * generated_at : TIMESTAMP
+    * model_used : VARCHAR(50)
+    * token_count : INTEGER
+}
+
+instrument ||--o{ silo : "contains"
+silo ||--o{ chart : "contains"
+chart ||--o{ signal : "receives"
+instrument ||--o{ exposure : "has"
+instrument ||--o{ narrative : "generates"
+
+note bottom of signal
+  signal_type: INDICATOR, PATTERN, LEVEL, CUSTOM
+  direction: BULLISH, BEARISH, NEUTRAL
+end note
+
+note bottom of exposure
+  exposure_type: CONTRADICTION, CONFIRMATION
+  severity: LOW, MEDIUM, HIGH, CRITICAL
+end note
+
+@enduml

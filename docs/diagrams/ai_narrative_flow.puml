@@ -1,0 +1,94 @@
+@startuml AI Narrative Generation Flow
+!theme cerulean
+title CIA-SIE - AI Narrative Generation Pipeline
+
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+
+actor "User" as USER #C8E6C9
+participant "Narrative Router\n/api/v1/narratives" as ROUTER #FFF9C4
+participant "Narrative Service" as SVC #F3E5F5
+participant "Exposure Engine" as EXP #BBDEFB
+participant "Constitutional Filter" as CONST #FFCDD2
+participant "Claude AI API" as CLAUDE #E3F2FD
+database "SQLite" as DB #FCE4EC
+
+autonumber
+
+USER -> ROUTER: GET /narratives/{instrument_id}
+activate ROUTER
+
+ROUTER -> SVC: generate_narrative(instrument_id)
+activate SVC
+
+SVC -> EXP: get_current_exposures(instrument_id)
+activate EXP
+
+EXP -> DB: fetch signals
+EXP -> DB: fetch contradictions
+EXP -> DB: fetch confirmations
+
+EXP --> SVC: ExposureData
+deactivate EXP
+
+SVC -> SVC: build_context_prompt()
+note right
+  Context includes:
+  - All active signals
+  - Contradiction details
+  - Confirmation details
+  - Timeframe hierarchy
+  - Indicator values
+end note
+
+SVC -> CLAUDE: POST /messages\n{prompt, max_tokens}
+activate CLAUDE
+
+CLAUDE --> SVC: raw_narrative
+deactivate CLAUDE
+
+== Constitutional Filtering ==
+
+SVC -> CONST: apply_constitutional_rules(raw_narrative)
+activate CONST
+
+CONST -> CONST: check_rule_1()\nNo "should", "recommend", "suggest"
+
+alt Rule 1 Violation
+    CONST -> CONST: remove_prescriptive_language()
+end
+
+CONST -> CONST: check_rule_2()\nNo contradiction resolution
+
+alt Rule 2 Violation
+    CONST -> CONST: rebalance_equal_weight()
+end
+
+CONST -> CONST: check_rule_3()\nEnsure descriptive tone
+
+alt Rule 3 Violation
+    CONST -> CONST: convert_to_descriptive()
+end
+
+CONST -> CONST: add_mandatory_disclaimer()
+note right #FFCDD2
+  **MANDATORY DISCLAIMER:**
+  "This narrative is AI-generated
+  for informational purposes only.
+  It does NOT constitute financial
+  advice. All trading decisions
+  are solely yours."
+end note
+
+CONST --> SVC: filtered_narrative + disclaimer
+deactivate CONST
+
+SVC -> DB: cache_narrative()
+
+SVC --> ROUTER: NarrativeResponse
+deactivate SVC
+
+ROUTER --> USER: JSON\n{narrative, disclaimer, generated_at}
+deactivate ROUTER
+
+@enduml

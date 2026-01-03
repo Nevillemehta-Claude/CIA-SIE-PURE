@@ -1,0 +1,98 @@
+@startuml CIA-SIE System Architecture
+!theme cerulean
+title CIA-SIE - High Level System Architecture
+
+skinparam componentStyle uml2
+skinparam backgroundColor #FEFEFE
+skinparam handwritten false
+
+package "External Systems" #E3F2FD {
+    [TradingView] as TV
+    [Zerodha Kite] as KITE
+    [Claude AI API] as CLAUDE
+}
+
+package "CIA-SIE Application" #FFFFFF {
+
+    package "API Layer (FastAPI)" #FFF9C4 {
+        [Instrument Router] as INST_R
+        [Silo Router] as SILO_R
+        [Chart Router] as CHART_R
+        [Signal Router] as SIG_R
+        [Platform Router] as PLAT_R
+    }
+
+    package "Service Layer" #F3E5F5 {
+        [Instrument Service] as INST_S
+        [Silo Service] as SILO_S
+        [Chart Service] as CHART_S
+        [Signal Service] as SIG_S
+        [Exposure Engine] as EXP_S
+        [Narrative Generator] as NARR_S
+    }
+
+    package "Core Layer" #E8F5E9 {
+        [Configuration] as CONFIG
+        [Domain Models] as MODELS
+        [Pydantic Schemas] as SCHEMAS
+        [Constitutional Rules] as CONST
+    }
+
+    package "Platform Adapters" #FFCCBC {
+        [Kite Adapter] as KITE_A
+        [TradingView Parser] as TV_A
+    }
+
+    package "Data Layer" #FCE4EC {
+        [Repositories] as REPOS
+        database "SQLite" as DB
+    }
+}
+
+actor "Trader" as USER
+
+' External connections
+TV --> SIG_R : Webhooks
+KITE <--> KITE_A : OAuth + API
+NARR_S --> CLAUDE : Generate Narrative
+
+' User interaction
+USER --> INST_R
+USER --> SILO_R
+USER --> CHART_R
+USER --> PLAT_R
+
+' Router to Service
+INST_R --> INST_S
+SILO_R --> SILO_S
+CHART_R --> CHART_S
+SIG_R --> SIG_S
+PLAT_R --> KITE_A
+
+' Service dependencies
+SIG_S --> EXP_S
+EXP_S --> NARR_S
+NARR_S --> CONST
+
+' Service to Repo
+INST_S --> REPOS
+SILO_S --> REPOS
+CHART_S --> REPOS
+SIG_S --> REPOS
+
+' Repo to DB
+REPOS --> DB
+
+' Core dependencies
+INST_S ..> MODELS
+INST_S ..> SCHEMAS
+INST_S ..> CONFIG
+
+note right of CONST
+  **Three Inviolable Rules:**
+  1. Decision-Support ONLY
+  2. Never Resolve Contradictions
+  3. Descriptive, NOT Prescriptive
+end note
+
+@enduml
