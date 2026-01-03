@@ -154,14 +154,12 @@ erDiagram
         uuid chart_id FK
         string signal_type
         string direction
-        float price
-        float strength
-        string indicator_name
-        json indicator_data
+        json indicators
         string source
-        datetime timestamp
+        datetime signal_timestamp
         datetime created_at
     }
+    %% CONSTITUTIONAL: NO strength, confidence, score, weight fields
 ```
 
 ### Hierarchy Visualization
@@ -367,24 +365,26 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
     subgraph Daily["Daily Chart"]
-        D_SIG[EMA Golden Cross<br/>Direction: BULLISH<br/>Strength: 0.8]
+        D_SIG[EMA Golden Cross<br/>Direction: BULLISH]
     end
 
     subgraph Hourly["1-Hour Chart"]
-        H_SIG[RSI Overbought<br/>Direction: BEARISH<br/>Strength: 0.7]
+        H_SIG[RSI at 75<br/>Direction: BEARISH]
     end
 
     subgraph FiveMin["5-Min Chart"]
-        M_SIG[MACD Bearish Cross<br/>Direction: BEARISH<br/>Strength: 0.6]
+        M_SIG[MACD Bearish Cross<br/>Direction: BEARISH]
     end
+    %% CONSTITUTIONAL: No strength/confidence values - signals shown with equal weight
 
     D_SIG -.->|CONTRADICTS| H_SIG
     D_SIG -.->|CONTRADICTS| M_SIG
     H_SIG -->|CONFIRMS| M_SIG
 
-    subgraph Result["Exposure Result"]
-        RES[Mixed Signal State<br/>Long-term: Bullish<br/>Short-term: Bearish<br/>⚠️ CONTRADICTION ALERT]
+    subgraph Result["Exposure Result - NO RESOLUTION"]
+        RES[Daily shows: BULLISH<br/>Hourly shows: BEARISH<br/>5-Min shows: BEARISH<br/>⚠️ CONTRADICTION DETECTED]
     end
+    %% CONSTITUTIONAL: Both sides shown with EQUAL prominence - user decides
 
     D_SIG --> Result
     H_SIG --> Result

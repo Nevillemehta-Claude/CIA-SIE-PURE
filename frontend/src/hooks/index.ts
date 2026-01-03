@@ -1,51 +1,67 @@
 /**
  * Custom React Hooks
- * 
+ *
  * Re-exports all custom hooks.
  */
 
 // Data hooks
-export { 
-  useInstruments, 
-  useInstrument, 
-  useCreateInstrument, 
-  useUpdateInstrument, 
+export {
+  useInstruments,
+  useInstrument,
+  useCreateInstrument,
+  useUpdateInstrument,
   useDeleteInstrument,
-  instrumentKeys 
+  instrumentKeys
 } from './useInstruments'
 
-export { 
-  useSilos, 
-  useSilosByInstrument, 
-  useSilo, 
-  useCreateSilo, 
+export {
+  useSilos,
+  useSilosByInstrument,
+  useSilo,
+  useCreateSilo,
   useDeleteSilo,
-  siloKeys 
+  siloKeys
 } from './useSilos'
 
-export { 
-  useRelationshipSummary, 
-  useContradictions, 
+export {
+  useCharts,
+  useChartsBySilo,
+  useChart,
+  useCreateChart,
+  useUpdateChart,
+  useDeleteChart,
+  chartKeys
+} from './useCharts'
+
+export {
+  useSignalsByChart,
+  useLatestSignal,
+  signalKeys
+} from './useSignals'
+
+export {
+  useRelationshipSummary,
+  useContradictions,
   useInstrumentRelationships,
-  relationshipKeys 
+  relationshipKeys
 } from './useRelationships'
 
-export { 
-  useSiloNarrative, 
-  useSiloNarrativePlain, 
+export {
+  useSiloNarrative,
+  useSiloNarrativePlain,
   useChartNarrative,
-  narrativeKeys 
+  narrativeKeys
 } from './useNarratives'
 
 // Utility hooks
-export { 
+export {
   useConstitutionalValidation,
-  type ValidationResult 
+  type ValidationResult
 } from './useConstitutionalValidation'
 
-export { 
-  useFreshness, 
+export {
+  useFreshness,
   useFreshnessMultiple,
-  calculateFreshness 
+  calculateFreshness
 } from './useFreshness'
 
