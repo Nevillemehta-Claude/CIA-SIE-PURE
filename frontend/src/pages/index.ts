@@ -1,13 +1,9 @@
-/**
- * Page Components
- * 
- * Re-exports all page components for routing.
- */
-
-export { DashboardPage } from './DashboardPage'
+export { HomePage } from './HomePage'
 export { InstrumentsPage } from './InstrumentsPage'
 export { InstrumentDetailPage } from './InstrumentDetailPage'
+export { SiloDetailPage } from './SiloDetailPage'
 export { ChartDetailPage } from './ChartDetailPage'
+export { ChatPage } from './ChatPage'
 export { SettingsPage } from './SettingsPage'
 export { NotFoundPage } from './NotFoundPage'
 

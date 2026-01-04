@@ -1,106 +1,39 @@
-/**
- * Header Component
- * 
- * Application header with logo, navigation, and global actions.
- * 
- * ACCESSIBILITY: Uses semantic header element and ARIA labels
- */
-
 import { Link } from 'react-router-dom'
-import { Activity, Settings, Menu } from 'lucide-react'
-import { useState } from 'react'
+import { useBudget } from '@/hooks/useAI'
+import { Settings, MessageSquare } from 'lucide-react'
+import { BudgetIndicator } from '@/components/ai/BudgetIndicator'
 
-/**
- * Header provides the top navigation bar.
- */
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { data: budget } = useBudget()
 
   return (
-    <header 
-      className="sticky top-0 z-50 border-b border-slate-700 bg-surface-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-surface-secondary/80"
-      role="banner"
-    >
-      <div className="flex h-14 md:h-16 items-center justify-between px-4 lg:px-8">
-        {/* Logo and brand */}
-        <Link 
-          to="/" 
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          aria-label="CIA-SIE Home"
-        >
-          <Activity className="h-6 w-6 text-accent-primary" aria-hidden="true" />
-          <span className="font-display text-lg md:text-xl font-bold tracking-tight">
-            CIA-SIE
-          </span>
-        </Link>
+    <header className="sticky top-0 z-40 border-b border-slate-700 bg-surface-primary/80 backdrop-blur-sm">
+      <div className="flex h-16 items-center justify-between px-6">
+        <div className="lg:hidden">
+          <span className="font-display text-lg font-bold text-accent-primary">CIA-SIE</span>
+        </div>
 
-        {/* Desktop navigation */}
-        <nav 
-          className="hidden md:flex items-center gap-6"
-          role="navigation"
-          aria-label="Main navigation"
-        >
-          <Link 
-            to="/" 
-            className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
+        <div className="flex-1" />
+
+        <div className="flex items-center gap-4">
+          {budget && <BudgetIndicator budget={budget} />}
+
+          <Link
+            to="/chat"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-surface-secondary hover:text-white"
           >
-            Dashboard
-          </Link>
-          <Link 
-            to="/instruments" 
-            className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
-          >
-            Instruments
-          </Link>
-        </nav>
-        
-        {/* Right side actions */}
-        <div className="flex items-center gap-3">
-          <Link 
-            to="/settings" 
-            className="rounded-lg p-2 hover:bg-surface-tertiary transition-colors"
-            aria-label="Settings"
-          >
-            <Settings className="h-5 w-5 text-slate-400" aria-hidden="true" />
+            <MessageSquare className="h-4 w-4" />
+            <span className="hidden sm:inline">Chat</span>
           </Link>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden rounded-lg p-2 hover:bg-surface-tertiary transition-colors"
-            aria-label="Toggle navigation menu"
-            aria-expanded={mobileMenuOpen}
+          <Link
+            to="/settings"
+            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-surface-secondary hover:text-white"
           >
-            <Menu className="h-5 w-5" aria-hidden="true" />
-          </button>
+            <Settings className="h-5 w-5" />
+          </Link>
         </div>
       </div>
-
-      {/* Mobile navigation */}
-      {mobileMenuOpen && (
-        <nav 
-          className="md:hidden border-t border-slate-700 px-4 py-3 bg-surface-secondary"
-          role="navigation"
-          aria-label="Mobile navigation"
-        >
-          <div className="flex flex-col gap-2">
-            <Link 
-              to="/" 
-              className="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-surface-tertiary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Dashboard
-            </Link>
-            <Link 
-              to="/instruments" 
-              className="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-surface-tertiary transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Instruments
-            </Link>
-          </div>
-        </nav>
-      )}
     </header>
   )
 }

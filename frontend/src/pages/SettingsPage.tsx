@@ -1,179 +1,168 @@
-/**
- * SettingsPage Component
- * 
- * Application settings and configuration.
- */
+import { useUsage, useBudget, useModels } from '@/hooks/useAI'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { Card, CardHeader, CardTitle } from '@/components/common/Card'
+import { Spinner } from '@/components/common/Spinner'
+import { formatCurrency, formatNumber } from '@/lib/utils'
+import { Cpu, DollarSign, BarChart3 } from 'lucide-react'
+import { clsx } from 'clsx'
 
-import { PageHeader, ContentArea } from '@components/layout'
-import { Card } from '@components/atoms'
-import { Settings, Cpu, Link as LinkIcon, Bell } from 'lucide-react'
-
-/**
- * SettingsPage displays application configuration options.
- */
 export function SettingsPage() {
+  const { data: budget, isLoading: budgetLoading } = useBudget()
+  const { data: usage, isLoading: usageLoading } = useUsage('monthly')
+  const { data: models, isLoading: modelsLoading } = useModels()
+
   return (
-    <ContentArea maxWidth="lg">
-      <PageHeader 
+    <div className="space-y-6">
+      <PageHeader
         title="Settings"
-        description="Configure your CIA-SIE application"
+        description="AI configuration and usage statistics"
       />
 
-      <div className="space-y-6">
-        {/* AI Configuration */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Budget Status */}
         <Card>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-accent-primary/20">
-              <Cpu className="h-5 w-5 text-accent-primary" aria-hidden="true" />
-            </div>
-            <h2 className="font-display text-lg font-semibold">AI Configuration</h2>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 border-b border-slate-700">
-              <div>
-                <p className="font-medium">Default Model</p>
-                <p className="text-sm text-slate-400">Model used for narrative generation</p>
-              </div>
-              <select 
-                className="bg-surface-tertiary border border-slate-600 rounded-lg px-3 py-2 text-sm"
-                defaultValue="sonnet"
-              >
-                <option value="haiku">Claude 3 Haiku (Fast)</option>
-                <option value="sonnet">Claude 3.5 Sonnet (Balanced)</option>
-                <option value="opus">Claude 3 Opus (Advanced)</option>
-              </select>
-            </div>
-
-            <div className="flex items-center justify-between py-3 border-b border-slate-700">
-              <div>
-                <p className="font-medium">Monthly Budget</p>
-                <p className="text-sm text-slate-400">Maximum AI spending per month</p>
-              </div>
+          <CardHeader>
+            <CardTitle>
               <div className="flex items-center gap-2">
-                <span className="text-slate-400">$</span>
-                <input 
-                  type="number"
-                  className="w-24 bg-surface-tertiary border border-slate-600 rounded-lg px-3 py-2 text-sm"
-                  defaultValue={50}
-                  min={1}
+                <DollarSign className="h-5 w-5 text-accent-primary" />
+                AI Budget
+              </div>
+            </CardTitle>
+          </CardHeader>
+
+          {budgetLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Spinner />
+            </div>
+          ) : budget ? (
+            <div className="space-y-4">
+              <div className="flex items-baseline justify-between">
+                <span className="text-2xl font-bold">{formatCurrency(budget.remaining)}</span>
+                <span className="text-sm text-slate-400">
+                  remaining
+                </span>
+              </div>
+
+              <div className="h-3 overflow-hidden rounded-full bg-slate-700">
+                <div
+                  className={clsx(
+                    'h-full transition-all',
+                    budget.percentage_used >= 90
+                      ? 'bg-red-500'
+                      : budget.percentage_used >= 80
+                        ? 'bg-amber-500'
+                        : budget.percentage_used >= 50
+                          ? 'bg-yellow-500'
+                          : 'bg-green-500'
+                  )}
+                  style={{ width: `${Math.min(budget.percentage_used, 100)}%` }}
                 />
               </div>
-            </div>
 
-            <div className="flex items-center justify-between py-3">
-              <div>
-                <p className="font-medium">Budget Alert Threshold</p>
-                <p className="text-sm text-slate-400">Alert when usage exceeds this percentage</p>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Used: {budget.percentage_used.toFixed(1)}%</span>
+                <span className={clsx(
+                  budget.within_budget ? 'text-green-400' : 'text-red-400'
+                )}>
+                  {budget.within_budget ? 'Within Budget' : 'Over Budget'}
+                </span>
               </div>
+
+              {budget.alert_level && (
+                <div className="rounded-lg bg-amber-500/10 p-3 text-sm text-amber-400">
+                  ⚠️ {budget.message || `Budget alert: ${budget.alert_level}`}
+                </div>
+              )}
+            </div>
+          ) : null}
+        </Card>
+
+        {/* Usage Statistics */}
+        <Card>
+          <CardHeader>
+            <CardTitle>
               <div className="flex items-center gap-2">
-                <input 
-                  type="number"
-                  className="w-20 bg-surface-tertiary border border-slate-600 rounded-lg px-3 py-2 text-sm"
-                  defaultValue={80}
-                  min={50}
-                  max={100}
-                />
-                <span className="text-slate-400">%</span>
+                <BarChart3 className="h-5 w-5 text-accent-primary" />
+                Monthly Usage
               </div>
-            </div>
-          </div>
-        </Card>
+            </CardTitle>
+          </CardHeader>
 
-        {/* Platform Connections */}
-        <Card>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-green-500/20">
-              <LinkIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+          {usageLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Spinner />
             </div>
-            <h2 className="font-display text-lg font-semibold">Platform Connections</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 border-b border-slate-700">
-              <div className="flex items-center gap-3">
-                <div className="h-3 w-3 rounded-full bg-green-500" />
-                <div>
-                  <p className="font-medium">TradingView</p>
-                  <p className="text-sm text-slate-400">Webhook receiver active</p>
+          ) : usage ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-lg bg-surface-tertiary p-3">
+                  <div className="text-sm text-slate-400">Total Requests</div>
+                  <div className="text-xl font-semibold">{formatNumber(usage.requests_count)}</div>
+                </div>
+                <div className="rounded-lg bg-surface-tertiary p-3">
+                  <div className="text-sm text-slate-400">Total Cost</div>
+                  <div className="text-xl font-semibold">{formatCurrency(usage.total_cost)}</div>
+                </div>
+                <div className="rounded-lg bg-surface-tertiary p-3">
+                  <div className="text-sm text-slate-400">Input Tokens</div>
+                  <div className="text-xl font-semibold">{formatNumber(usage.input_tokens)}</div>
+                </div>
+                <div className="rounded-lg bg-surface-tertiary p-3">
+                  <div className="text-sm text-slate-400">Output Tokens</div>
+                  <div className="text-xl font-semibold">{formatNumber(usage.output_tokens)}</div>
                 </div>
               </div>
-              <span className="text-sm text-green-400">Connected</span>
             </div>
-
-            <div className="flex items-center justify-between py-3">
-              <div className="flex items-center gap-3">
-                <div className="h-3 w-3 rounded-full bg-slate-500" />
-                <div>
-                  <p className="font-medium">Kite Connect</p>
-                  <p className="text-sm text-slate-400">Optional watchlist integration</p>
-                </div>
-              </div>
-              <button className="text-sm text-accent-primary hover:underline">
-                Connect
-              </button>
-            </div>
-          </div>
-        </Card>
-
-        {/* Notification Settings */}
-        <Card>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-amber-500/20">
-              <Bell className="h-5 w-5 text-amber-500" aria-hidden="true" />
-            </div>
-            <h2 className="font-display text-lg font-semibold">Notifications</h2>
-          </div>
-
-          <div className="space-y-4">
-            <label className="flex items-center justify-between py-3 cursor-pointer border-b border-slate-700">
-              <div>
-                <p className="font-medium">Contradiction Alerts</p>
-                <p className="text-sm text-slate-400">Notify when contradictions are detected</p>
-              </div>
-              <input type="checkbox" defaultChecked className="w-5 h-5 accent-accent-primary" />
-            </label>
-
-            <label className="flex items-center justify-between py-3 cursor-pointer border-b border-slate-700">
-              <div>
-                <p className="font-medium">Stale Data Warnings</p>
-                <p className="text-sm text-slate-400">Notify when data becomes stale</p>
-              </div>
-              <input type="checkbox" defaultChecked className="w-5 h-5 accent-accent-primary" />
-            </label>
-
-            <label className="flex items-center justify-between py-3 cursor-pointer">
-              <div>
-                <p className="font-medium">Budget Alerts</p>
-                <p className="text-sm text-slate-400">Notify when approaching budget limit</p>
-              </div>
-              <input type="checkbox" defaultChecked className="w-5 h-5 accent-accent-primary" />
-            </label>
-          </div>
-        </Card>
-
-        {/* About Section */}
-        <Card>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-slate-500/20">
-              <Settings className="h-5 w-5 text-slate-400" aria-hidden="true" />
-            </div>
-            <h2 className="font-display text-lg font-semibold">About CIA-SIE</h2>
-          </div>
-          
-          <div className="text-sm text-slate-400 space-y-2">
-            <p>Version: 1.0.0</p>
-            <p>
-              CIA-SIE is a <strong className="text-slate-300">decision-support platform</strong> that
-              displays trading signals from TradingView charts. It does not provide investment advice.
-            </p>
-            <p className="italic">
-              All interpretations and decisions are entirely yours.
-            </p>
-          </div>
+          ) : null}
         </Card>
       </div>
-    </ContentArea>
+
+      {/* Available Models */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <div className="flex items-center gap-2">
+              <Cpu className="h-5 w-5 text-accent-primary" />
+              Available Models
+            </div>
+          </CardTitle>
+        </CardHeader>
+
+        {modelsLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Spinner />
+          </div>
+        ) : models?.models ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {models.models.map((model) => (
+              <div
+                key={model.id}
+                className={clsx(
+                  'rounded-lg border p-4',
+                  model.id === models.default_model
+                    ? 'border-accent-primary bg-accent-primary/10'
+                    : 'border-slate-700 bg-surface-tertiary'
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">{model.display_name}</span>
+                  {model.id === models.default_model && (
+                    <span className="rounded bg-accent-primary/20 px-2 py-0.5 text-xs text-accent-primary">
+                      Default
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-xs text-slate-500">{model.description}</p>
+                <div className="mt-2 text-sm text-slate-400">
+                  <div>Input: {formatCurrency(model.cost_per_1k_input_tokens)}/1K</div>
+                  <div>Output: {formatCurrency(model.cost_per_1k_output_tokens)}/1K</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </Card>
+    </div>
   )
 }
 

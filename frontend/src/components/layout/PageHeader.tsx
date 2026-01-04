@@ -1,59 +1,30 @@
-/**
- * PageHeader Component
- * 
- * Consistent page header with title, description, and optional actions.
- */
-
-import { clsx } from 'clsx'
-import type { ReactNode } from 'react'
+import { ArrowLeft } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 interface PageHeaderProps {
-  /** Page title */
   title: string
-  /** Optional description */
   description?: string
-  /** Action buttons or elements */
-  actions?: ReactNode
-  /** Breadcrumb or navigation element */
-  breadcrumb?: ReactNode
-  /** Additional CSS classes */
-  className?: string
+  backTo?: string
+  actions?: React.ReactNode
 }
 
-/**
- * PageHeader provides consistent page header styling.
- */
-export function PageHeader({ 
-  title, 
-  description,
-  actions,
-  breadcrumb,
-  className 
-}: PageHeaderProps) {
+export function PageHeader({ title, description, backTo, actions }: PageHeaderProps) {
   return (
-    <div className={clsx('mb-6 lg:mb-8', className)}>
-      {breadcrumb && (
-        <div className="mb-3">{breadcrumb}</div>
-      )}
-      
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-white">
-            {title}
-          </h1>
-          {description && (
-            <p className="mt-1 text-sm md:text-base text-slate-400">
-              {description}
-            </p>
-          )}
-        </div>
-        
-        {actions && (
-          <div className="flex items-center gap-3">
-            {actions}
-          </div>
+    <div className="mb-6 flex items-start justify-between">
+      <div className="space-y-1">
+        {backTo && (
+          <Link
+            to={backTo}
+            className="mb-2 inline-flex items-center gap-1 text-sm text-slate-400 transition-colors hover:text-white"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Link>
         )}
+        <h1 className="font-display text-2xl font-bold">{title}</h1>
+        {description && <p className="text-sm text-slate-400">{description}</p>}
       </div>
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
   )
 }

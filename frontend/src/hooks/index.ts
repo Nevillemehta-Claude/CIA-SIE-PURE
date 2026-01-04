@@ -1,51 +1,10 @@
-/**
- * Custom React Hooks
- * 
- * Re-exports all custom hooks.
- */
-
-// Data hooks
-export { 
-  useInstruments, 
-  useInstrument, 
-  useCreateInstrument, 
-  useUpdateInstrument, 
-  useDeleteInstrument,
-  instrumentKeys 
-} from './useInstruments'
-
-export { 
-  useSilos, 
-  useSilosByInstrument, 
-  useSilo, 
-  useCreateSilo, 
-  useDeleteSilo,
-  siloKeys 
-} from './useSilos'
-
-export { 
-  useRelationshipSummary, 
-  useContradictions, 
-  useInstrumentRelationships,
-  relationshipKeys 
-} from './useRelationships'
-
-export { 
-  useSiloNarrative, 
-  useSiloNarrativePlain, 
-  useChartNarrative,
-  narrativeKeys 
-} from './useNarratives'
-
-// Utility hooks
-export { 
-  useConstitutionalValidation,
-  type ValidationResult 
-} from './useConstitutionalValidation'
-
-export { 
-  useFreshness, 
-  useFreshnessMultiple,
-  calculateFreshness 
-} from './useFreshness'
+// Re-export all hooks
+export * from './useInstruments'
+export * from './useSilos'
+export * from './useCharts'
+export * from './useSignals'
+export * from './useRelationships'
+export * from './useNarratives'
+export * from './useAI'
+export * from './useChat'
 

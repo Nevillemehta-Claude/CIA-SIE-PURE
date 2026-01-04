@@ -1,40 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        // Signal direction colors (CONSTITUTIONAL: equal visual weight)
-        // Saturation and brightness matched across all directions
-        signal: {
-          bullish: '#22c55e',    // green-500
-          bearish: '#ef4444',    // red-500
-          neutral: '#6b7280',    // gray-500
-        },
-        // Freshness status colors
-        freshness: {
-          current: '#22c55e',    // green-500
-          recent: '#eab308',     // yellow-500
-          stale: '#f97316',      // orange-500
-          unavailable: '#6b7280', // gray-500
-        },
-        // UI theme colors
-        surface: {
-          primary: '#0f172a',    // slate-900
-          secondary: '#1e293b',  // slate-800
-          tertiary: '#334155',   // slate-700
-        },
-        accent: {
-          primary: '#3b82f6',    // blue-500
-          secondary: '#8b5cf6',  // violet-500
-        },
+        // Surface colors
+        'surface-primary': '#0f172a',
+        'surface-secondary': '#1e293b',
+        'surface-tertiary': '#334155',
+        // Accent
+        'accent-primary': '#3b82f6',
+        'accent-secondary': '#8b5cf6',
+        // Signal colors (EQUAL visual weight)
+        'signal-bullish': '#22c55e',
+        'signal-bearish': '#ef4444',
+        'signal-neutral': '#94a3b8',
+        // Freshness colors (descriptive only)
+        'freshness-current': '#22c55e',
+        'freshness-recent': '#f59e0b',
+        'freshness-stale': '#ef4444',
+        'freshness-unavailable': '#64748b',
       },
       fontFamily: {
-        sans: ['Geist Mono', 'JetBrains Mono', 'SF Mono', 'ui-monospace', 'monospace'],
-        display: ['Bricolage Grotesque', 'Space Grotesk', 'system-ui', 'sans-serif'],
+        display: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
     },
   },
