@@ -174,3 +174,4 @@ context/sessions/SESSION_*.md
 # These patterns are negated to ensure key files are tracked:
 # !data/.gitkeep
 # !logs/.gitkeep
+frontend/coverage/
