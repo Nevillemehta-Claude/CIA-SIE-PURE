@@ -2,20 +2,31 @@ import { apiClient, apiRequest } from './client'
 
 const PATH = '/baskets'
 
+/**
+ * AnalyticalBasket - Matches backend AnalyticalBasket model exactly
+ * @see src/cia_sie/core/models.py - AnalyticalBasket
+ */
 export interface AnalyticalBasket {
   basket_id: string
-  name: string
-  description: string
-  basket_type: 'CONFIRMATION' | 'DIVERGENCE' | 'CUSTOM'
+  basket_name: string  // FIXED: was 'name', backend uses 'basket_name'
+  description: string | null
+  basket_type: 'LOGICAL' | 'HIERARCHICAL' | 'CONTEXTUAL' | 'CUSTOM'  // FIXED: All enum values
+  instrument_id: string | null  // ADDED: missing field
   chart_ids: string[]
   created_at: string
+  updated_at: string  // ADDED: missing field
   is_active: boolean
 }
 
+/**
+ * CreateBasketRequest - Matches backend BasketCreate model exactly
+ * @see src/cia_sie/core/models.py - BasketCreate
+ */
 export interface CreateBasketRequest {
-  name: string
-  description: string
-  basket_type: 'CONFIRMATION' | 'DIVERGENCE' | 'CUSTOM'
+  basket_name: string  // FIXED: was 'name', backend uses 'basket_name'
+  basket_type?: 'LOGICAL' | 'HIERARCHICAL' | 'CONTEXTUAL' | 'CUSTOM'  // FIXED: All enum values
+  description?: string | null
+  instrument_id?: string | null  // ADDED: missing field
   chart_ids?: string[]
 }
 

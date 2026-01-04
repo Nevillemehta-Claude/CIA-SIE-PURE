@@ -8,7 +8,8 @@ import { Spinner } from '@/components/common/Spinner'
 import { EmptyState } from '@/components/common/EmptyState'
 import { FolderKanban, Plus, Trash2, BarChart3 } from 'lucide-react'
 
-type BasketType = 'CONFIRMATION' | 'DIVERGENCE' | 'CUSTOM'
+// Matches backend BasketType enum
+type BasketType = 'LOGICAL' | 'HIERARCHICAL' | 'CONTEXTUAL' | 'CUSTOM'
 
 export function BasketsPage() {
   const { data: baskets, isLoading } = useBaskets()
@@ -16,11 +17,11 @@ export function BasketsPage() {
   const deleteMutation = useDeleteBasket()
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [formData, setFormData] = useState<{
-    name: string
+    basket_name: string  // FIXED: matches backend field name
     description: string
     basket_type: BasketType
   }>({
-    name: '',
+    basket_name: '',
     description: '',
     basket_type: 'CUSTOM',
   })
@@ -30,7 +31,7 @@ export function BasketsPage() {
     createMutation.mutate(formData, {
       onSuccess: () => {
         setShowCreateForm(false)
-        setFormData({ name: '', description: '', basket_type: 'CUSTOM' })
+        setFormData({ basket_name: '', description: '', basket_type: 'CUSTOM' })
       },
     })
   }
@@ -88,8 +89,8 @@ export function BasketsPage() {
               </label>
               <input
                 type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                value={formData.basket_name}
+                onChange={(e) => setFormData({ ...formData, basket_name: e.target.value })}
                 className="w-full rounded-lg border border-slate-600 bg-surface-tertiary px-4 py-2 text-white focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                 placeholder="e.g., NIFTY Momentum Basket"
                 required
@@ -113,11 +114,12 @@ export function BasketsPage() {
               </label>
               <select
                 value={formData.basket_type}
-                onChange={(e) => setFormData({ ...formData, basket_type: e.target.value as 'CONFIRMATION' | 'DIVERGENCE' | 'CUSTOM' })}
+                onChange={(e) => setFormData({ ...formData, basket_type: e.target.value as BasketType })}
                 className="w-full rounded-lg border border-slate-600 bg-surface-tertiary px-4 py-2 text-white focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
-                <option value="CONFIRMATION">Confirmation</option>
-                <option value="DIVERGENCE">Divergence</option>
+                <option value="LOGICAL">Logical</option>
+                <option value="HIERARCHICAL">Hierarchical</option>
+                <option value="CONTEXTUAL">Contextual</option>
                 <option value="CUSTOM">Custom</option>
               </select>
             </div>
@@ -155,7 +157,7 @@ export function BasketsPage() {
                       <FolderKanban className="h-5 w-5 text-purple-400" />
                     </div>
                     <div>
-                      <div className="font-display font-semibold">{basket.name}</div>
+                      <div className="font-display font-semibold">{basket.basket_name}</div>
                       <p className="text-sm text-slate-400">{basket.description}</p>
                     </div>
                   </div>

@@ -2,38 +2,62 @@ import { apiClient, apiRequest } from './client'
 
 const PATH = '/platforms'
 
+/**
+ * PlatformInfo - Matches backend PlatformInfo model exactly
+ * @see src/cia_sie/api/routes/platforms.py - PlatformInfo
+ */
 export interface PlatformInfo {
-  name: string
+  platform_name: string  // FIXED: was 'name'
   display_name: string
-  description: string
-  connected: boolean
-  supports_webhooks: boolean
-  supports_realtime: boolean
-  setup_url?: string
+  supports_watchlist_import: boolean  // FIXED: was 'supports_webhooks'
+  supports_real_time_signals: boolean  // FIXED: was 'supports_realtime'
+  requires_authentication: boolean  // ADDED: missing field
+  status: string  // ADDED: missing field
+  is_connected: boolean  // FIXED: was 'connected'
 }
 
+/**
+ * PlatformConnectRequest - Matches backend PlatformConnectRequest model
+ * @see src/cia_sie/api/routes/platforms.py - PlatformConnectRequest
+ */
 export interface PlatformConnectRequest {
-  platform_name: string
-  credentials?: Record<string, string>
+  platform: string  // FIXED: was 'platform_name'
+  api_key?: string | null
+  api_secret?: string | null
+  access_token?: string | null
 }
 
+/**
+ * PlatformConnectResponse - Matches backend PlatformConnectResponse model
+ * @see src/cia_sie/api/routes/platforms.py - PlatformConnectResponse
+ */
 export interface PlatformConnectResponse {
-  status: 'connected' | 'pending' | 'failed'
-  message: string
-  requires_oauth?: boolean
-  oauth_url?: string
+  platform: string
+  status: string
+  is_connected: boolean
+  error?: string | null
 }
 
+/**
+ * WatchlistResponse - Matches backend WatchlistResponse model
+ * @see src/cia_sie/api/routes/platforms.py - WatchlistResponse
+ */
 export interface WatchlistResponse {
+  watchlist_id: string  // ADDED: missing field
   name: string
-  symbols: string[]
+  instrument_count: number  // FIXED: was 'symbols'
+  platform: string  // ADDED: missing field
 }
 
+/**
+ * SetupInstructionsResponse - Matches backend SetupInstructionsResponse model
+ * @see src/cia_sie/api/routes/platforms.py - SetupInstructionsResponse
+ */
 export interface SetupInstructionsResponse {
-  platform_name: string
-  steps: string[]
-  webhook_url: string
-  example_payload: Record<string, unknown>
+  platform: string  // FIXED: was 'platform_name'
+  instructions: string  // FIXED: was 'steps'
+  webhook_url_template?: string | null  // FIXED: was 'webhook_url'
+  alert_message_template?: string | null  // ADDED: missing field
 }
 
 export async function getPlatforms(): Promise<PlatformInfo[]> {

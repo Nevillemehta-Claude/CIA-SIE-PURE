@@ -6,7 +6,7 @@ import { Button } from '@/components/common/Button'
 import { Badge } from '@/components/common/Badge'
 import { Spinner } from '@/components/common/Spinner'
 import { EmptyState } from '@/components/common/EmptyState'
-import { Plug, Check, X, ExternalLink, Copy, CheckCircle2 } from 'lucide-react'
+import { Plug, Check, X, Copy, CheckCircle2 } from 'lucide-react'
 import { clsx } from 'clsx'
 
 export function PlatformsPage() {
@@ -18,7 +18,8 @@ export function PlatformsPage() {
   const [copied, setCopied] = useState(false)
 
   const handleConnect = (platformName: string) => {
-    connectMutation.mutate({ platform_name: platformName })
+    // Fixed: backend expects 'platform' not 'platform_name' in request body
+    connectMutation.mutate({ platform: platformName })
   }
 
   const handleDisconnect = (platformName: string) => {
@@ -68,14 +69,14 @@ export function PlatformsPage() {
           <h2 className="font-display text-lg font-semibold">Available Platforms</h2>
           {platforms.map((platform) => (
             <Card
-              key={platform.name}
+              key={platform.platform_name}
               className={clsx(
                 'cursor-pointer transition-all',
-                selectedPlatform === platform.name && 'ring-2 ring-accent-primary'
+                selectedPlatform === platform.platform_name && 'ring-2 ring-accent-primary'
               )}
             >
               <div
-                onClick={() => setSelectedPlatform(platform.name)}
+                onClick={() => setSelectedPlatform(platform.platform_name)}
                 className="space-y-3"
               >
                 <div className="flex items-start justify-between">
@@ -83,43 +84,45 @@ export function PlatformsPage() {
                     <div
                       className={clsx(
                         'flex h-10 w-10 items-center justify-center rounded-lg',
-                        platform.connected ? 'bg-green-500/20' : 'bg-slate-600'
+                        platform.is_connected ? 'bg-green-500/20' : 'bg-slate-600'
                       )}
                     >
                       <Plug
                         className={clsx(
                           'h-5 w-5',
-                          platform.connected ? 'text-green-400' : 'text-slate-400'
+                          platform.is_connected ? 'text-green-400' : 'text-slate-400'
                         )}
                       />
                     </div>
                     <div>
                       <div className="font-display font-semibold">{platform.display_name}</div>
-                      <p className="text-sm text-slate-400">{platform.description}</p>
+                      <div className="text-sm text-slate-400">
+                        Status: {platform.status} {platform.requires_authentication && '(Auth Required)'}
+                      </div>
                     </div>
                   </div>
-                  <Badge variant={platform.connected ? 'success' : 'default'}>
-                    {platform.connected ? 'Connected' : 'Not Connected'}
+                  <Badge variant={platform.is_connected ? 'success' : 'default'}>
+                    {platform.is_connected ? 'Connected' : 'Not Connected'}
                   </Badge>
                 </div>
 
                 <div className="flex items-center gap-2 border-t border-slate-700 pt-3">
-                  {platform.supports_webhooks && (
-                    <Badge variant="info">Webhooks</Badge>
+                  {platform.supports_watchlist_import && (
+                    <Badge variant="info">Watchlist Import</Badge>
                   )}
-                  {platform.supports_realtime && (
-                    <Badge variant="info">Realtime</Badge>
+                  {platform.supports_real_time_signals && (
+                    <Badge variant="info">Realtime Signals</Badge>
                   )}
                 </div>
 
                 <div className="flex gap-2">
-                  {platform.connected ? (
+                  {platform.is_connected ? (
                     <Button
                       variant="secondary"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation()
-                        handleDisconnect(platform.name)
+                        handleDisconnect(platform.platform_name)
                       }}
                       isLoading={disconnectMutation.isPending}
                       leftIcon={<X className="h-4 w-4" />}
@@ -131,29 +134,13 @@ export function PlatformsPage() {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation()
-                        handleConnect(platform.name)
+                        handleConnect(platform.platform_name)
                       }}
                       isLoading={connectMutation.isPending}
                       leftIcon={<Check className="h-4 w-4" />}
                     >
                       Connect
                     </Button>
-                  )}
-                  {platform.setup_url && (
-                    <a
-                      href={platform.setup_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<ExternalLink className="h-4 w-4" />}
-                      >
-                        Docs
-                      </Button>
-                    </a>
                   )}
                 </div>
               </div>
@@ -174,56 +161,53 @@ export function PlatformsPage() {
             ) : setupInstructions ? (
               <Card>
                 <CardHeader>
-                  <CardTitle>{setupInstructions.platform_name} Setup</CardTitle>
+                  <CardTitle>{setupInstructions.platform} Setup</CardTitle>
                 </CardHeader>
 
                 <div className="space-y-4">
-                  {/* Webhook URL */}
+                  {/* Webhook URL Template */}
+                  {setupInstructions.webhook_url_template && (
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-slate-400">
+                        Webhook URL Template
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <code className="flex-1 rounded-lg bg-surface-tertiary px-3 py-2 text-sm text-slate-300">
+                          {setupInstructions.webhook_url_template}
+                        </code>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => handleCopyWebhook(setupInstructions.webhook_url_template ?? '')}
+                          leftIcon={copied ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
+                        >
+                          {copied ? 'Copied!' : 'Copy'}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Instructions */}
                   <div>
                     <label className="mb-2 block text-sm font-medium text-slate-400">
-                      Webhook URL
+                      Setup Instructions
                     </label>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 rounded-lg bg-surface-tertiary px-3 py-2 text-sm text-slate-300">
-                        {setupInstructions.webhook_url}
-                      </code>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => handleCopyWebhook(setupInstructions.webhook_url)}
-                        leftIcon={copied ? <CheckCircle2 className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
-                      >
-                        {copied ? 'Copied!' : 'Copy'}
-                      </Button>
+                    <div className="rounded-lg bg-surface-tertiary p-4 text-sm text-slate-300 whitespace-pre-wrap">
+                      {setupInstructions.instructions}
                     </div>
                   </div>
 
-                  {/* Steps */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-400">
-                      Steps
-                    </label>
-                    <ol className="space-y-2">
-                      {setupInstructions.steps.map((step, index) => (
-                        <li key={index} className="flex gap-3 text-sm">
-                          <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-accent-primary/20 text-xs font-bold text-accent-primary">
-                            {index + 1}
-                          </span>
-                          <span className="text-slate-300">{step}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-
-                  {/* Example Payload */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-400">
-                      Example Webhook Payload
-                    </label>
-                    <pre className="overflow-x-auto rounded-lg bg-surface-tertiary p-3 text-xs text-slate-300">
-                      {JSON.stringify(setupInstructions.example_payload, null, 2)}
-                    </pre>
-                  </div>
+                  {/* Alert Message Template */}
+                  {setupInstructions.alert_message_template && (
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-slate-400">
+                        Alert Message Template
+                      </label>
+                      <pre className="overflow-x-auto rounded-lg bg-surface-tertiary p-3 text-xs text-slate-300">
+                        {setupInstructions.alert_message_template}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               </Card>
             ) : (
