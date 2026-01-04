@@ -29,11 +29,21 @@ describe('SkipLink Accessibility', () => {
     expect(link).toHaveClass('sr-only')
   })
 
-  it('should have focus classes', () => {
+  it('should have focus:not-sr-only class to show when focused', () => {
     render(<SkipLink />)
     const link = screen.getByRole('link', { name: /skip to main content/i })
     expect(link).toHaveClass('focus:not-sr-only')
+  })
+
+  it('should have high z-index when focused', () => {
+    render(<SkipLink />)
+    const link = screen.getByRole('link', { name: /skip to main content/i })
     expect(link).toHaveClass('focus:z-50')
+  })
+
+  it('should be positioned absolutely when focused', () => {
+    render(<SkipLink />)
+    const link = screen.getByRole('link', { name: /skip to main content/i })
     expect(link).toHaveClass('focus:absolute')
   })
 })

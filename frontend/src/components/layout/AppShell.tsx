@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
+import { SkipLink } from './SkipLink'
 
 interface AppShellProps {
   children: ReactNode
@@ -9,6 +10,7 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   return (
     <div className="flex min-h-screen">
+      <SkipLink />
       <Sidebar />
       <div className="flex flex-1 flex-col lg:ml-64">
         <Header />

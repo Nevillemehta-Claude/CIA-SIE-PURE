@@ -1,3 +1,12 @@
+/**
+ * SkipLink Component
+ * 
+ * Provides a skip link for keyboard users to bypass navigation and jump
+ * directly to main content. This is a WCAG 2.1 AA requirement.
+ * 
+ * The link is visually hidden until focused, then becomes visible.
+ * When activated, it moves focus to the main content area.
+ */
 export function SkipLink() {
   return (
     <a
@@ -25,3 +34,4 @@ export function SkipLink() {
     </a>
   )
 }
+

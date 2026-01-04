@@ -10,6 +10,10 @@ interface UseKeyboardNavigationOptions {
   onArrowRight?: () => void
 }
 
+/**
+ * Hook for consistent keyboard navigation handling across the application.
+ * Provides standardized keyboard event handling for accessibility.
+ */
 export const useKeyboardNavigation = (options: UseKeyboardNavigationOptions) => {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -64,6 +68,15 @@ export const useKeyboardNavigation = (options: UseKeyboardNavigationOptions) => 
   return { handleKeyDown }
 }
 
+/**
+ * Utility function to make div elements behave like accessible buttons.
+ * Use this when you need a div to act as a clickable element.
+ * 
+ * @example
+ * <div {...makeClickableAccessible(() => handleClick())}>
+ *   Click me
+ * </div>
+ */
 export const makeClickableAccessible = (onClick: () => void) => ({
   role: 'button' as const,
   tabIndex: 0,
@@ -75,3 +88,4 @@ export const makeClickableAccessible = (onClick: () => void) => ({
     }
   },
 })
+
