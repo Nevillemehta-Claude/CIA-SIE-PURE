@@ -27,12 +27,14 @@ export function ConfirmationPanel({ confirmations }: ConfirmationPanelProps) {
         </h3>
       </div>
 
-      <div className="grid gap-4">
-        {confirmations.map((c) => (
-          <ConfirmationCard key={c.direction} confirmation={c} />
+      <div className="grid gap-4 md:grid-cols-2">
+        {confirmations.map((c, index) => (
+          <ConfirmationCard 
+            key={`${c.chart_a_id}-${c.chart_b_id}-${index}`} 
+            confirmation={c} 
+          />
         ))}
       </div>
     </div>
   )
 }
-

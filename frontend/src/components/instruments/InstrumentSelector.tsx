@@ -9,8 +9,6 @@ interface InstrumentSelectorProps {
 export function InstrumentSelector({ selectedId, onSelect }: InstrumentSelectorProps) {
   const { data: instruments, isLoading } = useInstruments({ active_only: true })
 
-  const selectedInstrument = instruments?.find((i) => i.instrument_id === selectedId)
-
   return (
     <div className="relative">
       <select

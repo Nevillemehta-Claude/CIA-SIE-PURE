@@ -8,6 +8,12 @@ interface NarrativeDisplayProps {
   isLoading?: boolean
 }
 
+/**
+ * NarrativeDisplay - CBS-006 Implementation
+ * 
+ * CONSTITUTIONAL: Always renders the Disclaimer component.
+ * The narrative is DESCRIPTIVE only - never prescriptive.
+ */
 export function NarrativeDisplay({ narrative, isLoading }: NarrativeDisplayProps) {
   if (isLoading) {
     return (
@@ -28,8 +34,18 @@ export function NarrativeDisplay({ narrative, isLoading }: NarrativeDisplayProps
         <h3 className="font-display text-lg font-semibold">Signal Narrative</h3>
       </div>
 
-      <div className="rounded-lg border border-slate-700 bg-surface-secondary p-4">
-        <p className="whitespace-pre-wrap text-slate-300">{narrative.narrative}</p>
+      <div className="space-y-4">
+        {narrative.sections.map((section, index) => (
+          <div
+            key={`${section.section_type}-${index}`}
+            className="rounded-lg border border-slate-700 bg-surface-secondary p-4"
+          >
+            <div className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+              {section.section_type.replace('_', ' ')}
+            </div>
+            <p className="whitespace-pre-wrap text-slate-300">{section.content}</p>
+          </div>
+        ))}
       </div>
 
       {/* CONSTITUTIONAL: Disclaimer is MANDATORY and ALWAYS rendered */}
@@ -37,4 +53,3 @@ export function NarrativeDisplay({ narrative, isLoading }: NarrativeDisplayProps
     </div>
   )
 }
-

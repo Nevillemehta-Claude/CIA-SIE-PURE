@@ -8,7 +8,8 @@ interface BudgetIndicatorProps {
 }
 
 export function BudgetIndicator({ budget }: BudgetIndicatorProps) {
-  const { percentage_used, remaining, alert_triggered } = budget
+  const { percentage_used, remaining, alert_level } = budget
+  const alert_triggered = alert_level !== null
 
   const getStatusColor = () => {
     if (percentage_used >= 90) return 'text-red-400'

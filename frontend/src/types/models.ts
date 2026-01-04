@@ -11,7 +11,7 @@ export interface Instrument {
   created_at: string
   updated_at: string
   is_active: boolean
-  metadata_json: Record<string, unknown>
+  metadata: Record<string, unknown> | null
 }
 
 export interface Silo {
@@ -65,15 +65,32 @@ export interface Contradiction {
 }
 
 export interface Confirmation {
-  direction: Direction
-  charts: Array<{ chart_id: string; chart_name: string }>
-  count: number
+  chart_a_id: string
+  chart_a_name: string
+  chart_b_id: string
+  chart_b_name: string
+  aligned_direction: Direction
+  detected_at: string
+}
+
+export interface ChartSignalStatus {
+  chart_id: string
+  chart_code: string
+  chart_name: string
+  timeframe: string
+  latest_signal: Signal | null
+  freshness: FreshnessStatus
 }
 
 export interface RelationshipSummary {
   silo_id: string
+  silo_name: string
+  instrument_id: string
+  instrument_symbol: string
+  charts: ChartSignalStatus[]
   contradictions: Contradiction[]
   confirmations: Confirmation[]
+  generated_at: string
 }
 
 export interface ChartWithSignal extends Chart {
@@ -87,10 +104,13 @@ export interface ChatMessage {
 }
 
 export interface AIModel {
-  tier: string
-  model_id: string
+  id: string
   display_name: string
-  input_cost_per_1k: number
-  output_cost_per_1k: number
+  description: string
+  cost_per_1k_input_tokens: number
+  cost_per_1k_output_tokens: number
+  max_tokens: number
+  capabilities: string[]
+  recommended_for: string[]
 }
 

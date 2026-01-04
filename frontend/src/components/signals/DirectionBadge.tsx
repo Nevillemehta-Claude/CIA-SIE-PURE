@@ -2,6 +2,16 @@ import { clsx } from 'clsx'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import type { Direction } from '@/types/enums'
 
+/**
+ * DirectionBadge Component - CBS-001 Implementation
+ * 
+ * CONSTITUTIONAL REQUIREMENT (CR-002):
+ * - ALL direction badges have IDENTICAL size, padding, font-size, icon-size
+ * - ONLY the COLOR differs between directions
+ * - This prevents visual bias toward any direction
+ * 
+ * @see ICD Section: Component Behavioral Specifications - CBS-001
+ */
 interface DirectionBadgeProps {
   direction: Direction
   showLabel?: boolean

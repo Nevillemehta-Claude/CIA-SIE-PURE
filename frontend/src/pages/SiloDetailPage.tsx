@@ -15,7 +15,7 @@ export function SiloDetailPage() {
   const { siloId } = useParams<{ siloId: string }>()
   const { data: silo, isLoading: siloLoading, error: siloError } = useSilo(siloId!)
   const { data: charts, isLoading: chartsLoading } = useCharts(siloId)
-  const { data: relationships, isLoading: relLoading } = useRelationships(siloId!)
+  const { data: relationships } = useRelationships(siloId!)
   const { data: narrative, isLoading: narrLoading } = useNarrative(siloId!)
 
   if (siloLoading) {

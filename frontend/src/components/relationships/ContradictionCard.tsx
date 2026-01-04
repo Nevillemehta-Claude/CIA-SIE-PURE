@@ -6,6 +6,17 @@ interface ContradictionCardProps {
   contradiction: Contradiction
 }
 
+/**
+ * ContradictionCard Component - CBS-004 Implementation
+ * 
+ * CONSTITUTIONAL REQUIREMENT (CR-002):
+ * - Uses grid-cols-[1fr,auto,1fr] to ensure EQUAL sizing of both sides
+ * - IDENTICAL styling applied to both Chart A and Chart B
+ * - Neutral separator (arrows + "vs") implies NO preference
+ * - System EXPOSES contradictions but NEVER resolves them
+ * 
+ * @see ICD Section: Component Behavioral Specifications - CBS-004
+ */
 export function ContradictionCard({ contradiction }: ContradictionCardProps) {
   // CONSTITUTIONAL: Both sides use IDENTICAL styling
   const sideClassName = 'rounded-lg bg-surface-secondary p-3 text-center'

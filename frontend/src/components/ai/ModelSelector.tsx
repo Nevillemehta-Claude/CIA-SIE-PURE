@@ -23,12 +23,12 @@ export function ModelSelector({ selectedModel, onSelect, disabled }: ModelSelect
     <div className="flex gap-2">
       {data.models.map((model) => (
         <button
-          key={model.model_id}
-          onClick={() => onSelect(model.model_id)}
+          key={model.id}
+          onClick={() => onSelect(model.id)}
           disabled={disabled}
           className={clsx(
             'rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
-            selectedModel === model.model_id
+            selectedModel === model.id
               ? 'bg-accent-primary text-white'
               : 'bg-surface-secondary text-slate-300 hover:bg-surface-tertiary hover:text-white',
             disabled && 'cursor-not-allowed opacity-50'

@@ -16,12 +16,18 @@ export interface HealthResponse {
   environment: string
 }
 
+export interface NarrativeSection {
+  section_type: 'SIGNAL_SUMMARY' | 'CONTRADICTION' | 'CONFIRMATION' | 'FRESHNESS'
+  content: string
+  referenced_chart_ids: string[]
+}
+
 export interface NarrativeResponse {
+  narrative_id: string
   silo_id: string
-  narrative: string
+  sections: NarrativeSection[]
+  closing_statement: string
   generated_at: string
-  model_used: string
-  disclaimer: string
 }
 
 export interface PlainNarrativeResponse {
@@ -47,12 +53,15 @@ export interface AIModelsResponse {
 }
 
 export interface AIBudgetResponse {
-  limit: number
-  used: number
-  remaining: number
+  within_budget: boolean
   percentage_used: number
-  alert_threshold: number
-  alert_triggered: boolean
+  remaining: number
+  alert_level: string | null
+  message: string | null
+  // Computed fields for UI (derived from API + known limit)
+  limit?: number
+  used?: number
+  alert_triggered?: boolean
 }
 
 export interface AIUsageResponse {

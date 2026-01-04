@@ -39,7 +39,7 @@ export function SettingsPage() {
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-bold">{formatCurrency(budget.remaining)}</span>
                 <span className="text-sm text-slate-400">
-                  of {formatCurrency(budget.limit)} remaining
+                  remaining
                 </span>
               </div>
 
@@ -60,13 +60,17 @@ export function SettingsPage() {
               </div>
 
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Used: {formatCurrency(budget.used)}</span>
-                <span className="text-slate-400">{budget.percentage_used.toFixed(1)}%</span>
+                <span className="text-slate-400">Used: {budget.percentage_used.toFixed(1)}%</span>
+                <span className={clsx(
+                  budget.within_budget ? 'text-green-400' : 'text-red-400'
+                )}>
+                  {budget.within_budget ? 'Within Budget' : 'Over Budget'}
+                </span>
               </div>
 
-              {budget.alert_triggered && (
+              {budget.alert_level && (
                 <div className="rounded-lg bg-amber-500/10 p-3 text-sm text-amber-400">
-                  ⚠️ Budget alert: You have used {budget.percentage_used.toFixed(0)}% of your monthly budget.
+                  ⚠️ {budget.message || `Budget alert: ${budget.alert_level}`}
                 </div>
               )}
             </div>
@@ -129,28 +133,29 @@ export function SettingsPage() {
             <Spinner />
           </div>
         ) : models?.models ? (
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {models.models.map((model) => (
               <div
-                key={model.model_id}
+                key={model.id}
                 className={clsx(
                   'rounded-lg border p-4',
-                  model.model_id === models.default_model
+                  model.id === models.default_model
                     ? 'border-accent-primary bg-accent-primary/10'
                     : 'border-slate-700 bg-surface-tertiary'
                 )}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">{model.display_name}</span>
-                  {model.model_id === models.default_model && (
+                  {model.id === models.default_model && (
                     <span className="rounded bg-accent-primary/20 px-2 py-0.5 text-xs text-accent-primary">
                       Default
                     </span>
                   )}
                 </div>
+                <p className="mt-1 text-xs text-slate-500">{model.description}</p>
                 <div className="mt-2 text-sm text-slate-400">
-                  <div>Input: {formatCurrency(model.input_cost_per_1k)}/1K tokens</div>
-                  <div>Output: {formatCurrency(model.output_cost_per_1k)}/1K tokens</div>
+                  <div>Input: {formatCurrency(model.cost_per_1k_input_tokens)}/1K</div>
+                  <div>Output: {formatCurrency(model.cost_per_1k_output_tokens)}/1K</div>
                 </div>
               </div>
             ))}
