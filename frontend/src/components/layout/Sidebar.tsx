@@ -13,11 +13,14 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col border-r border-slate-700 bg-surface-primary lg:flex">
+    <aside 
+      className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col border-r border-slate-700 bg-surface-primary lg:flex"
+      aria-label="Main sidebar"
+    >
       {/* Logo */}
       <div className="flex h-16 items-center border-b border-slate-700 px-6">
-        <NavLink to="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-primary">
+        <NavLink to="/" className="flex items-center gap-3" aria-label="CIA-SIE Home">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-primary" aria-hidden="true">
             <BarChart3 className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -28,7 +31,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 px-3 py-4" aria-label="Primary navigation menu">
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
@@ -49,10 +52,14 @@ export function Sidebar() {
       </nav>
 
       {/* Constitutional Banner */}
-      <div className="border-t border-slate-700 p-4">
+      <div 
+        className="border-t border-slate-700 p-4"
+        role="note"
+        aria-label="Constitutional reminder"
+      >
         <div className="rounded-lg bg-amber-500/10 p-3">
           <div className="flex items-center gap-2 text-xs font-medium text-amber-400">
-            <FolderKanban className="h-4 w-4" />
+            <FolderKanban className="h-4 w-4" aria-hidden="true" />
             Decision-Support Only
           </div>
           <p className="mt-1 text-xs text-slate-400">

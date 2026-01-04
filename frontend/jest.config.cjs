@@ -35,7 +35,9 @@ module.exports = {
   // Test file patterns
   testMatch: [
     '<rootDir>/test/**/*.test.ts',
-    '<rootDir>/test/**/*.test.tsx'
+    '<rootDir>/test/**/*.test.tsx',
+    '<rootDir>/src/**/__tests__/**/*.test.ts',
+    '<rootDir>/src/**/__tests__/**/*.test.tsx'
   ],
   
   // Files to ignore

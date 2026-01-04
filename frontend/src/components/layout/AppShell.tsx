@@ -12,7 +12,13 @@ export function AppShell({ children }: AppShellProps) {
       <Sidebar />
       <div className="flex flex-1 flex-col lg:ml-64">
         <Header />
-        <main className="flex-1 p-6">
+        <main 
+          id="main-content"
+          className="flex-1 p-6"
+          role="main"
+          aria-label="Main content"
+          tabIndex={-1}
+        >
           {children}
         </main>
       </div>
