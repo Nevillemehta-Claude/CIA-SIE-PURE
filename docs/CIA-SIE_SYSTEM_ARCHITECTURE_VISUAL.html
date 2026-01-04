@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIA-SIE System Architecture - Visual Documentation</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e2e8f0;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+
+        /* Header */
+        .document-header {
+            background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .document-header h1 {
+            font-size: 28px;
+            color: #60a5fa;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .document-header .subtitle {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+        .version-badge {
+            display: inline-block;
+            background: #3b82f6;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-right: 10px;
+        }
+        .status-badge {
+            display: inline-block;
+            background: #22c55e;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-tab {
+            padding: 14px 24px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #94a3b8;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .nav-tab:hover {
+            border-color: #3b82f6;
+            color: #60a5fa;
+            transform: translateY(-2px);
+        }
+        .nav-tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+
+        /* Diagram Sections */
+        .diagram-section {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #334155;
+        }
+        .diagram-title {
+            color: #60a5fa;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .diagram-subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+        .mermaid {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        /* Legend */
+        .legend {
+            background: #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .legend h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Principle Box */
+        .principle-box {
+            background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .principle-title {
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .principle-text {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Tables */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .spec-table th {
+            background: #334155;
+            color: #60a5fa;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        .spec-table tr:last-child td {
+            border-bottom: none;
+        }
+        .spec-table code {
+            background: #334155;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            color: #a5b4fc;
+        }
+
+        /* Expandable Items */
+        .expandable-item {
+            background: #334155;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            border: 1px solid #475569;
+        }
+        .expandable-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #e2e8f0;
+            transition: background 0.3s;
+        }
+        .expandable-header:hover {
+            background: #475569;
+        }
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #1e293b;
+        }
+        .expandable-content.open {
+            max-height: 2000px;
+            padding: 20px;
+        }
+        .expand-icon {
+            transition: transform 0.3s;
+            color: #60a5fa;
+        }
+        .expandable-item.open .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Type Badges */
+        .type-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .type-api { background: #3b82f6; color: #fff; }
+        .type-service { background: #8b5cf6; color: #fff; }
+        .type-dal { background: #22c55e; color: #fff; }
+        .type-ai { background: #f59e0b; color: #fff; }
+        .type-component { background: #ec4899; color: #fff; }
+
+        /* Constitutional Warning */
+        .constitutional-warning {
+            background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .constitutional-warning h4 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+        .constitutional-warning ul {
+            color: #fecaca;
+            margin-left: 20px;
+            font-size: 14px;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 12px;
+            border-top: 1px solid #334155;
+            margin-top: 30px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; color: black; }
+            .nav-tabs { display: none; }
+            .content-section { display: block !important; page-break-after: always; }
+            .diagram-section { border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="document-header">
+            <h1>CIA-SIE SYSTEM ARCHITECTURE</h1>
+            <div class="subtitle">Chart Intelligence Auditor & Signal Intelligence Engine - Visual Documentation</div>
+            <span class="version-badge">VERSION 2.3.0</span>
+            <span class="status-badge">AUDITED FROM CODE</span>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('overview')">System Overview</div>
+            <div class="nav-tab" onclick="showSection('datamodel')">Data Model</div>
+            <div class="nav-tab" onclick="showSection('backend')">Backend Layers</div>
+            <div class="nav-tab" onclick="showSection('frontend')">Frontend Components</div>
+            <div class="nav-tab" onclick="showSection('api')">API Integration</div>
+            <div class="nav-tab" onclick="showSection('constitutional')">Constitutional Rules</div>
+        </div>
+
+        <!-- TAB 1: System Overview -->
+        <div id="overview" class="content-section active">
+            <div class="diagram-section">
+                <div class="diagram-title">Complete System Flow: TradingView to User Interface</div>
+                <div class="diagram-subtitle">End-to-end data journey from webhook reception to user display</div>
+
+                <div class="mermaid">
+flowchart TB
+    subgraph EXTERNAL["External Systems"]
+        TV["TradingView<br/>Webhooks"]
+        KITE["Zerodha Kite<br/>API"]
+        CLAUDE["Claude AI<br/>API"]
+    end
+
+    subgraph INGESTION["Signal Ingestion Layer"]
+        WH_EP["/webhook endpoint"]
+        WH_HAND["WebhookHandler"]
+        SIG_NORM["SignalNormalizer"]
+        FRESH["FreshnessCalculator"]
+    end
+
+    subgraph STORAGE["Data Storage Layer"]
+        DB[("SQLite Database")]
+        INST_TBL["instruments"]
+        SILO_TBL["silos"]
+        CHART_TBL["charts"]
+        SIG_TBL["signals"]
+    end
+
+    subgraph EXPOSURE["Exposure Detection Layer"]
+        REL_EXP["RelationshipExposer"]
+        CONTRA["ContradictionDetector"]
+        CONF["ConfirmationDetector"]
+    end
+
+    subgraph AI_LAYER["AI Narrative Layer"]
+        NARR_GEN["NarrativeGenerator"]
+        PROMPT["PromptBuilder"]
+        VALID["ResponseValidator"]
+        CLAUDE_CL["ClaudeClient"]
+    end
+
+    subgraph API["API Layer - 12 Routers"]
+        R_INST["/instruments"]
+        R_SILO["/silos"]
+        R_CHART["/charts"]
+        R_SIG["/signals"]
+        R_REL["/relationships"]
+        R_NARR["/narratives"]
+    end
+
+    subgraph FRONTEND["Frontend Layer"]
+        UI["React Components"]
+        HOOKS["React Query Hooks"]
+        API_SVC["API Services"]
+    end
+
+    subgraph USER["User"]
+        BROWSER["Web Browser"]
+    end
+
+    TV -->|"POST JSON"| WH_EP
+    WH_EP --> WH_HAND
+    WH_HAND --> SIG_NORM
+    SIG_NORM --> SIG_TBL
+    SIG_TBL --> FRESH
+
+    KITE -.->|"OAuth"| API
+
+    DB --> INST_TBL & SILO_TBL & CHART_TBL & SIG_TBL
+
+    R_REL --> REL_EXP
+    REL_EXP --> CONTRA & CONF
+
+    R_NARR --> NARR_GEN
+    NARR_GEN --> PROMPT
+    NARR_GEN --> CLAUDE_CL
+    CLAUDE_CL --> CLAUDE
+    CLAUDE --> VALID
+
+    API_SVC --> API
+    HOOKS --> API_SVC
+    UI --> HOOKS
+    BROWSER --> UI
+
+    style EXTERNAL fill:#e0f2fe,stroke:#0284c7
+    style INGESTION fill:#dcfce7,stroke:#16a34a
+    style STORAGE fill:#fef9c3,stroke:#ca8a04
+    style EXPOSURE fill:#fce7f3,stroke:#db2777
+    style AI_LAYER fill:#e0e7ff,stroke:#4f46e5
+    style API fill:#ffedd5,stroke:#ea580c
+    style FRONTEND fill:#f3e8ff,stroke:#9333ea
+                </div>
+
+                <div class="legend">
+                    <h4>LAYER LEGEND</h4>
+                    <div class="legend-grid">
+                        <div class="legend-item"><div class="legend-color" style="background:#e0f2fe;border:2px solid #0284c7;"></div> External Systems</div>
+                        <div class="legend-item"><div class="legend-color" style="background:#dcfce7;border:2px solid #16a34a;"></div> Signal Ingestion</div>
+                        <div class="legend-item"><div class="legend-color" style="background:#fef9c3;border:2px solid #ca8a04;"></div> Data Storage</div>
+                        <div class="legend-item"><div class="legend-color" style="background:#fce7f3;border:2px solid #db2777;"></div> Exposure Detection</div>
+                        <div class="legend-item"><div class="legend-color" style="background:#e0e7ff;border:2px solid #4f46e5;"></div> AI Narrative</div>
+                        <div class="legend-item"><div class="legend-color" style="background:#ffedd5;border:2px solid #ea580c;"></div> API Layer</div>
+                        <div class="legend-item"><div class="legend-color" style="background:#f3e8ff;border:2px solid #9333ea;"></div> Frontend</div>
+                    </div>
+                </div>
+
+                <div class="principle-box">
+                    <div class="principle-title">Key Principle: Data Repository Model</div>
+                    <div class="principle-text">
+                        CIA-SIE is a <strong>data repository</strong>, not an intelligence engine.
+                        It stores signals, exposes contradictions, and generates descriptive narratives.
+                        It <strong>never</strong> makes trading decisions, resolves conflicts, or recommends actions.
+                        The human user retains all decision-making authority.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technology Stack -->
+            <div class="diagram-section">
+                <div class="diagram-title">Technology Stack</div>
+                <table class="spec-table">
+                    <tr>
+                        <th>Layer</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Frontend</strong></td>
+                        <td><code>React 18</code> + <code>TypeScript 5</code> + <code>Vite</code></td>
+                        <td>Component-based UI with type safety</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Styling</strong></td>
+                        <td><code>TailwindCSS 3.4</code></td>
+                        <td>Utility-first CSS framework</td>
+                    </tr>
+                    <tr>
+                        <td><strong>State Management</strong></td>
+                        <td><code>React Query 5</code> + <code>React Context</code></td>
+                        <td>Server state caching + UI state</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HTTP Client</strong></td>
+                        <td><code>Axios 1.6</code></td>
+                        <td>Request/response handling</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Backend</strong></td>
+                        <td><code>FastAPI</code> + <code>Python 3.11+</code></td>
+                        <td>Async REST API framework</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ORM</strong></td>
+                        <td><code>SQLAlchemy 2.0</code></td>
+                        <td>Database abstraction</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Validation</strong></td>
+                        <td><code>Pydantic v2</code></td>
+                        <td>Request/response schemas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Database</strong></td>
+                        <td><code>SQLite</code></td>
+                        <td>Persistent local storage</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI</strong></td>
+                        <td><code>Anthropic SDK</code> (Claude)</td>
+                        <td>Narrative generation</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: Data Model -->
+        <div id="datamodel" class="content-section">
+            <div class="diagram-section">
+                <div class="diagram-title">Entity Relationship Diagram</div>
+                <div class="diagram-subtitle">Database schema showing all tables and relationships</div>
+
+                <div class="mermaid">
+erDiagram
+    INSTRUMENTS ||--o{ SILOS : contains
+    SILOS ||--o{ CHARTS : contains
+    CHARTS ||--o{ SIGNALS : receives
+    INSTRUMENTS ||--o{ ANALYTICAL_BASKETS : has
+    ANALYTICAL_BASKETS ||--o{ BASKET_CHARTS : contains
+    CHARTS ||--o{ BASKET_CHARTS : belongs_to
+    INSTRUMENTS ||--o{ CONVERSATIONS : has
+
+    INSTRUMENTS {
+        string instrument_id PK
+        string symbol UK
+        string display_name
+        datetime created_at
+        datetime updated_at
+        boolean is_active
+        json metadata_json
+    }
+
+    SILOS {
+        string silo_id PK
+        string instrument_id FK
+        string silo_name
+        boolean heartbeat_enabled
+        int heartbeat_frequency_min
+        int current_threshold_min
+        int recent_threshold_min
+        int stale_threshold_min
+        datetime created_at
+        datetime updated_at
+        boolean is_active
+    }
+
+    CHARTS {
+        string chart_id PK
+        string silo_id FK
+        string chart_code
+        string chart_name
+        string timeframe
+        string webhook_id UK
+        datetime created_at
+        datetime updated_at
+        boolean is_active
+    }
+
+    SIGNALS {
+        string signal_id PK
+        string chart_id FK
+        datetime received_at
+        datetime signal_timestamp
+        string signal_type
+        string direction
+        json indicators
+        json raw_payload
+    }
+
+    ANALYTICAL_BASKETS {
+        string basket_id PK
+        string basket_name
+        string basket_type
+        text description
+        string instrument_id FK
+        datetime created_at
+        datetime updated_at
+        boolean is_active
+    }
+
+    BASKET_CHARTS {
+        string basket_id PK_FK
+        string chart_id PK_FK
+        datetime added_at
+    }
+
+    CONVERSATIONS {
+        string conversation_id PK
+        string instrument_id FK
+        json messages
+        string model_used
+        int total_tokens
+        decimal total_cost
+        datetime created_at
+        datetime updated_at
+    }
+
+    AI_USAGE {
+        string id PK
+        string period_type
+        date period_start
+        date period_end
+        int input_tokens
+        int output_tokens
+        decimal total_cost
+        int requests_count
+        json model_breakdown
+        datetime created_at
+    }
+                </div>
+
+                <div class="constitutional-warning">
+                    <h4>CONSTITUTIONAL CONSTRAINTS ON DATA MODEL</h4>
+                    <ul>
+                        <li><strong>CHARTS table:</strong> NO weight column - all charts have equal standing</li>
+                        <li><strong>SIGNALS table:</strong> NO confidence or strength columns - raw data only</li>
+                        <li><strong>No aggregation tables:</strong> No overall_score, net_direction, or consensus fields anywhere</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Data Hierarchy -->
+            <div class="diagram-section">
+                <div class="diagram-title">Data Hierarchy</div>
+                <div class="diagram-subtitle">How entities nest within each other</div>
+
+                <div class="mermaid">
+flowchart TD
+    subgraph INST["INSTRUMENT (e.g., GOLDBEES)"]
+        subgraph SILO1["SILO 1 (e.g., Gold BEES Primary)"]
+            CHART1A["Chart 01A<br/>4H Timeframe"]
+            CHART1B["Chart 01B<br/>1D Timeframe"]
+        end
+        subgraph SILO2["SILO 2 (e.g., Gold BEES Secondary)"]
+            CHART2A["Chart 02A<br/>1H Timeframe"]
+        end
+    end
+
+    CHART1A --> SIG1A["Signals"]
+    CHART1B --> SIG1B["Signals"]
+    CHART2A --> SIG2A["Signals"]
+
+    SIG1A --> DIR1["BULLISH / BEARISH / NEUTRAL"]
+    SIG1B --> DIR2["BULLISH / BEARISH / NEUTRAL"]
+    SIG2A --> DIR3["BULLISH / BEARISH / NEUTRAL"]
+
+    style INST fill:#dbeafe,stroke:#2563eb
+    style SILO1 fill:#dcfce7,stroke:#16a34a
+    style SILO2 fill:#dcfce7,stroke:#16a34a
+                </div>
+            </div>
+
+            <!-- Enumerations -->
+            <div class="diagram-section">
+                <div class="diagram-title">Enumerations</div>
+                <table class="spec-table">
+                    <tr>
+                        <th>Enum</th>
+                        <th>Values</th>
+                        <th>Usage</th>
+                    </tr>
+                    <tr>
+                        <td><code>Direction</code></td>
+                        <td><code>BULLISH</code> | <code>BEARISH</code> | <code>NEUTRAL</code></td>
+                        <td>Signal directional bias</td>
+                    </tr>
+                    <tr>
+                        <td><code>SignalType</code></td>
+                        <td><code>HEARTBEAT</code> | <code>STATE_CHANGE</code> | <code>BAR_CLOSE</code> | <code>MANUAL</code></td>
+                        <td>Classification of signal origin</td>
+                    </tr>
+                    <tr>
+                        <td><code>FreshnessStatus</code></td>
+                        <td><code>CURRENT</code> | <code>RECENT</code> | <code>STALE</code> | <code>UNAVAILABLE</code></td>
+                        <td>Data age classification (descriptive only)</td>
+                    </tr>
+                    <tr>
+                        <td><code>BasketType</code></td>
+                        <td><code>LOGICAL</code> | <code>HIERARCHICAL</code> | <code>CONTEXTUAL</code> | <code>CUSTOM</code></td>
+                        <td>Analytical basket classification</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: Backend Layers -->
+        <div id="backend" class="content-section">
+            <div class="diagram-section">
+                <div class="diagram-title">Backend Directory Structure</div>
+                <div class="diagram-subtitle">36 Python modules organized into 8 packages</div>
+
+                <div class="mermaid">
+flowchart TB
+    subgraph ROOT["src/cia_sie/"]
+        MAIN["main.py<br/>Entry Point"]
+    end
+
+    subgraph API["api/ - API Layer"]
+        APP["app.py<br/>FastAPI Factory"]
+        subgraph ROUTES["routes/ - 12 Routers"]
+            R1["instruments.py"]
+            R2["silos.py"]
+            R3["charts.py"]
+            R4["signals.py"]
+            R5["webhooks.py"]
+            R6["relationships.py"]
+            R7["narratives.py"]
+            R8["baskets.py"]
+            R9["platforms.py"]
+            R10["ai.py"]
+            R11["chat.py"]
+            R12["strategy.py"]
+        end
+    end
+
+    subgraph AI["ai/ - AI Integration"]
+        AI1["claude_client.py"]
+        AI2["narrative_generator.py"]
+        AI3["prompt_builder.py"]
+        AI4["response_validator.py"]
+        AI5["usage_tracker.py"]
+        AI6["model_registry.py"]
+    end
+
+    subgraph EXPOSURE["exposure/ - Detection"]
+        EX1["contradiction_detector.py"]
+        EX2["confirmation_detector.py"]
+        EX3["relationship_exposer.py"]
+    end
+
+    subgraph INGESTION["ingestion/ - Signal Processing"]
+        IN1["webhook_handler.py"]
+        IN2["signal_normalizer.py"]
+        IN3["freshness.py"]
+    end
+
+    subgraph PLATFORMS["platforms/ - External"]
+        PL1["base.py"]
+        PL2["kite.py"]
+        PL3["tradingview.py"]
+        PL4["registry.py"]
+    end
+
+    subgraph DAL["dal/ - Data Access"]
+        DA1["database.py"]
+        DA2["models.py (ORM)"]
+        DA3["repositories.py"]
+    end
+
+    subgraph CORE["core/ - Foundation"]
+        CO1["config.py"]
+        CO2["enums.py"]
+        CO3["models.py (Pydantic)"]
+        CO4["exceptions.py"]
+        CO5["security.py"]
+    end
+
+    MAIN --> APP
+    APP --> ROUTES
+    ROUTES --> AI & EXPOSURE & INGESTION & PLATFORMS & DAL
+    AI & EXPOSURE & INGESTION & PLATFORMS & DAL --> CORE
+
+    style API fill:#ffedd5,stroke:#ea580c
+    style AI fill:#e0e7ff,stroke:#4f46e5
+    style EXPOSURE fill:#fce7f3,stroke:#db2777
+    style INGESTION fill:#dcfce7,stroke:#16a34a
+    style PLATFORMS fill:#e0f2fe,stroke:#0284c7
+    style DAL fill:#fef9c3,stroke:#ca8a04
+    style CORE fill:#f1f5f9,stroke:#64748b
+                </div>
+            </div>
+
+            <!-- API Endpoints -->
+            <div class="diagram-section">
+                <div class="diagram-title">API Endpoint Map</div>
+                <div class="diagram-subtitle">All 50+ endpoints organized by router</div>
+
+                <div class="mermaid">
+flowchart TD
+    ROOT["/api/v1"]
+
+    ROOT --> INST["/instruments"]
+    ROOT --> SILO["/silos"]
+    ROOT --> CHART["/charts"]
+    ROOT --> SIG["/signals"]
+    ROOT --> WH["/webhook"]
+    ROOT --> REL["/relationships"]
+    ROOT --> NARR["/narratives"]
+    ROOT --> BASK["/baskets"]
+    ROOT --> PLAT["/platforms"]
+    ROOT --> AI["/ai"]
+    ROOT --> CHAT["/chat"]
+    ROOT --> STRAT["/strategy"]
+
+    INST --> I1["GET / - List"]
+    INST --> I2["POST / - Create"]
+    INST --> I3["GET /{id}"]
+    INST --> I4["PATCH /{id}"]
+    INST --> I5["DELETE /{id}"]
+
+    SIG --> S1["GET /chart/{id}"]
+    SIG --> S2["GET /chart/{id}/latest"]
+
+    WH --> W1["POST / - TradingView"]
+    WH --> W2["POST /manual"]
+
+    REL --> R1["GET /silo/{id}"]
+    REL --> R2["GET /instrument/{id}"]
+    REL --> R3["GET /contradictions/silo/{id}"]
+
+    NARR --> N1["GET /silo/{id}"]
+    NARR --> N2["GET /silo/{id}/plain"]
+
+    AI --> A1["GET /models"]
+    AI --> A2["GET /usage"]
+    AI --> A3["GET /budget"]
+
+    style ROOT fill:#3b82f6,color:#fff
+    style INST fill:#fef9c3
+    style SILO fill:#f3e8ff
+    style CHART fill:#dcfce7
+    style SIG fill:#ffedd5
+    style WH fill:#ffedd5
+    style REL fill:#fce7f3
+    style NARR fill:#e0e7ff
+    style BASK fill:#f1f5f9
+    style PLAT fill:#e0f2fe
+    style AI fill:#e0e7ff
+    style CHAT fill:#e0e7ff
+    style STRAT fill:#e0e7ff
+                </div>
+            </div>
+
+            <!-- Signal Ingestion Flow -->
+            <div class="diagram-section">
+                <div class="diagram-title">Signal Ingestion Sequence</div>
+                <div class="diagram-subtitle">How a TradingView webhook becomes a stored signal</div>
+
+                <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant TV as TradingView
+    participant WH as /webhook
+    participant HAND as WebhookHandler
+    participant NORM as SignalNormalizer
+    participant REPO as SignalRepository
+    participant DB as Database
+    participant FRESH as FreshnessCalc
+
+    TV->>WH: POST {webhook_id, direction, indicators}
+    WH->>HAND: process_webhook(payload)
+    HAND->>HAND: Lookup chart by webhook_id
+
+    alt Chart Not Found
+        HAND-->>WH: 404 Error
+    else Chart Found
+        HAND->>NORM: normalize(payload)
+        NORM->>NORM: Extract direction enum
+        NORM->>NORM: Parse indicators JSON
+        NORM-->>HAND: NormalizedSignal
+
+        HAND->>REPO: create(signal_data)
+        REPO->>DB: INSERT INTO signals
+        DB-->>REPO: Created
+
+        HAND->>FRESH: calculate(chart_id)
+        FRESH-->>HAND: CURRENT/RECENT/STALE
+
+        HAND-->>WH: 201 Created
+    end
+
+    WH-->>TV: Response
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: Frontend Components -->
+        <div id="frontend" class="content-section">
+            <div class="diagram-section">
+                <div class="diagram-title">Component Hierarchy</div>
+                <div class="diagram-subtitle">React component tree from root to atoms</div>
+
+                <div class="mermaid">
+flowchart TB
+    subgraph ROOT["Application Root"]
+        QC["QueryClientProvider"]
+        RC["RouterProvider"]
+        CTX["AppContext"]
+    end
+
+    subgraph LAYOUT["Layout Components"]
+        SHELL["AppShell"]
+        SIDEBAR["Sidebar"]
+        HEADER["Header"]
+        MAIN["MainContent"]
+    end
+
+    subgraph PAGES["Page Components"]
+        DASH["DashboardPage"]
+        INST_P["InstrumentDetailPage"]
+        SILO_P["SiloDetailPage"]
+        CHART_P["ChartDetailPage"]
+        SET["SettingsPage"]
+    end
+
+    subgraph COMPOSITE["Composite Components"]
+        SIG_GRID["SignalGrid"]
+        CONT_PANEL["ContradictionPanel"]
+        CONF_PANEL["ConfirmationPanel"]
+        NARR_PANEL["NarrativePanel"]
+        CHAT_INT["ChatInterface"]
+    end
+
+    subgraph ATOMS["Atomic Components"]
+        DIR_BADGE["DirectionBadge"]
+        FRESH_BADGE["FreshnessBadge"]
+        DISC["DisclaimerText"]
+        CARD["Card"]
+        BADGE["Badge"]
+        SPINNER["LoadingSpinner"]
+    end
+
+    QC --> RC --> CTX
+    CTX --> SHELL
+    SHELL --> SIDEBAR & HEADER & MAIN
+    MAIN --> PAGES
+
+    DASH --> SIG_GRID & CONT_PANEL & CONF_PANEL & NARR_PANEL
+
+    SIG_GRID --> DIR_BADGE & FRESH_BADGE & CARD
+    CONT_PANEL --> DIR_BADGE & CARD
+    NARR_PANEL --> DISC & CARD
+    CHAT_INT --> DISC
+
+    style ROOT fill:#3b82f6,color:#fff
+    style LAYOUT fill:#8b5cf6,color:#fff
+    style PAGES fill:#ec4899,color:#fff
+    style COMPOSITE fill:#f59e0b,color:#fff
+    style ATOMS fill:#22c55e,color:#fff
+                </div>
+            </div>
+
+            <!-- State Management -->
+            <div class="diagram-section">
+                <div class="diagram-title">State Management Architecture</div>
+                <div class="diagram-subtitle">Server state vs UI state vs URL state</div>
+
+                <div class="mermaid">
+flowchart TB
+    subgraph SERVER["Server State (React Query)"]
+        direction LR
+        Q1["instruments"]
+        Q2["silos"]
+        Q3["charts"]
+        Q4["signals"]
+        Q5["relationships"]
+        Q6["narratives"]
+    end
+
+    subgraph UI["UI State (React Context)"]
+        direction LR
+        U1["activeInstrumentId"]
+        U2["activeSiloId"]
+        U3["sidebarOpen"]
+        U4["theme"]
+    end
+
+    subgraph URL["URL State (React Router)"]
+        direction LR
+        URL1["pathname"]
+        URL2["params"]
+        URL3["searchParams"]
+    end
+
+    subgraph LOCAL["Component State (useState)"]
+        direction LR
+        L1["formData"]
+        L2["isModalOpen"]
+        L3["selectedItem"]
+    end
+
+    URL1 -.->|drives| U1
+    URL2 -.->|drives| U2
+    U1 -.->|triggers refetch| Q1
+    U2 -.->|triggers refetch| Q2
+
+    style SERVER fill:#dbeafe,stroke:#2563eb
+    style UI fill:#dcfce7,stroke:#16a34a
+    style URL fill:#fef9c3,stroke:#ca8a04
+    style LOCAL fill:#f1f5f9,stroke:#64748b
+                </div>
+            </div>
+
+            <!-- Directory Structure -->
+            <div class="diagram-section">
+                <div class="diagram-title">Frontend Directory Structure</div>
+                <table class="spec-table">
+                    <tr>
+                        <th>Directory</th>
+                        <th>Contents</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td><code>src/components/layout/</code></td>
+                        <td>AppShell, Header, Sidebar, Footer</td>
+                        <td>Page structure components</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/components/common/</code></td>
+                        <td>Button, Card, Badge, Spinner, Disclaimer</td>
+                        <td>Reusable atomic components</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/components/instruments/</code></td>
+                        <td>InstrumentList, InstrumentCard, InstrumentDetail</td>
+                        <td>Instrument feature components</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/components/signals/</code></td>
+                        <td>SignalDisplay, DirectionBadge, FreshnessBadge</td>
+                        <td>Signal display components</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/components/relationships/</code></td>
+                        <td>ContradictionPanel, ConfirmationPanel</td>
+                        <td>Exposure display components</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/pages/</code></td>
+                        <td>DashboardPage, InstrumentDetailPage, etc.</td>
+                        <td>Route page components</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/hooks/</code></td>
+                        <td>useInstruments, useSignals, useFreshness</td>
+                        <td>Custom React Query hooks</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/services/</code></td>
+                        <td>instruments.ts, signals.ts, narratives.ts</td>
+                        <td>API service functions</td>
+                    </tr>
+                    <tr>
+                        <td><code>src/types/</code></td>
+                        <td>models.ts, api.ts, enums.ts</td>
+                        <td>TypeScript type definitions</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 5: API Integration -->
+        <div id="api" class="content-section">
+            <div class="diagram-section">
+                <div class="diagram-title">React Query Integration Pattern</div>
+                <div class="diagram-subtitle">How components fetch and cache data</div>
+
+                <div class="mermaid">
+flowchart LR
+    subgraph COMPONENT["React Component"]
+        RENDER["Render UI"]
+    end
+
+    subgraph HOOK["Custom Hook"]
+        UQ["useQuery()"]
+    end
+
+    subgraph SERVICE["API Service"]
+        API_FN["getInstruments()"]
+    end
+
+    subgraph HTTP["HTTP Layer"]
+        AXIOS["axios.get()"]
+    end
+
+    subgraph CACHE["Query Cache"]
+        CACHED["Cached Data"]
+    end
+
+    subgraph BACKEND["Backend"]
+        SERVER["FastAPI"]
+    end
+
+    COMPONENT -->|"1. Call hook"| HOOK
+    HOOK -->|"2. Check cache"| CACHE
+
+    CACHE -->|"3a. Cache hit"| HOOK
+    HOOK -->|"3b. Cache miss"| SERVICE
+    SERVICE -->|"4. HTTP request"| HTTP
+    HTTP -->|"5. Fetch"| BACKEND
+    BACKEND -->|"6. Response"| HTTP
+    HTTP -->|"7. Return"| SERVICE
+    SERVICE -->|"8. Update cache"| CACHE
+    HOOK -->|"9. Return data"| COMPONENT
+    COMPONENT -->|"10. Render"| RENDER
+                </div>
+            </div>
+
+            <!-- Request/Response Flow -->
+            <div class="diagram-section">
+                <div class="diagram-title">Complete Request/Response Cycle</div>
+
+                <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant C as Component
+    participant H as useRelationships
+    participant S as relationships.ts
+    participant A as Axios
+    participant API as FastAPI
+    participant SVC as RelationshipExposer
+    participant DB as Database
+
+    U->>C: View Silo Detail
+    C->>H: useRelationships(siloId)
+    H->>H: Check cache
+
+    alt Cache Miss
+        H->>S: getRelationships(siloId)
+        S->>A: GET /api/v1/relationships/silo/{id}
+        A->>API: HTTP Request
+
+        API->>SVC: get_silo_relationships(id)
+        SVC->>DB: Fetch charts + signals
+        DB-->>SVC: Data
+        SVC->>SVC: Detect contradictions
+        SVC->>SVC: Detect confirmations
+        SVC-->>API: RelationshipSummary
+
+        API-->>A: JSON Response
+        A-->>S: Parsed data
+        S-->>H: Typed response
+        H->>H: Update cache
+    end
+
+    H-->>C: {data, isLoading, error}
+    C-->>U: Render UI
+                </div>
+            </div>
+
+            <!-- Key API Endpoints -->
+            <div class="diagram-section">
+                <div class="diagram-title">Key API Endpoints</div>
+                <table class="spec-table">
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Frontend Hook</th>
+                    </tr>
+                    <tr>
+                        <td><code>/api/v1/instruments/</code></td>
+                        <td>GET</td>
+                        <td>List all instruments</td>
+                        <td><code>useInstruments()</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/v1/silos/?instrument_id={id}</code></td>
+                        <td>GET</td>
+                        <td>List silos for instrument</td>
+                        <td><code>useSilos(instrumentId)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/v1/charts/?silo_id={id}</code></td>
+                        <td>GET</td>
+                        <td>List charts in silo</td>
+                        <td><code>useCharts(siloId)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/v1/signals/chart/{id}</code></td>
+                        <td>GET</td>
+                        <td>Get signals for chart</td>
+                        <td><code>useSignals(chartId)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/v1/relationships/silo/{id}</code></td>
+                        <td>GET</td>
+                        <td>Get contradictions + confirmations</td>
+                        <td><code>useRelationships(siloId)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/v1/narratives/silo/{id}</code></td>
+                        <td>GET</td>
+                        <td>Generate AI narrative</td>
+                        <td><code>useNarrative(siloId)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>/api/v1/webhook</code></td>
+                        <td>POST</td>
+                        <td>Receive TradingView signal</td>
+                        <td>N/A (external)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 6: Constitutional Rules -->
+        <div id="constitutional" class="content-section">
+            <div class="diagram-section">
+                <div class="diagram-title">The Three Inviolable Rules</div>
+                <div class="diagram-subtitle">Constitutional constraints that must be enforced at every layer</div>
+
+                <div class="mermaid">
+flowchart TB
+    subgraph CR001["CR-001: DECISION-SUPPORT ONLY"]
+        D1["System provides INFORMATION"]
+        D2["Never recommendations"]
+        D3["No buy/sell/enter/exit buttons"]
+        D4["No 'should', 'recommend', 'suggest'"]
+    end
+
+    subgraph CR002["CR-002: NEVER RESOLVE CONTRADICTIONS"]
+        C1["Show BOTH sides"]
+        C2["EQUAL visual prominence"]
+        C3["No aggregation or weighting"]
+        C4["No 'overall', 'consensus', 'net'"]
+    end
+
+    subgraph CR003["CR-003: DESCRIPTIVE NOT PRESCRIPTIVE"]
+        P1["AI describes what data shows"]
+        P2["Never what to do"]
+        P3["MANDATORY disclaimer"]
+        P4["No predictions or forecasts"]
+    end
+
+    style CR001 fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style CR002 fill:#fce7f3,stroke:#db2777,stroke-width:3px
+    style CR003 fill:#e0e7ff,stroke:#4f46e5,stroke-width:3px
+                </div>
+            </div>
+
+            <!-- Five Layer Defense -->
+            <div class="diagram-section">
+                <div class="diagram-title">Five-Layer Defense-in-Depth</div>
+                <div class="diagram-subtitle">How constitutional rules are enforced at each system layer</div>
+
+                <div class="mermaid">
+flowchart TB
+    subgraph L1["Layer 1: DATABASE SCHEMA"]
+        L1T["NO weight, score, confidence,<br/>recommendation, priority, rank columns"]
+    end
+
+    subgraph L2["Layer 2: DOMAIN MODELS"]
+        L2T["Chart: NO weight property<br/>Signal: NO confidence property<br/>Explicit PROHIBITED comments in code"]
+    end
+
+    subgraph L3["Layer 3: BUSINESS LOGIC"]
+        L3T["ContradictionDetector: EXPOSE only<br/>No aggregation functions<br/>No resolution logic"]
+    end
+
+    subgraph L4["Layer 4: AI VALIDATION"]
+        L4T["ResponseValidator: 35+ prohibited patterns<br/>MANDATORY_DISCLAIMER check<br/>Retry on failure, fallback if needed"]
+    end
+
+    subgraph L5["Layer 5: UI CONSTRAINTS"]
+        L5T["Equal visual weight for all signals<br/>No action buttons<br/>Disclaimer always visible"]
+    end
+
+    L1 --> L2 --> L3 --> L4 --> L5
+
+    style L1 fill:#fef9c3,stroke:#ca8a04,stroke-width:2px
+    style L2 fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style L3 fill:#fce7f3,stroke:#db2777,stroke-width:2px
+    style L4 fill:#e0e7ff,stroke:#4f46e5,stroke-width:2px
+    style L5 fill:#f3e8ff,stroke:#9333ea,stroke-width:2px
+                </div>
+            </div>
+
+            <!-- AI Response Validation -->
+            <div class="diagram-section">
+                <div class="diagram-title">AI Response Validation Flow</div>
+                <div class="diagram-subtitle">How AI responses are checked for constitutional compliance</div>
+
+                <div class="mermaid">
+flowchart TD
+    RAW["AI Response"] --> CHK1{"Contains<br/>'should'?"}
+
+    CHK1 -->|Yes| FAIL["INVALID"]
+    CHK1 -->|No| CHK2{"Contains<br/>'recommend'?"}
+
+    CHK2 -->|Yes| FAIL
+    CHK2 -->|No| CHK3{"Contains<br/>'suggest'?"}
+
+    CHK3 -->|Yes| FAIL
+    CHK3 -->|No| CHK4{"Resolves<br/>contradiction?"}
+
+    CHK4 -->|Yes| FAIL
+    CHK4 -->|No| CHK5{"Has<br/>disclaimer?"}
+
+    CHK5 -->|No| ADD["Add Disclaimer"]
+    CHK5 -->|Yes| PASS["VALID"]
+
+    ADD --> REMEDIATED["REMEDIATED"]
+
+    FAIL --> RETRY{"Retry<br/>count < 3?"}
+    RETRY -->|Yes| REGEN["Regenerate<br/>with stricter prompt"]
+    RETRY -->|No| FALLBACK["Template<br/>Fallback"]
+
+    REGEN --> RAW
+
+    style FAIL fill:#fecaca,stroke:#dc2626
+    style PASS fill:#bbf7d0,stroke:#16a34a
+    style REMEDIATED fill:#fef9c3,stroke:#ca8a04
+    style FALLBACK fill:#e0e7ff,stroke:#4f46e5
+                </div>
+            </div>
+
+            <!-- Prohibited Patterns Table -->
+            <div class="diagram-section">
+                <div class="diagram-title">Prohibited Data Patterns</div>
+                <table class="spec-table">
+                    <tr>
+                        <th>Prohibited Field</th>
+                        <th>Why Prohibited</th>
+                        <th>Alternative</th>
+                    </tr>
+                    <tr>
+                        <td><code>weight</code></td>
+                        <td>Enables aggregation</td>
+                        <td>Display all charts equally</td>
+                    </tr>
+                    <tr>
+                        <td><code>score</code></td>
+                        <td>Implies judgment</td>
+                        <td>Display raw direction only</td>
+                    </tr>
+                    <tr>
+                        <td><code>confidence</code></td>
+                        <td>Implies reliability ranking</td>
+                        <td>Display signal type only</td>
+                    </tr>
+                    <tr>
+                        <td><code>recommendation</code></td>
+                        <td>Prescriptive action</td>
+                        <td>Display description only</td>
+                    </tr>
+                    <tr>
+                        <td><code>priority</code></td>
+                        <td>Implies hierarchy</td>
+                        <td>Display in creation order</td>
+                    </tr>
+                    <tr>
+                        <td><code>rank</code></td>
+                        <td>Implies superiority</td>
+                        <td>Display alphabetically</td>
+                    </tr>
+                    <tr>
+                        <td><code>overall_direction</code></td>
+                        <td>Aggregates signals</td>
+                        <td>Show each signal separately</td>
+                    </tr>
+                    <tr>
+                        <td><code>net_signal</code></td>
+                        <td>Resolves contradictions</td>
+                        <td>Show contradictions explicitly</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Mandatory Disclaimer -->
+            <div class="diagram-section">
+                <div class="diagram-title">Mandatory AI Disclaimer</div>
+                <div class="principle-box">
+                    <div class="principle-title">Required on ALL AI-Generated Content</div>
+                    <div class="principle-text" style="font-style: italic; font-size: 16px; padding: 15px; background: #1e293b; border-radius: 8px; margin-top: 10px;">
+                        "This is a description of what your charts are showing. The interpretation and any decision is entirely yours."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>CIA-SIE System Architecture Visual Documentation</p>
+            <p>Generated: January 4, 2026 | Version 2.3.0 | Audited from actual codebase</p>
+            <p>Source Documents: CIA-SIE_BACKEND_ARCHITECTURE_ACCURATE.md | UNIVERSAL_FRONTEND_BACKEND_INTEGRATION_ARCHITECTURE.md | FRONTEND_TECH_SPEC.md</p>
+        </div>
+    </div>
+
+    <script>
+        // Mermaid initialization
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#dbeafe',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f3e8ff',
+                tertiaryColor: '#f1f5f9',
+                fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                rankSpacing: 50,
+                nodeSpacing: 30
+            },
+            sequence: {
+                useMaxWidth: true,
+                mirrorActors: false
+            }
+        });
+
+        // Tab navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show selected
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Expandable items
+        function toggleExpand(element) {
+            const item = element.closest('.expandable-item');
+            const content = item.querySelector('.expandable-content');
+            item.classList.toggle('open');
+            content.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
