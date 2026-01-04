@@ -3,13 +3,24 @@ import { Badge } from '@/components/common/Badge'
 import { DirectionBadge } from '@/components/signals/DirectionBadge'
 import { FreshnessBadge } from '@/components/signals/FreshnessBadge'
 import type { Chart } from '@/types/models'
-import type { Signal } from '@/types/models'
-import type { FreshnessStatus } from '@/types/enums'
+import type { Direction, FreshnessStatus } from '@/types/enums'
 import { BarChart3 } from 'lucide-react'
 
+// Accept any chart-like object and any signal-like object with direction
+interface ChartLike {
+  chart_id: string
+  chart_code: string
+  chart_name: string
+  timeframe: string
+}
+
+interface SignalLike {
+  direction: Direction
+}
+
 interface ChartCardProps {
-  chart: Chart
-  latestSignal?: Signal | null
+  chart: Chart | ChartLike
+  latestSignal?: SignalLike | null
   freshness?: FreshnessStatus
 }
 

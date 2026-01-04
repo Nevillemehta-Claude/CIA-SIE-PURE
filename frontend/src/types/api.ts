@@ -35,10 +35,33 @@ export interface PlainNarrativeResponse {
   generated_at: string
 }
 
+export interface ChartSignalData {
+  chart_id: string
+  chart_code: string
+  chart_name: string
+  timeframe: string
+  latest_signal: {
+    signal_id: string
+    chart_id: string
+    received_at: string
+    signal_timestamp: string
+    signal_type: string
+    direction: 'BULLISH' | 'BEARISH' | 'NEUTRAL'
+    indicators: Record<string, unknown>
+    raw_payload: Record<string, unknown>
+  } | null
+  freshness: 'CURRENT' | 'RECENT' | 'STALE' | 'UNAVAILABLE'
+}
+
 export interface RelationshipResponse {
   silo_id: string
+  silo_name: string
+  instrument_id: string
+  instrument_symbol: string
+  charts: ChartSignalData[]
   contradictions: Contradiction[]
   confirmations: Confirmation[]
+  generated_at: string
 }
 
 export interface ContradictionsResponse {

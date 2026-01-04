@@ -7,4 +7,7 @@ export * from './useRelationships'
 export * from './useNarratives'
 export * from './useAI'
 export * from './useChat'
+export * from './usePlatforms'
+export * from './useBaskets'
+export * from './useStrategy'
 

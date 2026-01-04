@@ -1,10 +1,12 @@
 import { NavLink } from 'react-router-dom'
 import { clsx } from 'clsx'
-import { Activity, BarChart3, FolderKanban, Settings, MessageSquare, Home } from 'lucide-react'
+import { Activity, BarChart3, FolderKanban, Settings, MessageSquare, Home, Plug, Layers } from 'lucide-react'
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: Home },
   { to: '/instruments', label: 'Instruments', icon: Activity },
+  { to: '/baskets', label: 'Baskets', icon: Layers },
+  { to: '/platforms', label: 'Platforms', icon: Plug },
   { to: '/chat', label: 'AI Chat', icon: MessageSquare },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]

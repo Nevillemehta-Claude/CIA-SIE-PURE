@@ -3,11 +3,17 @@ import { ChartCard } from './ChartCard'
 import { EmptyState } from '@/components/common/EmptyState'
 import { Spinner } from '@/components/common/Spinner'
 import type { Chart } from '@/types/models'
+import type { ChartSignalData } from '@/types/api'
 import { BarChart3 } from 'lucide-react'
 
 interface ChartListProps {
-  charts: Chart[]
+  charts: Chart[] | ChartSignalData[]
   isLoading?: boolean
+}
+
+// Type guard to check if chart has signal data
+function hasSignalData(chart: Chart | ChartSignalData): chart is ChartSignalData {
+  return 'freshness' in chart
 }
 
 export function ChartList({ charts, isLoading }: ChartListProps) {
@@ -34,7 +40,11 @@ export function ChartList({ charts, isLoading }: ChartListProps) {
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {charts.map((chart) => (
         <Link key={chart.chart_id} to={`/charts/${chart.chart_id}`}>
-          <ChartCard chart={chart} />
+          <ChartCard
+            chart={chart}
+            latestSignal={hasSignalData(chart) ? chart.latest_signal : undefined}
+            freshness={hasSignalData(chart) ? chart.freshness : 'UNAVAILABLE'}
+          />
         </Link>
       ))}
     </div>

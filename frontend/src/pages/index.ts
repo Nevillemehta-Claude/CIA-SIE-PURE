@@ -5,5 +5,7 @@ export { SiloDetailPage } from './SiloDetailPage'
 export { ChartDetailPage } from './ChartDetailPage'
 export { ChatPage } from './ChatPage'
 export { SettingsPage } from './SettingsPage'
+export { PlatformsPage } from './PlatformsPage'
+export { BasketsPage } from './BasketsPage'
 export { NotFoundPage } from './NotFoundPage'
 

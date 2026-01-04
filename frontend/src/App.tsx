@@ -8,6 +8,8 @@ import {
   ChartDetailPage,
   ChatPage,
   SettingsPage,
+  PlatformsPage,
+  BasketsPage,
   NotFoundPage,
 } from '@/pages'
 
@@ -23,6 +25,8 @@ function App() {
           <Route path="/charts/:chartId" element={<ChartDetailPage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/chat/:scripId" element={<ChatPage />} />
+          <Route path="/platforms" element={<PlatformsPage />} />
+          <Route path="/baskets" element={<BasketsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

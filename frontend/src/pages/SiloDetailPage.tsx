@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom'
 import { useSilo } from '@/hooks/useSilos'
-import { useCharts } from '@/hooks/useCharts'
 import { useRelationships } from '@/hooks/useRelationships'
 import { useNarrative } from '@/hooks/useNarratives'
 import { ChartList } from '@/components/charts/ChartList'
@@ -14,8 +13,8 @@ import { ErrorState } from '@/components/common/ErrorState'
 export function SiloDetailPage() {
   const { siloId } = useParams<{ siloId: string }>()
   const { data: silo, isLoading: siloLoading, error: siloError } = useSilo(siloId!)
-  const { data: charts, isLoading: chartsLoading } = useCharts(siloId)
-  const { data: relationships } = useRelationships(siloId!)
+  // Use relationships endpoint which returns charts WITH signal and freshness data
+  const { data: relationships, isLoading: relLoading } = useRelationships(siloId!)
   const { data: narrative, isLoading: narrLoading } = useNarrative(siloId!)
 
   if (siloLoading) {
@@ -43,10 +42,10 @@ export function SiloDetailPage() {
         backTo={`/instruments/${silo.instrument_id}`}
       />
 
-      {/* Charts Section */}
+      {/* Charts Section - Using enriched data from relationships endpoint */}
       <section>
         <h2 className="mb-4 font-display text-lg font-semibold">Charts</h2>
-        <ChartList charts={charts ?? []} isLoading={chartsLoading} />
+        <ChartList charts={relationships?.charts ?? []} isLoading={relLoading} />
       </section>
 
       {/* CONSTITUTIONAL: Contradictions shown with EQUAL prominence */}
