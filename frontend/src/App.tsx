@@ -6,6 +6,7 @@ import {
   InstrumentDetailPage,
   SiloDetailPage,
   ChartDetailPage,
+  ChartsReferencePage,
   ChatPage,
   SettingsPage,
   PlatformsPage,
@@ -22,6 +23,7 @@ function App() {
           <Route path="/instruments" element={<InstrumentsPage />} />
           <Route path="/instruments/:instrumentId" element={<InstrumentDetailPage />} />
           <Route path="/silos/:siloId" element={<SiloDetailPage />} />
+          <Route path="/charts" element={<ChartsReferencePage />} />
           <Route path="/charts/:chartId" element={<ChartDetailPage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/chat/:scripId" element={<ChatPage />} />
