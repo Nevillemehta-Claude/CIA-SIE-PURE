@@ -15,6 +15,11 @@ interface ContradictionCardProps {
  * - Neutral separator (arrows + "vs") implies NO preference
  * - System EXPOSES contradictions but NEVER resolves them
  * 
+ * ACCESSIBILITY:
+ * - article role with aria-label announces the contradiction context
+ * - group roles identify Chart A and Chart B sections
+ * - Decorative VS separator is hidden from screen readers
+ * 
  * @see ICD Section: Component Behavioral Specifications - CBS-004
  */
 export function ContradictionCard({ contradiction }: ContradictionCardProps) {
@@ -22,28 +27,40 @@ export function ContradictionCard({ contradiction }: ContradictionCardProps) {
   const sideClassName = 'rounded-lg bg-surface-secondary p-3 text-center'
 
   return (
-    <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
+    <article
+      className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4"
+      role="article"
+      aria-label={`Signal contradiction: ${contradiction.chart_a_name} shows ${contradiction.chart_a_direction} while ${contradiction.chart_b_name} shows ${contradiction.chart_b_direction}`}
+    >
       {/* CONSTITUTIONAL: Grid ensures EQUAL sizing */}
       <div className="grid grid-cols-[1fr,auto,1fr] items-center gap-4">
         {/* Chart A */}
-        <div className={sideClassName}>
+        <div
+          className={sideClassName}
+          role="group"
+          aria-label={`${contradiction.chart_a_name}: ${contradiction.chart_a_direction}`}
+        >
           <div className="mb-2 text-sm text-slate-400">{contradiction.chart_a_name}</div>
           <DirectionBadge direction={contradiction.chart_a_direction} size="lg" />
         </div>
 
-        {/* Neutral Separator */}
-        <div className="flex flex-col items-center gap-1">
+        {/* Neutral Separator - decorative, hidden from screen readers */}
+        <div className="flex flex-col items-center gap-1" aria-hidden="true">
           <ArrowLeftRight className="h-5 w-5 text-slate-500" />
           <span className="text-xs text-slate-500">vs</span>
         </div>
 
         {/* Chart B - IDENTICAL to Chart A */}
-        <div className={sideClassName}>
+        <div
+          className={sideClassName}
+          role="group"
+          aria-label={`${contradiction.chart_b_name}: ${contradiction.chart_b_direction}`}
+        >
           <div className="mb-2 text-sm text-slate-400">{contradiction.chart_b_name}</div>
           <DirectionBadge direction={contradiction.chart_b_direction} size="lg" />
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 
