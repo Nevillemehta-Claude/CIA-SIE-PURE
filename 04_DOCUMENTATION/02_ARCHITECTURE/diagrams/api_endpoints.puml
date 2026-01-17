@@ -1,0 +1,157 @@
+@startuml API Endpoint Structure
+!theme cerulean
+title CIA-SIE - Complete API Endpoint Reference
+
+skinparam backgroundColor #FEFEFE
+skinparam packageBackgroundColor #FFFFFF
+
+package "/api/v1" as API #E3F2FD {
+
+    package "/instruments" as INST #FFF9C4 {
+        rectangle "GET /" as INST_LIST {
+            note right: List all instruments\nQuery: ?is_active=true
+        }
+        rectangle "POST /" as INST_CREATE {
+            note right: Create new instrument\nBody: {symbol, name, exchange, type}
+        }
+        rectangle "GET /{id}" as INST_GET {
+            note right: Get instrument by ID
+        }
+        rectangle "PUT /{id}" as INST_UPDATE {
+            note right: Update instrument
+        }
+        rectangle "DELETE /{id}" as INST_DELETE {
+            note right: Delete instrument (cascade)
+        }
+        rectangle "GET /{id}/silos" as INST_SILOS {
+            note right: Get all silos for instrument
+        }
+    }
+
+    package "/silos" as SILO #F3E5F5 {
+        rectangle "GET /" as SILO_LIST {
+            note right: List all silos\nQuery: ?instrument_id=...
+        }
+        rectangle "POST /" as SILO_CREATE {
+            note right: Create silo\nBody: {instrument_id, name, timeframe_group}
+        }
+        rectangle "GET /{id}" as SILO_GET {
+            note right: Get silo by ID
+        }
+        rectangle "PUT /{id}" as SILO_UPDATE {
+            note right: Update silo
+        }
+        rectangle "DELETE /{id}" as SILO_DELETE {
+            note right: Delete silo (cascade)
+        }
+        rectangle "GET /{id}/charts" as SILO_CHARTS {
+            note right: Get all charts in silo
+        }
+    }
+
+    package "/charts" as CHART #E8F5E9 {
+        rectangle "GET /" as CHART_LIST {
+            note right: List all charts\nQuery: ?silo_id=...
+        }
+        rectangle "POST /" as CHART_CREATE {
+            note right: Create chart\nBody: {silo_id, timeframe, chart_type}
+        }
+        rectangle "GET /{id}" as CHART_GET {
+            note right: Get chart by ID
+        }
+        rectangle "PUT /{id}" as CHART_UPDATE {
+            note right: Update chart
+        }
+        rectangle "DELETE /{id}" as CHART_DELETE {
+            note right: Delete chart (cascade)
+        }
+        rectangle "GET /{id}/signals" as CHART_SIGNALS {
+            note right: Get signals for chart
+        }
+    }
+
+    package "/signals" as SIG #FFCCBC {
+        rectangle "GET /" as SIG_LIST {
+            note right: List signals\nQuery: ?chart_id=..., ?direction=...
+        }
+        rectangle "POST /webhook" as SIG_WEBHOOK #FFCDD2 {
+            note right: **TradingView Webhook**\nBody: {chart_id, signal_type, direction, ...}
+        }
+        rectangle "GET /{id}" as SIG_GET {
+            note right: Get signal by ID
+        }
+        rectangle "DELETE /{id}" as SIG_DELETE {
+            note right: Delete signal
+        }
+    }
+
+    package "/platforms" as PLAT #BBDEFB {
+        package "/kite" as KITE #E3F2FD {
+            rectangle "GET /login" as KITE_LOGIN {
+                note right: Get Kite OAuth URL\nReturns: {login_url}
+            }
+            rectangle "GET /callback" as KITE_CALLBACK {
+                note right: OAuth callback handler\nQuery: ?request_token=...
+            }
+            rectangle "GET /status" as KITE_STATUS {
+                note right: Check connection status\nReturns: {connected, user_info}
+            }
+            rectangle "POST /import" as KITE_IMPORT {
+                note right: Import watchlist\nReturns: {imported_count}
+            }
+            rectangle "DELETE /disconnect" as KITE_DISCONNECT {
+                note right: Disconnect Kite
+            }
+        }
+    }
+
+    package "/narratives" as NARR #FCE4EC {
+        rectangle "GET /{instrument_id}" as NARR_GET {
+            note right: Generate AI narrative\nReturns: {narrative, disclaimer}
+        }
+        rectangle "GET /{instrument_id}/history" as NARR_HISTORY {
+            note right: Get past narratives
+        }
+    }
+
+    package "/exposures" as EXP #C8E6C9 {
+        rectangle "GET /" as EXP_LIST {
+            note right: List all exposures\nQuery: ?instrument_id=..., ?type=...
+        }
+        rectangle "GET /{id}" as EXP_GET {
+            note right: Get exposure details
+        }
+        rectangle "POST /{id}/acknowledge" as EXP_ACK {
+            note right: Acknowledge exposure
+        }
+    }
+
+    package "/health" as HEALTH #F5F5F5 {
+        rectangle "GET /health" as HEALTH_CHECK {
+            note right: System health check
+        }
+        rectangle "GET /ready" as READY_CHECK {
+            note right: Readiness probe
+        }
+    }
+}
+
+legend right
+  **HTTP Methods:**
+  | Color | Method |
+  |<#C8E6C9>| GET |
+  |<#BBDEFB>| POST |
+  |<#FFF9C4>| PUT |
+  |<#FFCDD2>| DELETE |
+
+  **Response Codes:**
+  200 - Success
+  201 - Created
+  204 - No Content
+  400 - Bad Request
+  404 - Not Found
+  422 - Validation Error
+  500 - Server Error
+endlegend
+
+@enduml

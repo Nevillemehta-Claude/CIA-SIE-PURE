@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Standard Development Cycle — Visual Architecture Map</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <style>
+        :root {
+            --universal-bg: #f8f9fa;
+            --universal-border: #495057;
+            --cia-sie-bg: #fff3cd;
+            --cia-sie-border: #ff6b00;
+            --cia-sie-glow: rgba(255, 107, 0, 0.4);
+            --volume-1: #e8f5e9;
+            --volume-2: #e3f2fd;
+            --volume-3: #fff3e0;
+            --volume-4: #fce4ec;
+            --volume-5: #f3e5f5;
+            --constitutional: #ffebee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e8e8e8;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff, #ffd700, #ff6b00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: #aaa;
+            letter-spacing: 2px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .legend-marker {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .legend-marker.universal {
+            background: #495057;
+            border: 2px solid #6c757d;
+            color: white;
+        }
+
+        .legend-marker.cia-sie {
+            background: linear-gradient(135deg, #ff6b00, #ff8c00);
+            border: 3px solid #ffd700;
+            color: white;
+            box-shadow: 0 0 15px var(--cia-sie-glow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 15px var(--cia-sie-glow); }
+            50% { box-shadow: 0 0 25px var(--cia-sie-glow), 0 0 40px rgba(255, 215, 0, 0.3); }
+        }
+
+        .legend-text {
+            font-size: 0.95rem;
+        }
+
+        .legend-text strong {
+            display: block;
+            color: #fff;
+        }
+
+        .legend-text span {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 150px;
+        }
+
+        .stat-box.cia-sie-stat {
+            border: 2px solid #ff6b00;
+            background: rgba(255, 107, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .stat-box.cia-sie-stat .stat-number {
+            color: #ff6b00;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mermaid-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin: 50px 0 30px 0;
+            color: #ffd700;
+            text-transform: uppercase;
+        }
+
+        .tree-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .volume-section {
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid;
+        }
+
+        .volume-section.vol-0 { background: rgba(255, 235, 238, 0.1); border-color: #ef5350; }
+        .volume-section.vol-1 { background: rgba(232, 245, 233, 0.1); border-color: #66bb6a; }
+        .volume-section.vol-2 { background: rgba(227, 242, 253, 0.1); border-color: #42a5f5; }
+        .volume-section.vol-3 { background: rgba(255, 243, 224, 0.1); border-color: #ffa726; }
+        .volume-section.vol-4 { background: rgba(252, 228, 236, 0.1); border-color: #ec407a; }
+        .volume-section.vol-5 { background: rgba(243, 229, 245, 0.1); border-color: #ab47bc; }
+
+        .volume-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .stage-row {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .stage-number {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .stage-content {
+            flex: 1;
+        }
+
+        .stage-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .stage-principle {
+            font-size: 0.85rem;
+            color: #888;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .artifacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
+        .artifact-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .artifact-item.cia-sie {
+            background: rgba(255, 107, 0, 0.15);
+            border: 2px solid #ff6b00;
+            box-shadow: 0 0 10px rgba(255, 107, 0, 0.2);
+        }
+
+        .artifact-item.cia-sie::before {
+            content: "🎯";
+            margin-right: 8px;
+        }
+
+        .artifact-item:not(.cia-sie)::before {
+            content: "📄";
+            margin-right: 8px;
+        }
+
+        .cia-sie-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b00, #ff8c00);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-table th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .summary-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .cia-marker {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: #ff6b00;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666;
+        }
+
+        .footer .timestamp {
+            font-size: 0.9rem;
+        }
+
+        /* Mermaid diagram custom styles */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>GOLD STANDARD DEVELOPMENT CYCLE</h1>
+    <div class="subtitle">VISUAL ARCHITECTURE MAP — CIA-SIE PROJECT REFERENCE IDENTIFICATION</div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+    <div class="legend-item">
+        <div class="legend-marker universal">U</div>
+        <div class="legend-text">
+            <strong>UNIVERSAL ARTIFACT</strong>
+            <span>Applicable to any project</span>
+        </div>
+    </div>
+    <div class="legend-item">
+        <div class="legend-marker cia-sie">🎯</div>
+        <div class="legend-text">
+            <strong>CIA-SIE SPECIFIC</strong>
+            <span>Project-specific reference</span>
+        </div>
+    </div>
+</div>
+
+<!-- STATISTICS -->
+<div class="stats-bar">
+    <div class="stat-box">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Volumes</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">12</div>
+        <div class="stat-label">Stages</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">72</div>
+        <div class="stat-label">Universal Artifacts</div>
+    </div>
+    <div class="stat-box cia-sie-stat">
+        <div class="stat-number">26</div>
+        <div class="stat-label">CIA-SIE Specific</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">27%</div>
+        <div class="stat-label">Project-Specific Ratio</div>
+    </div>
+</div>
+
+<!-- MASTER FLOWCHART -->
+<h2 class="section-title">Master Architecture Flowchart</h2>
+<div class="mermaid-container">
+    <div class="mermaid">
+flowchart TB
+    subgraph CONST["🔒 CONSTITUTIONAL FOUNDATION"]
+        direction TB
+        C1["CONSTITUTIONAL_RULES.md"]
+        C2["DOCUMENT_TIER_HIERARCHY.md"]
+        C3["FOUR_PILLARS_OF_ASSURANCE.md"]
+        C4["GAP_TAXONOMY_REFERENCE.md"]
+    end
+
+    subgraph VOL1["📗 VOLUME I: FOUNDATIONS"]
+        direction TB
+        subgraph S1["STAGE 01: GENESIS"]
+            S1_1["01.01 Vision Document"]
+            S1_2["01.02 Feasibility Assessment"]
+            S1_3["01.03 Anti-Pattern Review"]
+            S1_4["01.04 Validation Criteria"]
+            S1_5["🎯 01.05 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+        subgraph S2["STAGE 02: CONSTITUTION"]
+            S2_1["02.01 Inviolable Rules"]
+            S2_2["02.02 Prohibited Features"]
+            S2_3["02.03 Mandated Features"]
+            S2_4["02.04 Constitutional Markers"]
+            S2_5["02.05 Validation Criteria"]
+            S2_6["🎯 02.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+        subgraph S3["STAGE 03: ARCHITECTURE"]
+            S3_1["03.01 C4 Model Diagrams"]
+            S3_2["03.02 Layer Definitions"]
+            S3_3["03.03 Dependency Rules"]
+            S3_4["03.04 ADRs"]
+            S3_5["🎯 03.05 Domain Sovereignty"]:::ciasie
+            S3_6["03.06 Validation Criteria"]
+            S3_7["🎯 03.07 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+    end
+
+    subgraph VOL2["📘 VOLUME II: SPECIFICATION & IMPLEMENTATION"]
+        direction TB
+        subgraph S4["STAGE 04: SPECIFICATION"]
+            S4_1["04.01 Interface Control Docs"]
+            S4_2["04.02 API Contracts"]
+            S4_3["04.03 Type Schemas"]
+            S4_4["04.04 State Machine Defs"]
+            S4_5["04.05 Validation Criteria"]
+            S4_6["🎯 04.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+        subgraph S5["STAGE 05: IMPLEMENTATION"]
+            S5_1["05.01 Code Generation Standards"]
+            S5_2["05.02 Constitutional Compliance"]
+            S5_3["05.03 Type Safety"]
+            S5_4["05.04 Error Handling"]
+            S5_5["05.05 Validation Criteria"]
+            S5_6["🎯 05.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+        subgraph S6["STAGE 06: VALIDATION"]
+            S6_1["06.01 Testing Pyramid"]
+            S6_2["06.02 Test Fixtures & Mocks"]
+            S6_3["06.03 Coverage Analysis"]
+            S6_4["06.04 Validation Criteria"]
+            S6_5["🎯 06.05 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+    end
+
+    subgraph VOL3["📙 VOLUME III: INTEGRATION & VERIFICATION"]
+        direction TB
+        subgraph S7["STAGE 07: INTEGRATION"]
+            S7_1["07.01 12-Phase Protocol"]
+            S7_2["07.02 Gap Detection"]
+            S7_3["07.03 Contract Testing"]
+            S7_4["07.04 Cross-Domain Integration"]
+            S7_5["07.05 Validation Criteria"]
+            S7_6["🎯 07.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+        subgraph S8["STAGE 08: VERIFICATION"]
+            S8_1["08.01 Forensic Audit Protocol"]
+            S8_2["08.02 RTM Verification"]
+            S8_3["08.03 Constitutional Compliance"]
+            S8_4["08.04 Code Audit"]
+            S8_5["08.05 Validation Criteria"]
+            S8_6["🎯 08.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+    end
+
+    subgraph VOL4["📕 VOLUME IV: RECONCILIATION & REMEDIATION"]
+        direction TB
+        subgraph S9["STAGE 09: RECONCILIATION"]
+            S9_1["09.01 Variance Accounting"]
+            S9_2["09.02 Gap-to-Variance Mapping"]
+            S9_3["09.03 Doc Reconciliation"]
+            S9_4["09.04 Stakeholder Notification"]
+            S9_5["09.05 Validation Criteria"]
+            S9_6["🎯 09.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+        subgraph S10["STAGE 10: REMEDIATION"]
+            S10_1["10.01 Remediation Planning"]
+            S10_2["🎯 10.02 HITL Process"]:::ciasie
+            S10_3["🎯 10.03 Batch Processing"]:::ciasie
+            S10_4["10.04 Remediation Verification"]
+            S10_5["10.05 Validation Criteria"]
+            S10_6["🎯 10.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+    end
+
+    subgraph VOL5["📓 VOLUME V: CERTIFICATION & OPERATION"]
+        direction TB
+        subgraph S11["STAGE 11: CERTIFICATION"]
+            S11_1["11.01 Certification Levels"]
+            S11_2["11.02 Certification Checklist"]
+            S11_3["11.03 Launch Readiness"]
+            S11_4["11.04 Certification Docs"]
+            S11_5["11.05 Validation Criteria"]
+            S11_6["🎯 11.06 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+        subgraph S12["STAGE 12: OPERATION"]
+            S12_1["12.01 Monitoring"]
+            S12_2["12.02 Incident Response"]
+            S12_3["12.03 Change Management"]
+            S12_4["12.04 Feedback Loop"]
+            S12_5["12.05 Continuous Improvement"]
+            S12_6["12.06 Validation Criteria"]
+            S12_7["🎯 12.07 CASE STUDY: CIA-SIE"]:::ciasie
+        end
+    end
+
+    subgraph APPEND["📎 APPENDICES"]
+        direction TB
+        A1["Certification Levels"]
+        A2["Variance Classifications"]
+        A3["Gap Taxonomy"]
+        A4["Master Artifact Index"]
+        A5["Regulatory Cross-Reference"]
+        A6["Templates"]
+    end
+
+    CONST --> VOL1
+    VOL1 --> VOL2
+    VOL2 --> VOL3
+    VOL3 --> VOL4
+    VOL4 --> VOL5
+    VOL5 --> APPEND
+
+    classDef ciasie fill:#ff6b00,stroke:#ffd700,stroke-width:3px,color:#fff
+    </div>
+</div>
+
+<!-- DETAILED TREE VIEW -->
+<h2 class="section-title">Detailed Artifact Tree with CIA-SIE Markers</h2>
+
+<div class="tree-container">
+
+    <!-- CONSTITUTIONAL FOUNDATION -->
+    <div class="volume-section vol-0">
+        <div class="volume-title">🔒 CONSTITUTIONAL FOUNDATION</div>
+        <div class="artifacts-grid">
+            <div class="artifact-item">CONSTITUTIONAL_RULES.md</div>
+            <div class="artifact-item">DOCUMENT_TIER_HIERARCHY.md</div>
+            <div class="artifact-item">FOUR_PILLARS_OF_ASSURANCE.md</div>
+            <div class="artifact-item">GAP_TAXONOMY_REFERENCE.md</div>
+        </div>
+    </div>
+
+    <!-- VOLUME I -->
+    <div class="volume-section vol-1">
+        <div class="volume-title">📗 VOLUME I: FOUNDATIONS</div>
+        
+        <div class="stage-row">
+            <div class="stage-number">I</div>
+            <div class="stage-content">
+                <div class="stage-name">GENESIS</div>
+                <div class="stage-principle">"Every system begins with a vision that must be articulated before it can be built"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">01.01 Vision_Document/</div>
+                    <div class="artifact-item">01.02 Feasibility_Assessment/</div>
+                    <div class="artifact-item">01.03 Anti_Pattern_Review/</div>
+                    <div class="artifact-item">01.04 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">01.05 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PROJECT</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stage-row">
+            <div class="stage-number">II</div>
+            <div class="stage-content">
+                <div class="stage-name">CONSTITUTION</div>
+                <div class="stage-principle">"Inviolable principles must be established before any code is written"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">02.01 Inviolable_Rules/</div>
+                    <div class="artifact-item">02.02 Prohibited_Features/</div>
+                    <div class="artifact-item">02.03 Mandated_Features/</div>
+                    <div class="artifact-item">02.04 Constitutional_Markers/</div>
+                    <div class="artifact-item">02.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">02.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PROJECT</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stage-row">
+            <div class="stage-number">III</div>
+            <div class="stage-content">
+                <div class="stage-name">ARCHITECTURE</div>
+                <div class="stage-principle">"Structure precedes substance; design the skeleton before the flesh"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">03.01 C4_Model_Diagrams/</div>
+                    <div class="artifact-item">03.02 Layer_Definitions/</div>
+                    <div class="artifact-item">03.03 Dependency_Rules/</div>
+                    <div class="artifact-item">03.04 ADRs/</div>
+                    <div class="artifact-item cia-sie">03.05 Domain_Sovereignty/<span class="cia-sie-badge">3 DOMAINS</span></div>
+                    <div class="artifact-item">03.06 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">03.07 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PROJECT</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOLUME II -->
+    <div class="volume-section vol-2">
+        <div class="volume-title">📘 VOLUME II: SPECIFICATION & IMPLEMENTATION</div>
+        
+        <div class="stage-row">
+            <div class="stage-number">IV</div>
+            <div class="stage-content">
+                <div class="stage-name">SPECIFICATION</div>
+                <div class="stage-principle">"Contracts define truth; ambiguity breeds failure"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">04.01 Interface_Control_Documents/</div>
+                    <div class="artifact-item">04.02 API_Contracts/</div>
+                    <div class="artifact-item">04.03 Type_Schemas/</div>
+                    <div class="artifact-item">04.04 State_Machine_Definitions/</div>
+                    <div class="artifact-item">04.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">04.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">KITE+TV+CLAUDE</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stage-row">
+            <div class="stage-number">V</div>
+            <div class="stage-content">
+                <div class="stage-name">IMPLEMENTATION</div>
+                <div class="stage-principle">"Code is the artifact of decisions already made"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">05.01 Code_Generation_Standards/</div>
+                    <div class="artifact-item">05.02 Constitutional_Compliance_In_Code/</div>
+                    <div class="artifact-item">05.03 Type_Safety_Enforcement/</div>
+                    <div class="artifact-item">05.04 Error_Handling_Patterns/</div>
+                    <div class="artifact-item">05.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">05.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PYTHON+FASTAPI</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stage-row">
+            <div class="stage-number">VI</div>
+            <div class="stage-content">
+                <div class="stage-name">VALIDATION</div>
+                <div class="stage-principle">"Untested code is untrustworthy code"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">06.01 Testing_Pyramid/</div>
+                    <div class="artifact-item">06.02 Test_Fixtures_And_Mocks/</div>
+                    <div class="artifact-item">06.03 Coverage_Analysis/</div>
+                    <div class="artifact-item">06.04 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">06.05 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">170 TESTS</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOLUME III -->
+    <div class="volume-section vol-3">
+        <div class="volume-title">📙 VOLUME III: INTEGRATION & VERIFICATION</div>
+        
+        <div class="stage-row">
+            <div class="stage-number">VII</div>
+            <div class="stage-content">
+                <div class="stage-name">INTEGRATION</div>
+                <div class="stage-principle">"The boundary between components is where failures hide"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">07.01 Twelve_Phase_Integration_Protocol/</div>
+                    <div class="artifact-item">07.02 Gap_Detection/</div>
+                    <div class="artifact-item">07.03 Contract_Testing/</div>
+                    <div class="artifact-item">07.04 Cross_Domain_Integration/</div>
+                    <div class="artifact-item">07.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">07.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PURE↔MERCURY</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stage-row">
+            <div class="stage-number">VIII</div>
+            <div class="stage-content">
+                <div class="stage-name">VERIFICATION</div>
+                <div class="stage-principle">"Trust but verify; audit everything"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">08.01 Forensic_Audit_Protocol/</div>
+                    <div class="artifact-item">08.02 RTM_Verification/</div>
+                    <div class="artifact-item">08.03 Constitutional_Compliance_Verification/</div>
+                    <div class="artifact-item">08.04 Code_Audit/</div>
+                    <div class="artifact-item">08.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">08.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">NASA-GRADE</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOLUME IV -->
+    <div class="volume-section vol-4">
+        <div class="volume-title">📕 VOLUME IV: RECONCILIATION & REMEDIATION</div>
+        
+        <div class="stage-row">
+            <div class="stage-number">IX</div>
+            <div class="stage-content">
+                <div class="stage-name">RECONCILIATION</div>
+                <div class="stage-principle">"Variance is inevitable; documentation is mandatory"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">09.01 Variance_Accounting/</div>
+                    <div class="artifact-item">09.02 Gap_To_Variance_Mapping/</div>
+                    <div class="artifact-item">09.03 Documentation_Reconciliation/</div>
+                    <div class="artifact-item">09.04 Stakeholder_Notification/</div>
+                    <div class="artifact-item">09.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">09.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PROJECT</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stage-row">
+            <div class="stage-number">X</div>
+            <div class="stage-content">
+                <div class="stage-name">REMEDIATION</div>
+                <div class="stage-principle">"Systematic correction requires systematic process"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">10.01 Remediation_Planning/</div>
+                    <div class="artifact-item cia-sie">10.02 HITL_Process/<span class="cia-sie-badge">APPROVAL GATES</span></div>
+                    <div class="artifact-item cia-sie">10.03 Remediation_Execution/<span class="cia-sie-badge">BATCH 5-10</span></div>
+                    <div class="artifact-item">10.04 Remediation_Verification/</div>
+                    <div class="artifact-item">10.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">10.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PROJECT</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOLUME V -->
+    <div class="volume-section vol-5">
+        <div class="volume-title">📓 VOLUME V: CERTIFICATION & OPERATION</div>
+        
+        <div class="stage-row">
+            <div class="stage-number">XI</div>
+            <div class="stage-content">
+                <div class="stage-name">CERTIFICATION</div>
+                <div class="stage-principle">"Launch readiness demands explicit confirmation"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">11.01 Certification_Levels/</div>
+                    <div class="artifact-item">11.02 Certification_Checklist/</div>
+                    <div class="artifact-item">11.03 Launch_Readiness_Review/</div>
+                    <div class="artifact-item">11.04 Certification_Documentation/</div>
+                    <div class="artifact-item">11.05 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">11.06 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">PROJECT</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stage-row">
+            <div class="stage-number">XII</div>
+            <div class="stage-content">
+                <div class="stage-name">OPERATION</div>
+                <div class="stage-principle">"Delivery is not completion; stewardship begins at release"</div>
+                <div class="artifacts-grid">
+                    <div class="artifact-item">12.01 Monitoring_And_Observability/</div>
+                    <div class="artifact-item">12.02 Incident_Response/</div>
+                    <div class="artifact-item">12.03 Change_Management/</div>
+                    <div class="artifact-item">12.04 Feedback_Loop/</div>
+                    <div class="artifact-item">12.05 Continuous_Improvement/</div>
+                    <div class="artifact-item">12.06 Validation_Criteria/</div>
+                    <div class="artifact-item cia-sie">12.07 CASE_STUDY_CIA_SIE/<span class="cia-sie-badge">MISSION CTRL</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- CIA-SIE SPECIFIC REFERENCE TABLE -->
+<h2 class="section-title">🎯 Complete CIA-SIE Reference Index</h2>
+
+<div class="tree-container">
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th>Stage</th>
+                <th>Artifact Path</th>
+                <th>CIA-SIE Content</th>
+                <th>Key References</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="cia-marker">I</span></td>
+                <td>01.05_CASE_STUDY_CIA_SIE/</td>
+                <td>Original Vision & Problem Definition</td>
+                <td>Trading intelligence platform, Decision support only</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">II</span></td>
+                <td>02.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Three Constitutional Rules</td>
+                <td>No execution, No contradiction resolution, Descriptive only</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">III</span></td>
+                <td>03.05_Domain_Sovereignty/</td>
+                <td>Three Sovereign Domains</td>
+                <td>CIA-SIE-Pure, Mercury, Command-Control</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">III</span></td>
+                <td>03.07_CASE_STUDY_CIA_SIE/</td>
+                <td>Ecosystem Circuit Diagram</td>
+                <td>Backend↔Frontend↔CLI separation</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">IV</span></td>
+                <td>04.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Integration Specifications</td>
+                <td>Kite API, TradingView, Claude AI, Two-stage pipeline</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">V</span></td>
+                <td>05.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Implementation Standards</td>
+                <td>Python, FastAPI, Constitutional markers</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">VI</span></td>
+                <td>06.05_CASE_STUDY_CIA_SIE/</td>
+                <td>Test Templates & Mocks</td>
+                <td>170 test cases, Kite/TV/Claude mocks</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">VII</span></td>
+                <td>07.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Integration Architecture</td>
+                <td>CIA-SIE-Pure ↔ Mercury integration</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">VIII</span></td>
+                <td>08.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Audit Protocols</td>
+                <td>NASA-Grade Audit, Cursor Forensic Directive</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">IX</span></td>
+                <td>09.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Reconciliation Reports</td>
+                <td>Forensic findings, Variance analysis</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">X</span></td>
+                <td>10.02_HITL_Process/</td>
+                <td>Approval Gate Protocol</td>
+                <td>Human-in-the-loop, Explicit approval required</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">X</span></td>
+                <td>10.03_Remediation_Execution/</td>
+                <td>Batch Processing Rules</td>
+                <td>Max 5-10 files, Zero concurrent ops</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">X</span></td>
+                <td>10.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Remediation Execution</td>
+                <td>Frontend validation, Remediation briefs</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">XI</span></td>
+                <td>11.06_CASE_STUDY_CIA_SIE/</td>
+                <td>Certification Target</td>
+                <td>Launch readiness assessment</td>
+            </tr>
+            <tr>
+                <td><span class="cia-marker">XII</span></td>
+                <td>12.07_CASE_STUDY_CIA_SIE/</td>
+                <td>Operations</td>
+                <td>Mission Control Console, Command-Control CLI</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- SEPARATION SUMMARY -->
+<h2 class="section-title">Universal vs Project-Specific Summary</h2>
+
+<div class="stats-bar">
+    <div class="stat-box">
+        <div class="stat-number">73%</div>
+        <div class="stat-label">Universal Framework</div>
+    </div>
+    <div class="stat-box cia-sie-stat">
+        <div class="stat-number">27%</div>
+        <div class="stat-label">CIA-SIE Specific</div>
+    </div>
+</div>
+
+<div class="tree-container" style="text-align: center;">
+    <p style="font-size: 1.1rem; color: #aaa; margin-bottom: 20px;">
+        <strong>RATIONALE INSIGHT:</strong> The 26 CIA-SIE specific artifacts can be:
+    </p>
+    <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+        <div class="stat-box">
+            <div class="stat-number">🔄</div>
+            <div class="stat-label">Replaced for new projects</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">📋</div>
+            <div class="stat-label">Used as templates</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">🗂️</div>
+            <div class="stat-label">Archived separately</div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="timestamp">
+        Generated: January 15, 2026 | Document ID: GSDC-VISUAL-MAP-v1.0<br>
+        Classification: TIER 1 — CONSTITUTIONAL REFERENCE
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#e3f2fd',
+            primaryTextColor: '#1565c0',
+            primaryBorderColor: '#1565c0',
+            lineColor: '#90a4ae',
+            secondaryColor: '#fff3e0',
+            tertiaryColor: '#f3e5f5',
+            background: '#ffffff',
+            mainBkg: '#ffffff',
+            secondBkg: '#f5f5f5',
+            border1: '#90a4ae',
+            border2: '#b0bec5',
+            arrowheadColor: '#546e7a',
+            fontFamily: 'Segoe UI, system-ui, sans-serif',
+            fontSize: '14px',
+            clusterBkg: '#fafafa',
+            clusterBorder: '#e0e0e0'
+        },
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis',
+            rankSpacing: 50,
+            nodeSpacing: 30
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+@startuml Signal Ingestion Flow
+!theme cerulean
+title CIA-SIE - Signal Ingestion Sequence
+
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+
+actor "TradingView" as TV #E3F2FD
+participant "Signal Router\n/api/v1/signals" as ROUTER #FFF9C4
+participant "Signal Validator" as VAL #FFCCBC
+participant "Signal Service" as SVC #F3E5F5
+participant "Signal Repository" as REPO #E8F5E9
+database "SQLite" as DB #FCE4EC
+participant "Exposure Engine" as EXP #BBDEFB
+
+autonumber
+
+TV -> ROUTER: POST /webhook\n{signal_data}
+activate ROUTER
+
+ROUTER -> VAL: validate(payload)
+activate VAL
+
+alt Invalid Payload
+    VAL --> ROUTER: ValidationError
+    ROUTER --> TV: 422 Unprocessable Entity
+else Valid Payload
+    VAL --> ROUTER: SignalCreate DTO
+    deactivate VAL
+
+    ROUTER -> SVC: create_signal(signal_dto)
+    activate SVC
+
+    SVC -> SVC: lookup chart_id
+    SVC -> SVC: enrich with timestamps
+
+    SVC -> REPO: save(signal)
+    activate REPO
+
+    REPO -> DB: INSERT INTO signals
+    activate DB
+    DB --> REPO: signal_id
+    deactivate DB
+
+    REPO --> SVC: Signal entity
+    deactivate REPO
+
+    SVC ->> EXP: analyze_exposures(chart_id)
+    note right: Async background task
+    activate EXP
+
+    SVC --> ROUTER: Signal created
+    deactivate SVC
+
+    ROUTER --> TV: 201 Created\n{signal_id}
+    deactivate ROUTER
+
+    EXP -> EXP: fetch related signals
+    EXP -> EXP: detect contradictions
+    EXP -> EXP: detect confirmations
+    EXP -> DB: store exposure if found
+    deactivate EXP
+end
+
+@enduml

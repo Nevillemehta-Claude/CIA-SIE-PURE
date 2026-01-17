@@ -1,0 +1,34 @@
+# Project Mercury - Dependencies
+# LLM as Financial Market Cognitive Interface
+
+# Core
+anthropic>=0.18.0
+kiteconnect>=5.0.0
+httpx>=0.27.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+websockets>=12.0
+
+# Environment & Configuration
+python-dotenv>=1.0.0
+
+# Terminal UI
+rich>=13.0.0
+prompt-toolkit>=3.0.0
+
+# Async Support
+aiofiles>=23.0.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.12.0
+
+# Development
+black>=24.0.0
+ruff>=0.1.0
+mypy>=1.8.0

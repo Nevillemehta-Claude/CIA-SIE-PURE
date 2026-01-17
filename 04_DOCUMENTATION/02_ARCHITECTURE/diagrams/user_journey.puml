@@ -1,0 +1,159 @@
+@startuml Complete User Journey
+!theme cerulean
+title CIA-SIE - Complete User Journey State Diagram
+
+skinparam backgroundColor #FEFEFE
+skinparam state {
+    BackgroundColor #FFFFFF
+    BorderColor #333333
+}
+
+[*] --> Landing : User opens app
+
+state "Landing Page" as Landing #E3F2FD {
+    Landing : View dashboard
+    Landing : See empty state
+}
+
+Landing --> KiteConnect : Click "Connect Kite"
+Landing --> ManualSetup : Click "Add Instrument"
+
+state "Kite Integration" as KiteConnect #BBDEFB {
+    state "OAuth Flow" as OAuth {
+        [*] --> Redirect : Start
+        Redirect --> KiteLogin : User at Kite
+        KiteLogin --> Callback : Auth success
+        Callback --> TokenStore : Token received
+        TokenStore --> [*] : Connected
+    }
+
+    state "Watchlist Import" as Import {
+        [*] --> Fetching : Start import
+        Fetching --> Processing : Holdings received
+        Processing --> Creating : Transform data
+        Creating --> [*] : Instruments created
+    }
+
+    OAuth --> Import : Import available
+}
+
+state "Manual Setup" as ManualSetup #FFF9C4 {
+    [*] --> EnterSymbol
+    EnterSymbol --> SelectExchange
+    SelectExchange --> SetType
+    SetType --> [*] : Instrument created
+}
+
+KiteConnect --> InstrumentsReady
+ManualSetup --> InstrumentsReady
+
+state "Instruments Ready" as InstrumentsReady #C8E6C9 {
+    InstrumentsReady : Instruments in database
+    InstrumentsReady : Ready for configuration
+}
+
+InstrumentsReady --> SiloConfig
+
+state "Silo Configuration" as SiloConfig #F3E5F5 {
+    [*] --> CreateSilo
+    CreateSilo --> NameSilo : Set name
+    NameSilo --> SetTimeframeGroup : Intraday/Swing/Positional
+    SetTimeframeGroup --> AssignToInstrument
+    AssignToInstrument --> [*] : Silo created
+    --
+    [*] --> AddAnotherSilo
+    AddAnotherSilo --> CreateSilo : Yes
+    AddAnotherSilo --> [*] : No
+}
+
+SiloConfig --> ChartConfig
+
+state "Chart Configuration" as ChartConfig #FFCCBC {
+    [*] --> CreateChart
+    CreateChart --> SelectTimeframe : 1m, 5m, 1H, D, W...
+    SelectTimeframe --> SetTradingViewURL : Optional
+    SetTradingViewURL --> AssignToSilo
+    AssignToSilo --> [*] : Chart created
+    --
+    [*] --> AddAnotherChart
+    AddAnotherChart --> CreateChart : Yes
+    AddAnotherChart --> [*] : No
+}
+
+ChartConfig --> WebhookSetup
+
+state "TradingView Webhook Setup" as WebhookSetup #E8F5E9 {
+    [*] --> GetWebhookURL
+    GetWebhookURL : Copy: POST /api/v1/signals/webhook
+    GetWebhookURL --> ConfigureTV : User in TradingView
+    ConfigureTV : Add alert with webhook
+    ConfigureTV : Set JSON payload format
+    ConfigureTV --> TestWebhook : Send test signal
+    TestWebhook --> [*] : Webhook verified
+}
+
+WebhookSetup --> Monitoring
+
+state "Active Monitoring" as Monitoring #FFFFFF {
+    state "Awaiting Signals" as Awaiting {
+        [*] --> Listening : System active
+    }
+
+    state "Signal Processing" as Processing {
+        [*] --> Received : Signal in
+        Received --> Validated : Schema OK
+        Validated --> Stored : In database
+        Stored --> Analyzed : Exposure check
+        Analyzed --> [*] : Complete
+    }
+
+    state "Exposure Detected" as Exposure {
+        state "Contradiction Alert" as ContraAlert #FFCDD2
+        state "Confirmation Indicator" as ConfirmInd #C8E6C9
+    }
+
+    Awaiting --> Processing : Signal received
+    Processing --> Awaiting : No exposure
+    Processing --> Exposure : Exposure found
+    Exposure --> Awaiting : Acknowledged
+}
+
+Monitoring --> ViewDashboard : User checks status
+
+state "Dashboard View" as ViewDashboard #E3F2FD {
+    ViewDashboard : See all instruments
+    ViewDashboard : View signal history
+    ViewDashboard : Check contradictions
+    ViewDashboard : View confirmations
+}
+
+ViewDashboard --> Monitoring : Continue monitoring
+ViewDashboard --> RequestNarrative : Click "AI Analysis"
+
+state "AI Narrative" as RequestNarrative #FFF9C4 {
+    [*] --> Generating : Request sent
+    Generating --> Filtering : Raw response
+    Filtering : Apply constitutional rules
+    Filtering --> Display : Compliant
+    Display : Show with disclaimer
+    Display --> [*]
+}
+
+RequestNarrative --> ViewDashboard : Close narrative
+
+note right of Monitoring
+  **Real-time Updates:**
+  - Signals stream in continuously
+  - Contradictions trigger alerts
+  - Dashboard auto-updates
+end note
+
+note right of RequestNarrative
+  **Constitutional Compliance:**
+  - No recommendations
+  - No contradiction resolution
+  - Descriptive language only
+  - Mandatory disclaimer
+end note
+
+@enduml

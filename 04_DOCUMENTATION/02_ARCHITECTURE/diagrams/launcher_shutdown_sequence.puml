@@ -1,0 +1,166 @@
+@startuml launcher_shutdown_sequence
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 8
+skinparam participantPadding 20
+skinparam boxPadding 10
+
+title CIA-SIE Launcher System - Shutdown Sequence Diagram
+footer Document: DIAG-LAUNCHER-002 | Version: 1.0.0 | Date: 12 January 2026
+
+actor User as user #LightBlue
+participant "stop-cia-sie\n.command" as stop #Salmon
+participant "shutdown.sh" as shutdown #LightYellow
+participant "config.sh" as config #LightGray
+participant "utils.sh" as utils #LightGray
+participant "Frontend\n(React)" as frontend #Pink
+participant "ngrok" as ngrok #Aqua
+participant "Backend\n(uvicorn)" as backend #Salmon
+participant "PID Files" as pids #LightGray
+
+== INITIALIZATION ==
+
+user -> stop: Double-click
+activate stop
+
+stop -> stop: cd to project directory
+stop -> config: source config.sh
+activate config
+config --> stop: Configuration loaded
+deactivate config
+
+stop -> utils: source utils.sh
+activate utils
+utils --> stop: Utilities loaded
+deactivate utils
+
+stop -> shutdown: source shutdown.sh
+activate shutdown
+shutdown --> stop: Functions loaded
+
+stop -> shutdown: main()
+note right of stop: Begin shutdown sequence
+
+== STEP 1: STOP FRONTEND ==
+
+shutdown -> utils: print_header("SHUTDOWN")
+utils --> shutdown: Header displayed
+
+shutdown -> shutdown: stop_frontend()
+shutdown -> utils: print_step("Stopping Frontend...")
+
+shutdown -> pids: get_pid("frontend")
+alt PID file exists
+    pids --> shutdown: PID (e.g., 12347)
+    shutdown -> frontend: kill -TERM 12347
+    
+    loop wait up to 5 seconds
+        shutdown -> shutdown: is_process_running(12347)?
+        alt still running
+            shutdown -> shutdown: sleep 1s
+        else stopped
+            shutdown -> utils: print_success("Frontend stopped")
+        end
+    end
+    
+    alt still running after timeout
+        shutdown -> frontend: kill -KILL 12347
+        note right of frontend: Force kill if\ngraceful fails
+    end
+    
+    deactivate frontend
+    shutdown -> pids: remove_pid("frontend")
+    
+else PID file not found
+    pids --> shutdown: null
+    shutdown -> utils: print_step("Frontend not running")
+    note right of shutdown: Nothing to stop
+end
+
+== STEP 2: STOP NGROK ==
+
+shutdown -> shutdown: stop_ngrok()
+shutdown -> utils: print_step("Stopping Tunnel...")
+
+shutdown -> pids: get_pid("ngrok")
+alt PID file exists
+    pids --> shutdown: PID (e.g., 12346)
+    shutdown -> ngrok: kill -TERM 12346
+    deactivate ngrok
+    shutdown -> pids: remove_pid("ngrok")
+    shutdown -> utils: print_success("Tunnel stopped")
+else PID file not found
+    pids --> shutdown: null
+    shutdown -> shutdown: pgrep -f "ngrok http"
+    alt process found
+        shutdown -> ngrok: kill (found PID)
+        shutdown -> utils: print_success("Tunnel stopped")
+    else not found
+        shutdown -> utils: print_step("Tunnel not running")
+    end
+end
+
+== STEP 3: STOP BACKEND ==
+
+shutdown -> shutdown: stop_backend()
+shutdown -> utils: print_step("Stopping Backend...")
+
+shutdown -> pids: get_pid("backend")
+alt PID file exists
+    pids --> shutdown: PID (e.g., 12345)
+    shutdown -> backend: kill -TERM 12345
+    
+    loop wait up to 10 seconds
+        shutdown -> shutdown: is_process_running(12345)?
+        alt still running
+            shutdown -> shutdown: sleep 1s
+        else stopped
+            shutdown -> utils: print_success("Backend stopped")
+        end
+    end
+    
+    alt still running after timeout
+        shutdown -> backend: kill -KILL 12345
+        note right of backend: Force kill if\ngraceful fails
+    end
+    
+    deactivate backend
+    shutdown -> pids: remove_pid("backend")
+    
+else PID file not found
+    pids --> shutdown: null
+    shutdown -> shutdown: pgrep -f "uvicorn.*cia_sie"
+    alt process found
+        shutdown -> backend: kill (found PID)
+        shutdown -> utils: print_success("Backend stopped")
+    else not found
+        shutdown -> utils: print_step("Backend not running")
+    end
+end
+
+== STEP 4: CLEANUP ==
+
+shutdown -> shutdown: cleanup_pids()
+shutdown -> utils: print_step("Cleaning up...")
+
+shutdown -> pids: Remove all remaining PID files
+pids --> shutdown: Cleaned
+
+shutdown -> shutdown: Verify no orphan processes
+note right of shutdown: pgrep for uvicorn, ngrok, vite
+
+== COMPLETION ==
+
+shutdown -> shutdown: report_status()
+shutdown -> utils: print_header("SHUTDOWN COMPLETE")
+
+shutdown --> stop: Success
+deactivate shutdown
+
+stop --> user: Terminal shows\n"All services stopped"
+note right of user: Safe to close terminal\nor start again
+
+deactivate stop
+
+@enduml

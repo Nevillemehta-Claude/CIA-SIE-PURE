@@ -1,0 +1,91 @@
+@startuml launcher_health_check
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 8
+skinparam participantPadding 20
+skinparam boxPadding 10
+
+title CIA-SIE Launcher System - Health Check Flow
+footer Document: DIAG-LAUNCHER-003 | Version: 1.0.0 | Date: 12 January 2026
+
+participant "ignite.sh" as ignite #LightYellow
+participant "health-check.sh" as health #Orange
+participant "Backend\n(localhost:8000)" as backend #Salmon
+participant "Logs" as logs #LightGray
+
+== HEALTH CHECK INVOCATION ==
+
+ignite -> health: wait_for_backend()
+activate health
+
+note over health
+  Configuration:
+  - Endpoint: /health
+  - Timeout: 30 seconds
+  - Interval: 2 seconds
+  - Max retries: 10
+end note
+
+== RETRY LOOP ==
+
+health -> health: attempt = 1
+health -> health: max_attempts = 10
+health -> health: start_time = now()
+
+loop attempt <= max_attempts
+    
+    health -> health: print_step("Health check attempt $attempt...")
+    
+    health -> backend: curl -s -o /dev/null -w "%{http_code}"\n       http://localhost:8000/health
+    
+    alt Response 200
+        backend --> health: HTTP 200 OK
+        
+        health -> backend: curl http://localhost:8000/health
+        backend --> health: {"status": "healthy", "version": "..."}
+        
+        health -> logs: log_message("Backend healthy after $elapsed seconds")
+        health -> health: return SUCCESS
+        
+    else Connection Refused
+        backend --> health: Connection refused
+        
+        health -> logs: log_message("Attempt $attempt: Connection refused")
+        health -> health: sleep 2 seconds
+        health -> health: attempt++
+        
+    else HTTP 503
+        backend --> health: HTTP 503 Service Unavailable
+        
+        health -> logs: log_message("Attempt $attempt: Service unavailable")
+        health -> health: sleep 2 seconds
+        health -> health: attempt++
+        
+    else Timeout
+        backend --> health: No response (timeout)
+        
+        health -> logs: log_message("Attempt $attempt: Timeout")
+        health -> health: sleep 2 seconds
+        health -> health: attempt++
+    end
+    
+end
+
+== FAILURE PATH ==
+
+health -> health: elapsed_time = now() - start_time
+health -> logs: log_message("Backend failed to start after $elapsed_time")
+health -> health: return FAILURE
+
+health --> ignite: FAILURE
+
+note over ignite
+  On health check failure:
+  1. Log detailed error
+  2. Kill backend process
+  3. Display error message
+  4. Abort ignition
+end note
+
+@enduml

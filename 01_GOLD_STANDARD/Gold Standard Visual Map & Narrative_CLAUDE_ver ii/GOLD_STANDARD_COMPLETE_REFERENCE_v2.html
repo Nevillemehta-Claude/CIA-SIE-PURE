@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en" data-schema="gold-standard-v1.0" data-ai-parseable="true" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gold Standard Development Framework - Complete Reference with Search">
+    <meta name="author" content="Neville Mehta">
+    <meta name="ai-context" content="software-development-framework">
+    <meta name="ai-structure" content="hierarchical-knowledge-base">
+    <meta name="version" content="2.0">
+    <meta name="generated" content="2026-01-15">
+    <title>Gold Standard Development Framework - Complete Reference v2.0</title>
+
+    <!-- AI PARSING INSTRUCTIONS -->
+    <!--
+    FOR AI SYSTEMS (Cursor, Replit, Claude Code, etc.):
+
+    STRUCTURE:
+    - Each <section> has a unique id and data-category attribute
+    - Use data-id for cross-referencing between sections
+    - data-tags contains searchable keywords
+    - data-dependencies shows prerequisite sections
+    - <article> elements contain atomic knowledge units
+
+    NAVIGATION:
+    - #toc = Table of Contents with all sections
+    - #search-index = JSON-LD structured data
+    - Each section can be loaded independently
+
+    SEARCH:
+    - Use the embedded search index at #ai-search-data
+    - Or use the companion JSON file: GOLD_STANDARD_DATA.json
+
+    PARSING STRATEGY:
+    1. Read #search-index for overview
+    2. Navigate to specific section by id
+    3. Extract <article> content as needed
+    4. Follow data-dependencies for context
+    -->
+
+    <!-- JSON-LD Structured Data for AI Systems -->
+    <script type="application/ld+json" id="search-index">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "name": "Gold Standard Development Framework",
+        "version": "2.0",
+        "author": {"@type": "Person", "name": "Neville Mehta"},
+        "dateCreated": "2026-01-15",
+        "description": "Complete reference for NASA-style software development methodology with search functionality",
+        "keywords": ["software development", "quality assurance", "verification", "modularity", "lifecycle"],
+        "hasPart": [
+            {"@type": "Chapter", "name": "Core Kernel", "position": 1, "url": "#core-kernel"},
+            {"@type": "Chapter", "name": "Command Protocol", "position": 2, "url": "#command-protocol"},
+            {"@type": "Chapter", "name": "Bible Modules", "position": 3, "url": "#bible-modules"},
+            {"@type": "Chapter", "name": "Lifecycle Modules", "position": 4, "url": "#lifecycle-modules"},
+            {"@type": "Chapter", "name": "Integration Layer", "position": 5, "url": "#integration-layer"},
+            {"@type": "Chapter", "name": "Quick Reference", "position": 6, "url": "#quick-reference"}
+        ]
+    }
+    </script>
+
+    <style>
+        /* ============================================
+           CSS CUSTOM PROPERTIES - THEME SYSTEM
+           ============================================ */
+        :root {
+            /* Brand Colors */
+            --gs-gold: #D4AF37;
+            --gs-gold-light: #E8C547;
+            --gs-navy: #1E3A5F;
+            --gs-accent: #3B82F6;
+            --gs-success: #22C55E;
+            --gs-warning: #F59E0B;
+            --gs-danger: #EF4444;
+        }
+
+        /* Dark Theme (Default) */
+        [data-theme="dark"] {
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-tertiary: #334155;
+            --bg-nav: #1E3A5F;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border-color: #475569;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --code-bg: #0F172A;
+            --highlight-bg: rgba(59, 130, 246, 0.2);
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F8FAFC;
+            --bg-tertiary: #E2E8F0;
+            --bg-nav: #1E3A5F;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --border-color: #CBD5E1;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --code-bg: #F1F5F9;
+            --highlight-bg: rgba(59, 130, 246, 0.1);
+        }
+
+        /* ============================================
+           BASE STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ============================================
+           TOP BAR - SEARCH & THEME TOGGLE
+           ============================================ */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-nav);
+            border-bottom: 2px solid var(--gs-gold);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem 0 300px;
+            z-index: 1001;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--gs-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 2px solid var(--gs-gold);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: var(--highlight-bg);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            color: var(--gs-gold);
+            margin-bottom: 0.25rem;
+        }
+
+        .search-result-category {
+            font-size: 0.75rem;
+            color: var(--gs-accent);
+            text-transform: uppercase;
+        }
+
+        .search-result-preview {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-result-highlight {
+            background: var(--gs-gold);
+            color: var(--bg-primary);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .search-stats {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .theme-toggle-btn {
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle-btn::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--gs-gold);
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        [data-theme="light"] .theme-toggle-btn::after {
+            transform: translateX(30px);
+        }
+
+        .theme-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            min-width: 40px;
+        }
+
+        /* ============================================
+           NAVIGATION SIDEBAR
+           ============================================ */
+        nav {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 280px;
+            height: calc(100vh - 60px);
+            background: var(--bg-nav);
+            overflow-y: auto;
+            padding: 1rem;
+            border-right: 2px solid var(--gs-gold);
+            z-index: 1000;
+        }
+
+        nav h1 {
+            color: var(--gs-gold);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav h1 .logo {
+            width: 24px;
+            height: 24px;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            margin-bottom: 0.25rem;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--bg-tertiary);
+            color: var(--gs-gold);
+        }
+
+        nav .nav-category {
+            font-weight: 700;
+            color: var(--gs-gold);
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        nav .nav-sub {
+            padding-left: 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Collapse/Expand */
+        .nav-collapsible {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-collapsible::after {
+            content: '▼';
+            font-size: 0.6rem;
+            transition: transform 0.2s;
+        }
+
+        .nav-collapsible.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .nav-children {
+            overflow: hidden;
+            max-height: 1000px;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-children.collapsed {
+            max-height: 0;
+        }
+
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+        main {
+            margin-left: 280px;
+            margin-top: 60px;
+            padding: 2rem;
+            max-width: 1200px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 2px solid var(--gs-gold);
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            color: var(--gs-gold);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        header .meta {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--gs-accent);
+        }
+
+        header .version-badge {
+            display: inline-block;
+            background: var(--gs-gold);
+            color: var(--bg-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Keyboard Shortcuts Help */
+        .keyboard-help {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .keyboard-help kbd {
+            background: var(--bg-primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-family: monospace;
+            margin: 0 0.25rem;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 80px;
+        }
+
+        section > h2 {
+            color: var(--gs-gold);
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--gs-gold);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        section > h3 {
+            color: var(--gs-accent);
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem;
+        }
+
+        /* Articles */
+        article {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--gs-gold);
+            transition: background 0.3s;
+        }
+
+        article.highlight {
+            animation: highlightPulse 2s ease;
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% { box-shadow: none; }
+            50% { box-shadow: 0 0 20px var(--gs-gold); }
+        }
+
+        article h4 {
+            color: var(--gs-gold);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        article h5 {
+            color: var(--gs-accent);
+            font-size: 1rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        article p {
+            margin-bottom: 0.75rem;
+        }
+
+        article ul, article ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        article li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 1rem;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .principle-number {
+            background: var(--gs-gold);
+            color: var(--bg-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 0.5rem;
+        }
+
+        .badge-gold { background: var(--gs-gold); color: var(--bg-primary); }
+        .badge-blue { background: var(--gs-accent); color: white; }
+        .badge-green { background: var(--gs-success); color: white; }
+        .badge-orange { background: var(--gs-warning); color: var(--bg-primary); }
+        .badge-red { background: var(--gs-danger); color: white; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-nav);
+            color: var(--gs-gold);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--highlight-bg);
+        }
+
+        /* Code */
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        pre code {
+            padding: 0;
+            background: none;
+        }
+
+        /* Verification Layers */
+        .layer-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .layer {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            transition: transform 0.2s;
+        }
+
+        .layer:hover {
+            transform: translateX(5px);
+        }
+
+        .layer-number {
+            width: 30px;
+            height: 30px;
+            background: var(--gs-gold);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Phase Timeline */
+        .phase-timeline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .phase-item {
+            background: var(--bg-tertiary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .phase-item:hover {
+            border-color: var(--gs-gold);
+            background: var(--bg-secondary);
+        }
+
+        /* Cross References */
+        .cross-ref {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .cross-ref h6 {
+            color: var(--gs-accent);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: inline;
+        }
+
+        .cross-ref a {
+            color: var(--gs-gold);
+            text-decoration: none;
+        }
+
+        .cross-ref a:hover {
+            text-decoration: underline;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gs-gold);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: transform 0.2s;
+            z-index: 999;
+        }
+
+        .back-to-top:hover {
+            transform: scale(1.1);
+        }
+
+        .back-to-top.visible {
+            display: flex;
+        }
+
+        /* No Results */
+        .no-results {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 2px solid var(--gs-gold);
+            margin-top: 4rem;
+        }
+
+        footer .brand {
+            color: var(--gs-gold);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        footer .version {
+            color: var(--text-primary);
+            opacity: 0.7;
+        }
+
+        footer .authority {
+            color: var(--gs-accent);
+            margin-top: 1rem;
+        }
+
+        footer .ai-info {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        /* Print Styles */
+        @media print {
+            .top-bar, nav, .back-to-top { display: none !important; }
+            main { margin: 0; padding: 1rem; }
+            article { break-inside: avoid; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .top-bar {
+                padding-left: 1rem;
+            }
+            nav {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            nav.open {
+                transform: translateX(0);
+            }
+            main {
+                margin-left: 0;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="search-container">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search... (Ctrl+K)" autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+        <div class="theme-toggle">
+            <span class="theme-label" id="themeLabel">Dark</span>
+            <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme"></button>
+        </div>
+    </div>
+
+    <!-- NAVIGATION SIDEBAR -->
+    <nav id="toc" data-ai-section="navigation">
+        <h1>
+            <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            GOLD STANDARD
+        </h1>
+
+        <p class="nav-category nav-collapsible" data-target="nav-core">Core Foundation</p>
+        <ul class="nav-children" id="nav-core">
+            <li><a href="#core-kernel">Core Kernel</a></li>
+            <li class="nav-sub"><a href="#first-principles">First Principles</a></li>
+            <li class="nav-sub"><a href="#modularity-doctrine">Modularity Doctrine</a></li>
+            <li class="nav-sub"><a href="#verification-doctrine">Verification Doctrine</a></li>
+        </ul>
+
+        <p class="nav-category nav-collapsible" data-target="nav-command">Command Protocol</p>
+        <ul class="nav-children" id="nav-command">
+            <li><a href="#command-protocol">Command Protocol</a></li>
+            <li class="nav-sub"><a href="#genesis">Genesis Protocol</a></li>
+            <li class="nav-sub"><a href="#lifecycle-definition">Lifecycle Definition</a></li>
+        </ul>
+
+        <p class="nav-category nav-collapsible" data-target="nav-bible">Bible Modules</p>
+        <ul class="nav-children" id="nav-bible">
+            <li><a href="#bible-modules">Bible Modules</a></li>
+            <li class="nav-sub"><a href="#governance">Governance</a></li>
+            <li class="nav-sub"><a href="#architecture">Architecture</a></li>
+            <li class="nav-sub"><a href="#development">Development</a></li>
+            <li class="nav-sub"><a href="#verification">Verification</a></li>
+            <li class="nav-sub"><a href="#integration">Integration</a></li>
+            <li class="nav-sub"><a href="#documentation">Documentation</a></li>
+            <li class="nav-sub"><a href="#operations">Operations</a></li>
+        </ul>
+
+        <p class="nav-category nav-collapsible" data-target="nav-lifecycle">Lifecycle Phases</p>
+        <ul class="nav-children" id="nav-lifecycle">
+            <li><a href="#lifecycle-modules">Lifecycle Modules</a></li>
+            <li class="nav-sub"><a href="#phase-01">Phase 1: Ideation</a></li>
+            <li class="nav-sub"><a href="#phase-02">Phase 2: Concept</a></li>
+            <li class="nav-sub"><a href="#phase-03">Phase 3: Requirements</a></li>
+            <li class="nav-sub"><a href="#phase-04">Phase 4: Architecture</a></li>
+            <li class="nav-sub"><a href="#phase-05">Phase 5: Specification</a></li>
+            <li class="nav-sub"><a href="#phase-06">Phase 6: Development</a></li>
+            <li class="nav-sub"><a href="#phase-07">Phase 7: Integration</a></li>
+            <li class="nav-sub"><a href="#phase-08">Phase 8: Verification</a></li>
+            <li class="nav-sub"><a href="#phase-09">Phase 9: Security</a></li>
+            <li class="nav-sub"><a href="#phase-10">Phase 10: Deployment</a></li>
+            <li class="nav-sub"><a href="#phase-11">Phase 11: Operations</a></li>
+        </ul>
+
+        <p class="nav-category nav-collapsible" data-target="nav-reference">Reference</p>
+        <ul class="nav-children" id="nav-reference">
+            <li><a href="#quick-reference">Quick Reference</a></li>
+            <li><a href="#cross-reference-matrix">Cross-Reference Matrix</a></li>
+            <li><a href="#glossary">Glossary</a></li>
+        </ul>
+    </nav>
+
+    <!-- BACK TO TOP BUTTON -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HEADER -->
+        <header>
+            <h1>GOLD STANDARD</h1>
+            <p class="subtitle">Development Framework - Complete Reference</p>
+            <span class="version-badge">v2.0 - Enhanced</span>
+            <p class="meta">Authority: Neville Mehta | Generated: 2026-01-15</p>
+            <div class="keyboard-help">
+                <strong>Keyboard Shortcuts:</strong>
+                <kbd>Ctrl</kbd>+<kbd>K</kbd> Focus search |
+                <kbd>Esc</kbd> Close search |
+                <kbd>↑</kbd><kbd>↓</kbd> Navigate results |
+                <kbd>Enter</kbd> Go to result |
+                <kbd>T</kbd> Toggle theme
+            </div>
+        </header>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 1: CORE KERNEL -->
+        <!-- ============================================================ -->
+        <section id="core-kernel" data-category="CORE_KERNEL" data-tags="principles,axioms,foundation,immutable">
+            <h2>CORE KERNEL</h2>
+            <p><span class="badge badge-gold">IMMUTABLE</span> The foundational principles that govern all development activities. These cannot be modified or overridden.</p>
+
+            <!-- FIRST PRINCIPLES -->
+            <article id="first-principles" data-id="GS-CK-001" data-tags="principles,axioms,laws,nasa,traceability,ssot">
+                <h4>First Principles</h4>
+                <p><span class="badge badge-gold">AXIOMS</span> Immutable truths of software development.</p>
+
+                <h5>The 8 Gold Standard Principles</h5>
+                <div class="principle-card">
+                    <div class="principle-number">1</div>
+                    <div>
+                        <strong>NASA-Style Rigour</strong>
+                        <p>Apply aerospace-grade discipline to software development. Every decision documented, every assumption validated, every outcome verified.</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">2</div>
+                    <div>
+                        <strong>Audit Before Build</strong>
+                        <p>Understand the current state completely before making changes. No assumptions without evidence.</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">3</div>
+                    <div>
+                        <strong>Zero Drift Policy</strong>
+                        <p>Documentation and implementation must remain synchronized. Drift is debt; debt compounds.</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">4</div>
+                    <div>
+                        <strong>Living Documentation</strong>
+                        <p>Documentation is not an afterthought. It evolves with the code, tested alongside the code.</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">5</div>
+                    <div>
+                        <strong>Full Bidirectional Traceability</strong>
+                        <p>Every requirement traces to implementation. Every implementation traces to requirement. No orphans.</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">6</div>
+                    <div>
+                        <strong>Evidence-Based Validation</strong>
+                        <p>Assertions require proof. Tests are evidence. Passing tests are the only acceptable evidence.</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">7</div>
+                    <div>
+                        <strong>Single Source of Truth (SSOT)</strong>
+                        <p>One authoritative source per artifact. Duplication is divergence waiting to happen.</p>
+                    </div>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">8</div>
+                    <div>
+                        <strong>Defensive Documentation</strong>
+                        <p>Document for the skeptic. Assume the reader questions everything. Provide evidence for every claim.</p>
+                    </div>
+                </div>
+
+                <h5>The 5 Immutable Laws</h5>
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Law</th><th>Meaning</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><strong>Meaning Precedes Implementation</strong></td><td>Understand what before how. Define semantics before syntax.</td></tr>
+                        <tr><td>2</td><td><strong>Structure Precedes Intelligence</strong></td><td>Get the architecture right before adding complexity.</td></tr>
+                        <tr><td>3</td><td><strong>Validation Precedes Optimization</strong></td><td>Make it work, make it right, then make it fast.</td></tr>
+                        <tr><td>4</td><td><strong>Explicit Precedes Implicit</strong></td><td>No magic. No hidden behavior. Everything visible and documented.</td></tr>
+                        <tr><td>5</td><td><strong>Reversibility Precedes Commitment</strong></td><td>Every decision should be reversible until proven correct.</td></tr>
+                    </tbody>
+                </table>
+
+                <h5>The 6 Architecture Principles</h5>
+                <ol>
+                    <li><strong>Single Source of Truth (SSOT)</strong> - One authoritative source per data element</li>
+                    <li><strong>Loose Coupling</strong> - Components interact through well-defined interfaces</li>
+                    <li><strong>High Cohesion</strong> - Related functionality grouped together</li>
+                    <li><strong>Explicit Contracts</strong> - All interfaces formally specified</li>
+                    <li><strong>Fail-Safe Defaults</strong> - System fails to safe state</li>
+                    <li><strong>Deterministic Behavior</strong> - Same input always produces same output</li>
+                </ol>
+
+                <div class="cross-ref">
+                    <h6>Cross-References:</h6>
+                    <a href="#verification-doctrine">Verification Doctrine</a> |
+                    <a href="#modularity-doctrine">Modularity Doctrine</a> |
+                    <a href="#architecture">Architecture Module</a>
+                </div>
+            </article>
+
+            <!-- MODULARITY DOCTRINE -->
+            <article id="modularity-doctrine" data-id="GS-CK-002" data-tags="modularity,architecture,components,interfaces,independence,coupling">
+                <h4>Modularity Doctrine</h4>
+                <p><span class="badge badge-blue">ARCHITECTURE</span> The architecture of autonomous units.</p>
+
+                <h5>The 7 Properties of a True Module</h5>
+                <table>
+                    <thead><tr><th>Property</th><th>Definition</th><th>Test</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Self-Contained</strong></td><td>All dependencies explicit and internal</td><td>Can be understood without external context</td></tr>
+                        <tr><td><strong>Independently Testable</strong></td><td>Can be tested in isolation</td><td>Has its own test suite that runs independently</td></tr>
+                        <tr><td><strong>Versioned</strong></td><td>Has explicit version number</td><td>Version changes when interface changes</td></tr>
+                        <tr><td><strong>Documented</strong></td><td>Purpose, interface, and behavior documented</td><td>New developer can use without asking questions</td></tr>
+                        <tr><td><strong>Interface-Defined</strong></td><td>Interaction only through defined interface</td><td>No direct access to internals</td></tr>
+                        <tr><td><strong>Replaceable</strong></td><td>Can be swapped for alternative implementation</td><td>Interface remains stable across implementations</td></tr>
+                        <tr><td><strong>Evolvable</strong></td><td>Can be updated without affecting dependents</td><td>Internal changes don't break consumers</td></tr>
+                    </tbody>
+                </table>
+
+                <h5>Anti-Patterns to Avoid</h5>
+                <ul>
+                    <li><strong>Hidden Dependencies</strong> - Undeclared requirements on external components</li>
+                    <li><strong>Circular Dependencies</strong> - A depends on B depends on A</li>
+                    <li><strong>God Module</strong> - One module that does everything</li>
+                    <li><strong>Leaky Abstraction</strong> - Internal details exposed through interface</li>
+                    <li><strong>Version Lock</strong> - Rigid version requirements preventing updates</li>
+                </ul>
+
+                <div class="cross-ref">
+                    <h6>Cross-References:</h6>
+                    <a href="#first-principles">First Principles</a> |
+                    <a href="#architecture">Architecture Module</a> |
+                    <a href="#integration">Integration Module</a>
+                </div>
+            </article>
+
+            <!-- VERIFICATION DOCTRINE -->
+            <article id="verification-doctrine" data-id="GS-CK-003" data-tags="verification,testing,validation,quality,layers,coverage,pyramid">
+                <h4>Verification Doctrine</h4>
+                <p><span class="badge badge-green">TESTING</span> The architecture of certainty. Testing is not a phase, it is a constant companion.</p>
+
+                <h5>The 10 Verification Layers</h5>
+                <div class="layer-stack">
+                    <div class="layer"><div class="layer-number">10</div><div><strong>ACCEPTANCE</strong> - Does it meet business goals?</div></div>
+                    <div class="layer"><div class="layer-number">9</div><div><strong>SECURITY</strong> - Are there vulnerabilities?</div></div>
+                    <div class="layer"><div class="layer-number">8</div><div><strong>PERFORMANCE</strong> - Is it within acceptable bounds?</div></div>
+                    <div class="layer"><div class="layer-number">7</div><div><strong>END-TO-END</strong> - Do complete workflows work?</div></div>
+                    <div class="layer"><div class="layer-number">6</div><div><strong>FUNCTIONAL</strong> - Do features work correctly?</div></div>
+                    <div class="layer"><div class="layer-number">5</div><div><strong>REGRESSION</strong> - Did we break anything?</div></div>
+                    <div class="layer"><div class="layer-number">4</div><div><strong>INTEGRATION</strong> - Do components connect properly?</div></div>
+                    <div class="layer"><div class="layer-number">3</div><div><strong>CONTRACT</strong> - Are API contracts honored?</div></div>
+                    <div class="layer"><div class="layer-number">2</div><div><strong>UNIT</strong> - Do individual functions work?</div></div>
+                    <div class="layer"><div class="layer-number">1</div><div><strong>SYNTAX</strong> - Does the code compile/run?</div></div>
+                </div>
+                <p><strong>RULE:</strong> Lower layers must pass before higher layers are tested.</p>
+
+                <h5>Coverage Targets</h5>
+                <table>
+                    <thead><tr><th>Category</th><th>Target</th><th>Rationale</th></tr></thead>
+                    <tbody>
+                        <tr><td>Safety-Critical</td><td><strong>100%</strong></td><td>No untested paths in critical code</td></tr>
+                        <tr><td>Business-Critical</td><td><strong>95%</strong></td><td>Core business logic fully covered</td></tr>
+                        <tr><td>Standard</td><td><strong>90%</strong></td><td>Comprehensive coverage for normal code</td></tr>
+                        <tr><td>Utility</td><td><strong>80%</strong></td><td>Helper functions adequately tested</td></tr>
+                    </tbody>
+                </table>
+
+                <h5>Test Pyramid Distribution</h5>
+                <table>
+                    <thead><tr><th>Test Type</th><th>%</th><th>Characteristics</th></tr></thead>
+                    <tbody>
+                        <tr><td>Unit Tests</td><td><strong>50%</strong></td><td>Fast, isolated, deterministic</td></tr>
+                        <tr><td>Contract Tests</td><td><strong>20%</strong></td><td>API boundary verification</td></tr>
+                        <tr><td>Integration Tests</td><td><strong>20%</strong></td><td>Component interaction</td></tr>
+                        <tr><td>E2E Tests</td><td><strong>10%</strong></td><td>Full user workflows</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="cross-ref">
+                    <h6>Cross-References:</h6>
+                    <a href="#first-principles">First Principles</a> |
+                    <a href="#verification">Verification Module</a> |
+                    <a href="#phase-08">Phase 8: Verification</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 2: COMMAND PROTOCOL -->
+        <!-- ============================================================ -->
+        <section id="command-protocol" data-category="COMMAND_PROTOCOL" data-tags="genesis,authority,session,protocol,start">
+            <h2>COMMAND PROTOCOL</h2>
+            <p><span class="badge badge-red">AUTHORITY</span> Session control and authority documents that establish operating context.</p>
+
+            <article id="genesis" data-id="GS-CP-001" data-tags="genesis,authority,session,protocol,start,three-absolutes">
+                <h4>Genesis Protocol</h4>
+                <p><span class="badge badge-red">START</span> Command authority document establishing operating context for AI development sessions.</p>
+
+                <h5>Identity</h5>
+                <table>
+                    <tr><td><strong>Principal</strong></td><td>Neville Mehta</td></tr>
+                    <tr><td><strong>Role</strong></td><td>Product Owner, Standards Authority, Quality Arbiter</td></tr>
+                    <tr><td><strong>Authority Level</strong></td><td>Final decision on all matters of implementation, architecture, and quality</td></tr>
+                </table>
+
+                <h5>The Three Absolutes</h5>
+                <table>
+                    <thead><tr><th>Absolute</th><th>Quote</th><th>Meaning</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Accuracy Over Speed</strong></td><td><em>"Shortcuts are an illusion of speed and the bane of accuracy."</em></td><td>Every output must be correct. Rushed work that requires rework is slower than careful work done once.</td></tr>
+                        <tr><td><strong>Modularity Is Law</strong></td><td><em>"Every worthy system is composed of autonomous, self-contained units."</em></td><td>Code, documentation, and processes must be modular - independently developable, testable, upgradeable, and replaceable.</td></tr>
+                        <tr><td><strong>Verification Is Continuous</strong></td><td><em>"Testing is not a phase. It is a constant companion to every action."</em></td><td>Every artifact produced must be verified before the next artifact begins. No layer can be skipped.</td></tr>
+                    </tbody>
+                </table>
+
+                <h5>Rules of Engagement</h5>
+                <table>
+                    <thead><tr><th>MUST DO</th><th>NEVER DO</th></tr></thead>
+                    <tbody>
+                        <tr><td>Read before acting</td><td>Never skip verification layers</td></tr>
+                        <tr><td>Verify continuously</td><td>Never make undocumented assumptions</td></tr>
+                        <tr><td>Document as you go</td><td>Never proceed past a failed gate</td></tr>
+                        <tr><td>State assumptions explicitly</td><td>Never optimize before correct</td></tr>
+                        <tr><td>Flag uncertainties</td><td>Never violate module boundaries</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="cross-ref">
+                    <h6>Cross-References:</h6>
+                    <a href="#lifecycle-definition">Lifecycle Definition</a> |
+                    <a href="#first-principles">First Principles</a>
+                </div>
+            </article>
+
+            <article id="lifecycle-definition" data-id="GS-CP-002" data-tags="lifecycle,phases,pathway,eleven,development-process,streams">
+                <h4>Lifecycle Definition</h4>
+                <p><span class="badge badge-blue">PATHWAY</span> The complete development pathway from initial idea to operational system.</p>
+
+                <h5>Pathway Structure</h5>
+                <pre><code>IDEA → CONCEPTION (1-3) → DESIGN (4-5) → CONSTRUCTION (6-7) → DELIVERY (8-10) → OPERATION (11)</code></pre>
+
+                <div class="phase-timeline">
+                    <div class="phase-item" onclick="location.href='#phase-01'">1. Ideation</div>
+                    <div class="phase-item" onclick="location.href='#phase-02'">2. Concept</div>
+                    <div class="phase-item" onclick="location.href='#phase-03'">3. Requirements</div>
+                    <div class="phase-item" onclick="location.href='#phase-04'">4. Architecture</div>
+                    <div class="phase-item" onclick="location.href='#phase-05'">5. Specification</div>
+                    <div class="phase-item" onclick="location.href='#phase-06'">6. Development</div>
+                    <div class="phase-item" onclick="location.href='#phase-07'">7. Integration</div>
+                    <div class="phase-item" onclick="location.href='#phase-08'">8. Verification</div>
+                    <div class="phase-item" onclick="location.href='#phase-09'">9. Security</div>
+                    <div class="phase-item" onclick="location.href='#phase-10'">10. Deployment</div>
+                    <div class="phase-item" onclick="location.href='#phase-11'">11. Operations</div>
+                </div>
+
+                <h5>The Eleven Phases</h5>
+                <table>
+                    <thead><tr><th>#</th><th>Phase</th><th>Stream</th><th>Purpose</th><th>Outcome</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>IDEATION</td><td>Conception</td><td>Capture initial concept</td><td>Idea Statement</td></tr>
+                        <tr><td>2</td><td>CONCEPT</td><td>Conception</td><td>Refine idea into shape</td><td>Concept Document</td></tr>
+                        <tr><td>3</td><td>REQUIREMENTS</td><td>Conception</td><td>Define what must be built</td><td>Requirements Specification</td></tr>
+                        <tr><td>4</td><td>ARCHITECTURE</td><td>Design</td><td>Define structure</td><td>Architecture Document</td></tr>
+                        <tr><td>5</td><td>SPECIFICATION</td><td>Design</td><td>Define precise behaviors</td><td>Technical Specification</td></tr>
+                        <tr><td>6</td><td>DEVELOPMENT</td><td>Construction</td><td>Build components</td><td>Working Code</td></tr>
+                        <tr><td>7</td><td>INTEGRATION</td><td>Construction</td><td>Connect components</td><td>Integrated System</td></tr>
+                        <tr><td>8</td><td>VERIFICATION</td><td>Delivery</td><td>Prove it works</td><td>Test Reports</td></tr>
+                        <tr><td>9</td><td>SECURITY</td><td>Delivery</td><td>Verify security</td><td>Security Sign-off</td></tr>
+                        <tr><td>10</td><td>DEPLOYMENT</td><td>Delivery</td><td>Release to production</td><td>Deployed System</td></tr>
+                        <tr><td>11</td><td>OPERATIONS</td><td>Operation</td><td>Maintain and evolve</td><td>Operational Excellence</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="cross-ref">
+                    <h6>Cross-References:</h6>
+                    <a href="#genesis">Genesis Protocol</a> |
+                    <a href="#lifecycle-modules">Lifecycle Modules</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 3: BIBLE MODULES -->
+        <!-- ============================================================ -->
+        <section id="bible-modules" data-category="BIBLE_MODULES" data-tags="standards,modules,governance,architecture,development,verification,integration,documentation,operations">
+            <h2>BIBLE MODULES</h2>
+            <p><span class="badge badge-gold">STANDARDS</span> Domain-specific standards organized into 7 comprehensive modules.</p>
+
+            <article id="governance" data-id="GS-BM-001" data-tags="governance,decision-making,change-control,gates,accountability,adr,raci">
+                <h4>Governance Module</h4>
+                <p><span class="badge badge-orange">DECISIONS</span> Project governance, decision making, and change control.</p>
+                <h5>Seven Governance Principles</h5>
+                <ol>
+                    <li><strong>Accountability is Singular</strong> - One person owns each decision</li>
+                    <li><strong>Decisions are Documented</strong> - ADRs for all significant choices</li>
+                    <li><strong>Changes are Controlled</strong> - No untracked modifications</li>
+                    <li><strong>Gates are Non-Negotiable</strong> - Must pass to proceed</li>
+                    <li><strong>Risks are Managed</strong> - Identified, assessed, mitigated</li>
+                    <li><strong>Stakeholders are Engaged</strong> - Communication is continuous</li>
+                    <li><strong>Authority Matches Responsibility</strong> - Power to act on obligations</li>
+                </ol>
+                <div class="cross-ref"><h6>Cross-References:</h6> <a href="#genesis">Genesis Protocol</a> | <a href="#first-principles">First Principles</a></div>
+            </article>
+
+            <article id="architecture" data-id="GS-BM-002" data-tags="architecture,patterns,design,layered,c4,contracts,principles,solid">
+                <h4>Architecture Module</h4>
+                <p><span class="badge badge-blue">STRUCTURE</span> Software architecture standards and patterns.</p>
+                <h5>Layered Architecture</h5>
+                <table>
+                    <thead><tr><th>Layer</th><th>Responsibility</th><th>Dependencies</th></tr></thead>
+                    <tbody>
+                        <tr><td>Presentation</td><td>User interface, API endpoints</td><td>Application</td></tr>
+                        <tr><td>Application</td><td>Use cases, orchestration</td><td>Domain</td></tr>
+                        <tr><td>Domain</td><td>Business logic, entities</td><td>None (core)</td></tr>
+                        <tr><td>Infrastructure</td><td>Database, external services</td><td>Domain</td></tr>
+                    </tbody>
+                </table>
+                <div class="cross-ref"><h6>Cross-References:</h6> <a href="#modularity-doctrine">Modularity Doctrine</a> | <a href="#phase-04">Phase 4</a></div>
+            </article>
+
+            <article id="development" data-id="GS-BM-003" data-tags="development,coding,standards,best-practices,dry,kiss,yagni,solid,tdd">
+                <h4>Development Module</h4>
+                <p><span class="badge badge-green">BUILD</span> Software development standards and practices.</p>
+                <h5>Development Mantras</h5>
+                <ul>
+                    <li><strong>Make It Work → Make It Right → Make It Fast</strong></li>
+                    <li><strong>Test Early, Test Often, Test Automatically</strong></li>
+                    <li><strong>Code Is Read More Than Written</strong></li>
+                    <li><strong>The Best Code Is No Code</strong></li>
+                </ul>
+                <h5>Quality Heuristics</h5>
+                <ul>
+                    <li><strong>SRP</strong> - Single Responsibility</li>
+                    <li><strong>DRY</strong> - Don't Repeat Yourself</li>
+                    <li><strong>KISS</strong> - Keep It Simple, Stupid</li>
+                    <li><strong>YAGNI</strong> - You Aren't Gonna Need It</li>
+                </ul>
+                <div class="cross-ref"><h6>Cross-References:</h6> <a href="#phase-06">Phase 6</a> | <a href="#verification">Verification</a></div>
+            </article>
+
+            <article id="verification" data-id="GS-BM-004" data-tags="testing,verification,quality,pyramid,coverage,automation,regression,tdd">
+                <h4>Verification Module</h4>
+                <p><span class="badge badge-green">TESTING</span> Testing, validation, and quality assurance.</p>
+                <h5>Ten Verification Laws</h5>
+                <ol>
+                    <li>Coverage Non-Negotiable</li>
+                    <li>Layers Cannot be Skipped</li>
+                    <li>Evidence Beats Assertion</li>
+                    <li>Regression Mandatory</li>
+                    <li>Tests First-Class Code</li>
+                    <li>Failure is Information</li>
+                    <li>Automation Mandatory</li>
+                    <li>Independence Required</li>
+                    <li>Determinism Essential</li>
+                    <li>Verification Continuous</li>
+                </ol>
+                <div class="cross-ref"><h6>Cross-References:</h6> <a href="#verification-doctrine">Verification Doctrine</a> | <a href="#phase-08">Phase 8</a></div>
+            </article>
+
+            <article id="integration" data-id="GS-BM-005" data-tags="integration,api,contracts,c4,rtm,openapi,event-storming,gaps,four-pillars">
+                <h4>Integration Module</h4>
+                <p><span class="badge badge-blue">CONNECT</span> Frontend-backend integration, API contracts, system integration.</p>
+                <h5>Four Pillars of Integration Assurance</h5>
+                <table>
+                    <thead><tr><th>Pillar</th><th>Purpose</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>C4 Model</strong></td><td>Architectural visualization</td></tr>
+                        <tr><td><strong>RTM</strong></td><td>Requirements Traceability Matrix</td></tr>
+                        <tr><td><strong>OpenAPI</strong></td><td>Contract Testing</td></tr>
+                        <tr><td><strong>Event Storming</strong></td><td>Domain discovery</td></tr>
+                    </tbody>
+                </table>
+                <h5>Integration Gap Taxonomy</h5>
+                <ul>
+                    <li><strong>Schema Drift</strong> - Naming mismatch between layers</li>
+                    <li><strong>Orphaned Endpoint</strong> - Backend API not used by frontend</li>
+                    <li><strong>Phantom Feature</strong> - Frontend expects missing backend</li>
+                    <li><strong>State Mismatch</strong> - Lifecycle confusion</li>
+                    <li><strong>Error Handling Gap</strong> - Unhandled error codes</li>
+                    <li><strong>Auth Session Gap</strong> - Token/session issues</li>
+                    <li><strong>Timing Gap</strong> - Async/sync mismatch</li>
+                    <li><strong>Protocol Mismatch</strong> - REST vs WebSocket confusion</li>
+                </ul>
+                <div class="cross-ref"><h6>Cross-References:</h6> <a href="#phase-07">Phase 7</a> | <a href="#architecture">Architecture</a></div>
+            </article>
+
+            <article id="documentation" data-id="GS-BM-006" data-tags="documentation,technical-writing,living-docs,knowledge,standards">
+                <h4>Documentation Module</h4>
+                <p><span class="badge badge-gold">RECORD</span> Technical writing, living documentation, knowledge management.</p>
+                <h5>Seven Documentation Principles</h5>
+                <ol>
+                    <li>Documentation is a Product</li>
+                    <li>Accuracy Over Existence</li>
+                    <li>Write for the Reader</li>
+                    <li>Live Documentation</li>
+                    <li>Right Level of Detail</li>
+                    <li>Single Source of Truth</li>
+                    <li>Defensive Documentation</li>
+                </ol>
+                <div class="cross-ref"><h6>Cross-References:</h6> <a href="#first-principles">First Principles</a></div>
+            </article>
+
+            <article id="operations" data-id="GS-BM-007" data-tags="operations,deployment,monitoring,incidents,runbooks,observability,slo,sli">
+                <h4>Operations Module</h4>
+                <p><span class="badge badge-red">RUN</span> Deployment, monitoring, incident response, operational excellence.</p>
+                <h5>Ten Operations Principles</h5>
+                <ol>
+                    <li>Everything Fails</li>
+                    <li>Changes Are Risky</li>
+                    <li>Observability Mandatory</li>
+                    <li>Automate Repetitive Tasks</li>
+                    <li>Runbooks for Everything</li>
+                    <li>Practice Failure</li>
+                    <li>Blameless Postmortems</li>
+                    <li>On-Call Responsibility</li>
+                    <li>Production Sacred</li>
+                    <li>Continuous Improvement</li>
+                </ol>
+                <h5>Monitoring Pillars</h5>
+                <ul>
+                    <li><strong>Metrics</strong> - Quantitative measurements</li>
+                    <li><strong>Logs</strong> - Event records</li>
+                    <li><strong>Traces</strong> - Request flow</li>
+                    <li><strong>Alerts</strong> - Anomaly notification</li>
+                </ul>
+                <div class="cross-ref"><h6>Cross-References:</h6> <a href="#phase-10">Phase 10</a> | <a href="#phase-11">Phase 11</a></div>
+            </article>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 4: LIFECYCLE MODULES -->
+        <!-- ============================================================ -->
+        <section id="lifecycle-modules" data-category="LIFECYCLE_MODULES" data-tags="lifecycle,phases,pathway,development-process">
+            <h2>LIFECYCLE MODULES</h2>
+            <p><span class="badge badge-blue">11 PHASES</span> Complete development pathway from idea to operations.</p>
+
+            <article id="phase-01" data-id="GS-LM-001" data-tags="ideation,phase-1,concept,genesis,idea" data-stream="CONCEPTION">
+                <h4>Phase 1: Ideation</h4>
+                <p><span class="badge badge-gold">CONCEPTION</span> Capture the initial spark of an idea.</p>
+                <p><strong>Deliverables:</strong> Idea Statement, Problem Statement, Success Vision, Initial Constraints</p>
+                <p><strong>Exit:</strong> Principal confirms "This is what I want to explore."</p>
+                <div class="cross-ref"><h6>Next:</h6> <a href="#phase-02">Phase 2</a></div>
+            </article>
+
+            <article id="phase-02" data-id="GS-LM-002" data-tags="concept,phase-2,scope,crystallization" data-stream="CONCEPTION">
+                <h4>Phase 2: Concept Crystallization</h4>
+                <p><span class="badge badge-gold">CONCEPTION</span> Transform idea into defined concept.</p>
+                <p><strong>Deliverables:</strong> Concept Document, Scope Definition, Component Overview, Risk Register</p>
+                <p><strong>Exit:</strong> Principal confirms "This is the shape of what we're building."</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-01">Phase 1</a> | <h6>Next:</h6> <a href="#phase-03">Phase 3</a></div>
+            </article>
+
+            <article id="phase-03" data-id="GS-LM-003" data-tags="requirements,phase-3,analysis,rtm,moscow" data-stream="CONCEPTION">
+                <h4>Phase 3: Requirements Analysis</h4>
+                <p><span class="badge badge-gold">CONCEPTION</span> Define exactly what the system must do.</p>
+                <p><strong>Deliverables:</strong> Requirements Spec (REQ-XXX IDs), MoSCoW Prioritization, RTM, Acceptance Criteria</p>
+                <p><strong>Exit:</strong> No TBD or ambiguous requirements remain.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-02">Phase 2</a> | <h6>Next:</h6> <a href="#phase-04">Phase 4</a></div>
+            </article>
+
+            <article id="phase-04" data-id="GS-LM-004" data-tags="architecture,phase-4,design,c4,adr" data-stream="DESIGN">
+                <h4>Phase 4: Architecture Design</h4>
+                <p><span class="badge badge-blue">DESIGN</span> Define structural solution to meet requirements.</p>
+                <p><strong>Deliverables:</strong> C4 Diagrams, ADRs, Quality Attributes, Technology Selection</p>
+                <p><strong>Exit:</strong> Architecture reviewed and approved.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-03">Phase 3</a> | <h6>Next:</h6> <a href="#phase-05">Phase 5</a></div>
+            </article>
+
+            <article id="phase-05" data-id="GS-LM-005" data-tags="specification,phase-5,detailed-design,openapi" data-stream="DESIGN">
+                <h4>Phase 5: Detailed Specification</h4>
+                <p><span class="badge badge-blue">DESIGN</span> Define precise technical blueprint.</p>
+                <p><strong>Deliverables:</strong> Component Specs, Interface Specs (OpenAPI), Data Models, State Machines, Error Handling</p>
+                <p><strong>Exit:</strong> All components specified. Developer can implement without questions.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-04">Phase 4</a> | <h6>Next:</h6> <a href="#phase-06">Phase 6</a></div>
+            </article>
+
+            <article id="phase-06" data-id="GS-LM-006" data-tags="development,phase-6,implementation,coding,unit-tests" data-stream="CONSTRUCTION">
+                <h4>Phase 6: Development</h4>
+                <p><span class="badge badge-green">CONSTRUCTION</span> Build components according to specification.</p>
+                <p><strong>Deliverables:</strong> Working Code, Unit Tests (>90%), Contract Tests (100%), Code Reviews, CI/CD</p>
+                <p><strong>Exit:</strong> All components implemented. All tests pass.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-05">Phase 5</a> | <h6>Next:</h6> <a href="#phase-07">Phase 7</a></div>
+            </article>
+
+            <article id="phase-07" data-id="GS-LM-007" data-tags="integration,phase-7,connect,dependencies" data-stream="CONSTRUCTION">
+                <h4>Phase 7: Integration</h4>
+                <p><span class="badge badge-green">CONSTRUCTION</span> Connect components into working system.</p>
+                <p><strong>Deliverables:</strong> Integration Matrix, Dependency Graph, Integration Tests, Working System</p>
+                <p><strong>Exit:</strong> All components integrated. No critical defects.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-06">Phase 6</a> | <h6>Next:</h6> <a href="#phase-08">Phase 8</a></div>
+            </article>
+
+            <article id="phase-08" data-id="GS-LM-008" data-tags="verification,phase-8,testing,uat,performance" data-stream="DELIVERY">
+                <h4>Phase 8: Verification</h4>
+                <p><span class="badge badge-orange">DELIVERY</span> Prove system works as specified.</p>
+                <p><strong>Deliverables:</strong> Full Test Pyramid, Performance Results (<200ms p95), Security Scan, UAT Sign-off</p>
+                <p><strong>Exit:</strong> All tests passing. UAT approved.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-07">Phase 7</a> | <h6>Next:</h6> <a href="#phase-09">Phase 9</a></div>
+            </article>
+
+            <article id="phase-09" data-id="GS-LM-009" data-tags="security,phase-9,owasp,vulnerabilities" data-stream="DELIVERY">
+                <h4>Phase 9: Security Review</h4>
+                <p><span class="badge badge-red">DELIVERY</span> Verify system security before production.</p>
+                <p><strong>Deliverables:</strong> Auth Review, OWASP Top 10, SAST/DAST Scans, Security Sign-off</p>
+                <p><strong>Exit:</strong> Security sign-off obtained. No critical vulnerabilities.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-08">Phase 8</a> | <h6>Next:</h6> <a href="#phase-10">Phase 10</a></div>
+            </article>
+
+            <article id="phase-10" data-id="GS-LM-010" data-tags="deployment,phase-10,release,production,rollback" data-stream="DELIVERY">
+                <h4>Phase 10: Deployment</h4>
+                <p><span class="badge badge-orange">DELIVERY</span> Safely release to production.</p>
+                <p><strong>Deliverables:</strong> Release Artifacts, Deployment Plan, Rollback Plan, Health Checks, Smoke Tests</p>
+                <p><strong>Exit:</strong> Deployment successful. All health checks passing.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-09">Phase 9</a> | <h6>Next:</h6> <a href="#phase-11">Phase 11</a></div>
+            </article>
+
+            <article id="phase-11" data-id="GS-LM-011" data-tags="operations,phase-11,monitoring,incidents,runbooks,slo" data-stream="OPERATION">
+                <h4>Phase 11: Operations</h4>
+                <p><span class="badge badge-red">OPERATION</span> Maintain and evolve system in production.</p>
+                <p><strong>Activities:</strong> Monitoring 24/7, Incident Response, Runbooks, Postmortems, SLO Dashboards</p>
+                <p><strong>Exit:</strong> No exit - continuous phase.</p>
+                <div class="cross-ref"><h6>Prev:</h6> <a href="#phase-10">Phase 10</a></div>
+            </article>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION 5: QUICK REFERENCE -->
+        <!-- ============================================================ -->
+        <section id="quick-reference" data-category="REFERENCE" data-tags="quick-reference,summary,cheatsheet">
+            <h2>QUICK REFERENCE</h2>
+            <p><span class="badge badge-gold">CHEATSHEET</span> Essential information at a glance.</p>
+
+            <article>
+                <h4>Key Numbers</h4>
+                <table>
+                    <tbody>
+                        <tr><td><strong>8</strong></td><td>Gold Standard Principles</td></tr>
+                        <tr><td><strong>5</strong></td><td>Immutable Laws</td></tr>
+                        <tr><td><strong>3</strong></td><td>Absolutes</td></tr>
+                        <tr><td><strong>6</strong></td><td>Architecture Principles</td></tr>
+                        <tr><td><strong>10</strong></td><td>Verification Layers</td></tr>
+                        <tr><td><strong>7</strong></td><td>Bible Modules</td></tr>
+                        <tr><td><strong>11</strong></td><td>Lifecycle Phases</td></tr>
+                        <tr><td><strong>4</strong></td><td>Integration Pillars</td></tr>
+                        <tr><td><strong>8</strong></td><td>Gap Types</td></tr>
+                    </tbody>
+                </table>
+            </article>
+        </section>
+
+        <!-- GLOSSARY -->
+        <section id="glossary" data-category="REFERENCE" data-tags="glossary,terms,definitions">
+            <h2>GLOSSARY</h2>
+            <article>
+                <table>
+                    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>ADR</strong></td><td>Architecture Decision Record</td></tr>
+                        <tr><td><strong>C4</strong></td><td>Context, Container, Component, Code</td></tr>
+                        <tr><td><strong>DRY</strong></td><td>Don't Repeat Yourself</td></tr>
+                        <tr><td><strong>KISS</strong></td><td>Keep It Simple, Stupid</td></tr>
+                        <tr><td><strong>RTM</strong></td><td>Requirements Traceability Matrix</td></tr>
+                        <tr><td><strong>SLI</strong></td><td>Service Level Indicator</td></tr>
+                        <tr><td><strong>SLO</strong></td><td>Service Level Objective</td></tr>
+                        <tr><td><strong>SSOT</strong></td><td>Single Source of Truth</td></tr>
+                        <tr><td><strong>UAT</strong></td><td>User Acceptance Testing</td></tr>
+                        <tr><td><strong>YAGNI</strong></td><td>You Aren't Gonna Need It</td></tr>
+                    </tbody>
+                </table>
+            </article>
+        </section>
+
+        <!-- CROSS REFERENCE MATRIX -->
+        <section id="cross-reference-matrix" data-category="REFERENCE">
+            <h2>CROSS-REFERENCE MATRIX</h2>
+            <article>
+                <h4>Module to Phase Mapping</h4>
+                <table>
+                    <thead><tr><th>Module</th><th>Primary Phases</th></tr></thead>
+                    <tbody>
+                        <tr><td>Governance</td><td>All phases</td></tr>
+                        <tr><td>Architecture</td><td>4, 5</td></tr>
+                        <tr><td>Development</td><td>6</td></tr>
+                        <tr><td>Verification</td><td>8</td></tr>
+                        <tr><td>Integration</td><td>7</td></tr>
+                        <tr><td>Documentation</td><td>All phases</td></tr>
+                        <tr><td>Operations</td><td>10, 11</td></tr>
+                    </tbody>
+                </table>
+            </article>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p class="brand">GOLD STANDARD DEVELOPMENT FRAMEWORK</p>
+            <p class="version">Version 2.0 | Enhanced with Search & Theme Toggle</p>
+            <p class="authority">Authority: Neville Mehta | Generated: 2026-01-15</p>
+            <p class="ai-info">AI-Parseable: Yes | Schema: gold-standard-v1.0 | Sections: 7 | Articles: 26 | Companion: GOLD_STANDARD_DATA.json</p>
+        </footer>
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- SEARCH INDEX DATA (For JavaScript Search) -->
+    <!-- ============================================================ -->
+    <script type="application/json" id="ai-search-data">
+    [
+        {"id": "first-principles", "title": "First Principles", "category": "CORE_KERNEL", "tags": "principles axioms laws nasa traceability ssot", "content": "8 Gold Standard Principles: NASA-Style Rigour, Audit Before Build, Zero Drift Policy, Living Documentation, Full Bidirectional Traceability, Evidence-Based Validation, Single Source of Truth, Defensive Documentation. 5 Immutable Laws: Meaning Precedes Implementation, Structure Precedes Intelligence, Validation Precedes Optimization, Explicit Precedes Implicit, Reversibility Precedes Commitment."},
+        {"id": "modularity-doctrine", "title": "Modularity Doctrine", "category": "CORE_KERNEL", "tags": "modularity architecture components interfaces independence coupling", "content": "7 Properties of a True Module: Self-Contained, Independently Testable, Versioned, Documented, Interface-Defined, Replaceable, Evolvable. Anti-patterns: Hidden Dependencies, Circular Dependencies, God Module, Leaky Abstraction, Version Lock."},
+        {"id": "verification-doctrine", "title": "Verification Doctrine", "category": "CORE_KERNEL", "tags": "verification testing validation quality layers coverage pyramid", "content": "10 Verification Layers: Syntax, Unit, Contract, Integration, Regression, Functional, End-to-End, Performance, Security, Acceptance. Coverage targets: Safety-Critical 100%, Business-Critical 95%, Standard 90%, Utility 80%. Test Pyramid: Unit 50%, Contract 20%, Integration 20%, E2E 10%."},
+        {"id": "genesis", "title": "Genesis Protocol", "category": "COMMAND_PROTOCOL", "tags": "genesis authority session protocol start three-absolutes", "content": "Principal: Neville Mehta. Three Absolutes: Accuracy Over Speed, Modularity Is Law, Verification Is Continuous. Rules of Engagement: Read before acting, Verify continuously, Document as you go, State assumptions explicitly, Flag uncertainties."},
+        {"id": "lifecycle-definition", "title": "Lifecycle Definition", "category": "COMMAND_PROTOCOL", "tags": "lifecycle phases pathway eleven development-process streams", "content": "11 Phases: Ideation, Concept, Requirements, Architecture, Specification, Development, Integration, Verification, Security, Deployment, Operations. Streams: Conception (1-3), Design (4-5), Construction (6-7), Delivery (8-10), Operation (11)."},
+        {"id": "governance", "title": "Governance Module", "category": "BIBLE_MODULES", "tags": "governance decision-making change-control gates accountability adr raci", "content": "Seven Governance Principles: Accountability is Singular, Decisions are Documented, Changes are Controlled, Gates are Non-Negotiable, Risks are Managed, Stakeholders are Engaged, Authority Matches Responsibility."},
+        {"id": "architecture", "title": "Architecture Module", "category": "BIBLE_MODULES", "tags": "architecture patterns design layered c4 contracts principles solid", "content": "Layered Architecture: Presentation, Application, Domain, Infrastructure. C4 Model: Context, Container, Component, Code."},
+        {"id": "development", "title": "Development Module", "category": "BIBLE_MODULES", "tags": "development coding standards best-practices dry kiss yagni solid tdd", "content": "Mantras: Make It Work Make It Right Make It Fast, Test Early Test Often Test Automatically, Code Is Read More Than Written. Quality Heuristics: SRP, DRY, KISS, YAGNI."},
+        {"id": "verification", "title": "Verification Module", "category": "BIBLE_MODULES", "tags": "testing verification quality pyramid coverage automation regression tdd", "content": "Ten Verification Laws: Coverage Non-Negotiable, Layers Cannot be Skipped, Evidence Beats Assertion, Regression Mandatory, Tests First-Class Code, Failure is Information, Automation Mandatory, Independence Required, Determinism Essential, Verification Continuous."},
+        {"id": "integration", "title": "Integration Module", "category": "BIBLE_MODULES", "tags": "integration api contracts c4 rtm openapi event-storming gaps four-pillars", "content": "Four Pillars: C4 Model, RTM, OpenAPI Contract Testing, Event Storming. Gap Taxonomy: Schema Drift, Orphaned Endpoint, Phantom Feature, State Mismatch, Error Handling Gap, Auth Session Gap, Timing Gap, Protocol Mismatch."},
+        {"id": "documentation", "title": "Documentation Module", "category": "BIBLE_MODULES", "tags": "documentation technical-writing living-docs knowledge standards", "content": "Seven Principles: Documentation is a Product, Accuracy Over Existence, Write for the Reader, Live Documentation, Right Level of Detail, Single Source of Truth, Defensive Documentation."},
+        {"id": "operations", "title": "Operations Module", "category": "BIBLE_MODULES", "tags": "operations deployment monitoring incidents runbooks observability slo sli", "content": "Ten Principles: Everything Fails, Changes Are Risky, Observability Mandatory, Automate Repetitive Tasks, Runbooks for Everything, Practice Failure, Blameless Postmortems, On-Call Responsibility, Production Sacred, Continuous Improvement. Monitoring Pillars: Metrics, Logs, Traces, Alerts."},
+        {"id": "phase-01", "title": "Phase 1: Ideation", "category": "LIFECYCLE", "tags": "ideation phase-1 concept genesis idea", "content": "Capture the initial spark. Deliverables: Idea Statement, Problem Statement, Success Vision, Initial Constraints."},
+        {"id": "phase-02", "title": "Phase 2: Concept", "category": "LIFECYCLE", "tags": "concept phase-2 scope crystallization", "content": "Transform idea into defined concept. Deliverables: Concept Document, Scope Definition, Component Overview, Risk Register."},
+        {"id": "phase-03", "title": "Phase 3: Requirements", "category": "LIFECYCLE", "tags": "requirements phase-3 analysis rtm moscow", "content": "Define what the system must do. Deliverables: Requirements Spec with REQ-XXX IDs, MoSCoW Prioritization, RTM, Acceptance Criteria."},
+        {"id": "phase-04", "title": "Phase 4: Architecture", "category": "LIFECYCLE", "tags": "architecture phase-4 design c4 adr", "content": "Define structural solution. Deliverables: C4 Diagrams, ADRs, Quality Attributes, Technology Selection."},
+        {"id": "phase-05", "title": "Phase 5: Specification", "category": "LIFECYCLE", "tags": "specification phase-5 detailed-design openapi", "content": "Define precise technical blueprint. Deliverables: Component Specs, Interface Specs (OpenAPI), Data Models, State Machines."},
+        {"id": "phase-06", "title": "Phase 6: Development", "category": "LIFECYCLE", "tags": "development phase-6 implementation coding unit-tests", "content": "Build components. Deliverables: Working Code, Unit Tests >90%, Contract Tests 100%, Code Reviews, CI/CD."},
+        {"id": "phase-07", "title": "Phase 7: Integration", "category": "LIFECYCLE", "tags": "integration phase-7 connect dependencies", "content": "Connect components into working system. Deliverables: Integration Matrix, Dependency Graph, Integration Tests."},
+        {"id": "phase-08", "title": "Phase 8: Verification", "category": "LIFECYCLE", "tags": "verification phase-8 testing uat performance", "content": "Prove system works. Deliverables: Full Test Pyramid, Performance Results, Security Scan, UAT Sign-off."},
+        {"id": "phase-09", "title": "Phase 9: Security", "category": "LIFECYCLE", "tags": "security phase-9 owasp vulnerabilities", "content": "Verify security before production. Deliverables: Auth Review, OWASP Top 10, SAST/DAST Scans, Security Sign-off."},
+        {"id": "phase-10", "title": "Phase 10: Deployment", "category": "LIFECYCLE", "tags": "deployment phase-10 release production rollback", "content": "Safely release to production. Deliverables: Release Artifacts, Deployment Plan, Rollback Plan, Health Checks."},
+        {"id": "phase-11", "title": "Phase 11: Operations", "category": "LIFECYCLE", "tags": "operations phase-11 monitoring incidents runbooks slo", "content": "Maintain and evolve. Activities: Monitoring 24/7, Incident Response, Runbooks, Postmortems, SLO Dashboards."}
+    ]
+    </script>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT - SEARCH, THEME, NAVIGATION -->
+    <!-- ============================================================ -->
+    <script>
+        // =====================
+        // SEARCH FUNCTIONALITY
+        // =====================
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const searchData = JSON.parse(document.getElementById('ai-search-data').textContent);
+
+        let selectedIndex = -1;
+
+        function performSearch(query) {
+            if (!query || query.length < 2) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const results = searchData.filter(item => {
+                return item.title.toLowerCase().includes(lowerQuery) ||
+                       item.tags.toLowerCase().includes(lowerQuery) ||
+                       item.content.toLowerCase().includes(lowerQuery) ||
+                       item.category.toLowerCase().includes(lowerQuery);
+            }).slice(0, 10);
+
+            renderResults(results, query);
+        }
+
+        function renderResults(results, query) {
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">No results found for "' + query + '"</div>';
+                searchResults.classList.add('active');
+                return;
+            }
+
+            let html = '<div class="search-stats">' + results.length + ' results for "' + query + '"</div>';
+
+            results.forEach((item, index) => {
+                const preview = highlightMatch(item.content.substring(0, 150) + '...', query);
+                html += `
+                    <div class="search-result-item" data-index="${index}" data-id="${item.id}">
+                        <div class="search-result-category">${item.category}</div>
+                        <div class="search-result-title">${highlightMatch(item.title, query)}</div>
+                        <div class="search-result-preview">${preview}</div>
+                    </div>
+                `;
+            });
+
+            searchResults.innerHTML = html;
+            searchResults.classList.add('active');
+            selectedIndex = -1;
+
+            // Add click handlers
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    navigateToResult(item.dataset.id);
+                });
+            });
+        }
+
+        function highlightMatch(text, query) {
+            const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+            return text.replace(regex, '<span class="search-result-highlight">$1</span>');
+        }
+
+        function navigateToResult(id) {
+            searchResults.classList.remove('active');
+            searchInput.value = '';
+
+            const target = document.getElementById(id);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                target.classList.add('highlight');
+                setTimeout(() => target.classList.remove('highlight'), 2000);
+            }
+        }
+
+        // Keyboard navigation
+        searchInput.addEventListener('keydown', (e) => {
+            const items = searchResults.querySelectorAll('.search-result-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateSelection(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, 0);
+                updateSelection(items);
+            } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                navigateToResult(items[selectedIndex].dataset.id);
+            } else if (e.key === 'Escape') {
+                searchResults.classList.remove('active');
+                searchInput.blur();
+            }
+        });
+
+        function updateSelection(items) {
+            items.forEach((item, index) => {
+                item.style.background = index === selectedIndex ? 'var(--highlight-bg)' : '';
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            performSearch(e.target.value);
+        });
+
+        // Close search when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // =====================
+        // THEME TOGGLE
+        // =====================
+        const themeToggle = document.getElementById('themeToggle');
+        const themeLabel = document.getElementById('themeLabel');
+        const html = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('gs-theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        themeLabel.textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
+
+        themeToggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('gs-theme', next);
+            themeLabel.textContent = next === 'dark' ? 'Dark' : 'Light';
+        });
+
+        // =====================
+        // KEYBOARD SHORTCUTS
+        // =====================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+K or Cmd+K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+
+            // T to toggle theme (when not in input)
+            if (e.key === 't' && document.activeElement.tagName !== 'INPUT') {
+                themeToggle.click();
+            }
+        });
+
+        // =====================
+        // BACK TO TOP
+        // =====================
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // =====================
+        // COLLAPSIBLE NAV
+        // =====================
+        document.querySelectorAll('.nav-collapsible').forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.getAttribute('data-target');
+                const target = document.getElementById(targetId);
+                item.classList.toggle('collapsed');
+                target.classList.toggle('collapsed');
+            });
+        });
+
+        // =====================
+        // ACTIVE NAV HIGHLIGHTING
+        // =====================
+        const navLinks = document.querySelectorAll('nav a');
+        const sections = document.querySelectorAll('section, article');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

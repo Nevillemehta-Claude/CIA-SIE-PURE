@@ -1,0 +1,141 @@
+@startuml launcher_ignition_sequence
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 8
+skinparam participantPadding 20
+skinparam boxPadding 10
+
+title CIA-SIE Launcher System - Ignition Sequence Diagram
+footer Document: DIAG-LAUNCHER-001 | Version: 1.0.0 | Date: 12 January 2026
+
+actor User as user #LightBlue
+participant "start-cia-sie\n.command" as start #LightGreen
+participant "ignite.sh" as ignite #LightYellow
+participant "config.sh" as config #LightGray
+participant "utils.sh" as utils #LightGray
+participant "health-check.sh" as health #Orange
+participant "venv" as venv #Violet
+participant "Backend\n(uvicorn)" as backend #Salmon
+participant "ngrok" as ngrok #Aqua
+participant "Frontend\n(React)" as frontend #Pink
+participant "Browser" as browser #LightBlue
+
+== INITIALIZATION ==
+
+user -> start: Double-click
+activate start
+
+start -> start: cd to project directory
+start -> config: source config.sh
+activate config
+config --> start: Configuration loaded
+deactivate config
+
+start -> utils: source utils.sh
+activate utils
+utils --> start: Utilities loaded
+deactivate utils
+
+start -> ignite: source ignite.sh
+activate ignite
+ignite --> start: Functions loaded
+
+start -> ignite: main()
+note right of start: Begin ignition sequence
+
+== STEP 1: VIRTUAL ENVIRONMENT ==
+
+ignite -> utils: print_header("IGNITION")
+utils --> ignite: Header displayed
+
+ignite -> ignite: activate_venv()
+ignite -> venv: source bin/activate
+activate venv
+venv --> ignite: Environment activated
+ignite -> utils: print_success("venv activated")
+note right of venv: Python packages\nnow available
+
+== STEP 2: BACKEND SERVER ==
+
+ignite -> ignite: start_backend()
+ignite -> utils: print_step("Starting Backend...")
+ignite -> backend: uvicorn src.cia_sie.main:app --port 8000 &
+activate backend
+backend --> ignite: PID returned
+
+ignite -> utils: save_pid(backend_pid)
+note right of ignite: PID saved to\npids/backend.pid
+
+ignite -> health: wait_for_backend()
+activate health
+
+loop max 10 retries, 2s interval
+    health -> backend: GET /health
+    alt healthy
+        backend --> health: 200 OK {"status": "healthy"}
+        health --> ignite: HEALTHY
+    else not ready
+        backend --> health: Connection refused / 503
+        health -> health: sleep 2s
+    end
+end
+
+deactivate health
+ignite -> utils: print_success("Backend healthy")
+note right of backend: Backend accepting\nrequests on :8000
+
+== STEP 3: NGROK TUNNEL ==
+
+ignite -> ignite: start_ngrok()
+ignite -> utils: print_step("Starting Tunnel...")
+ignite -> ngrok: ngrok http 8000 --log=stdout &
+activate ngrok
+ngrok --> ignite: PID returned
+
+ignite -> utils: save_pid(ngrok_pid)
+
+ignite -> ngrok: curl localhost:4040/api/tunnels
+ngrok --> ignite: {"public_url": "https://xxx.ngrok.io"}
+ignite -> utils: print_success("Tunnel: https://xxx.ngrok.io")
+note right of ngrok: External webhooks\ncan now reach backend
+
+== STEP 4: FRONTEND SERVER ==
+
+ignite -> ignite: start_frontend()
+ignite -> utils: print_step("Starting Frontend...")
+
+alt Frontend directory exists
+    ignite -> frontend: npm run dev &
+    activate frontend
+    frontend --> ignite: PID returned
+    ignite -> utils: save_pid(frontend_pid)
+    ignite -> utils: print_success("Frontend running on :5173")
+else Frontend not built
+    ignite -> utils: print_warning("Frontend directory not found")
+    note right of ignite: Graceful degradation:\ncontinue without frontend
+end
+
+== STEP 5: BROWSER ==
+
+ignite -> ignite: open_browser()
+ignite -> utils: print_step("Opening Browser...")
+ignite -> browser: open http://localhost:8000/docs
+activate browser
+browser --> ignite: Browser opened
+ignite -> utils: print_success("Browser opened")
+
+== COMPLETION ==
+
+ignite -> ignite: report_status()
+ignite -> utils: print_header("IGNITION COMPLETE")
+
+ignite --> start: Success
+deactivate ignite
+
+start --> user: Terminal shows\nstatus summary
+note right of user: System is now\nfully operational
+
+deactivate start
+
+@enduml

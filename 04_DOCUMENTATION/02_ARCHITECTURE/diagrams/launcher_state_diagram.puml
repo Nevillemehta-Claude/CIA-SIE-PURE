@@ -1,0 +1,112 @@
+@startuml launcher_state_diagram
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam state {
+    BackgroundColor LightGray
+    BorderColor Gray
+    FontSize 14
+}
+skinparam roundcorner 8
+
+title CIA-SIE Launcher System - Service State Diagram
+footer Document: DIAG-LAUNCHER-005 | Version: 1.0.0 | Date: 12 January 2026
+
+[*] --> Unknown : System discovered
+
+state Unknown {
+    Unknown : PID file may or may not exist
+    Unknown : Process status unknown
+}
+
+Unknown --> Stopped : No process found
+
+state Stopped #LightCoral {
+    Stopped : No process running
+    Stopped : No PID file exists
+    Stopped : Ready to start
+}
+
+Stopped --> Starting : start command issued
+
+state Starting #Yellow {
+    Starting : Process launched
+    Starting : PID file created
+    Starting : Waiting for health check
+}
+
+Starting --> Healthy : Health check passes
+Starting --> Unhealthy : Health check fails
+Starting --> Failed : Process crashes
+
+state Healthy #LightGreen {
+    Healthy : Process running
+    Healthy : Health check passes
+    Healthy : Ready to serve requests
+}
+
+state Unhealthy #Orange {
+    Unhealthy : Process running
+    Unhealthy : Health check fails
+    Unhealthy : May recover
+}
+
+Unhealthy --> Healthy : Health recovers
+Unhealthy --> Starting : Retry with backoff
+Unhealthy --> Failed : Max retries exceeded
+
+state Failed #Red {
+    Failed : Process stopped unexpectedly
+    Failed : Error logged
+    Failed : Requires intervention
+}
+
+Failed --> Stopped : cleanup
+
+Healthy --> Stopping : stop command issued
+
+state Stopping #Yellow {
+    Stopping : SIGTERM sent
+    Stopping : Waiting for graceful shutdown
+    Stopping : Timeout = 10 seconds
+}
+
+Stopping --> Stopped : Graceful shutdown
+Stopping --> ForceStopping : Timeout exceeded
+
+state ForceStopping #Orange {
+    ForceStopping : SIGKILL sent
+    ForceStopping : Forced termination
+}
+
+ForceStopping --> Stopped : Force killed
+
+Healthy --> Crashed : Unexpected termination
+
+state Crashed #Red {
+    Crashed : Process terminated unexpectedly
+    Crashed : PID file may be stale
+}
+
+Crashed --> Stopped : cleanup_pids()
+
+note right of Healthy
+    Backend: Responds to /health
+    ngrok: Tunnel active
+    Frontend: Dev server running
+end note
+
+note right of Starting
+    Health check configuration:
+    - Max retries: 10
+    - Interval: 2 seconds
+    - Total timeout: ~20 seconds
+end note
+
+note left of Stopping
+    Graceful shutdown allows:
+    - Active requests to complete
+    - Connections to close
+    - Resources to be freed
+end note
+
+@enduml

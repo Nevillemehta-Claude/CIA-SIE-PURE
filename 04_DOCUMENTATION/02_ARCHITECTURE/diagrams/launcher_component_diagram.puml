@@ -1,0 +1,131 @@
+@startuml launcher_component_diagram
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+skinparam roundcorner 8
+skinparam shadowing false
+
+title CIA-SIE Launcher System - Component Diagram
+footer Document: DIAG-LAUNCHER-004 | Version: 1.0.0 | Date: 12 January 2026
+
+package "User Interface Layer" as ui #LightGreen {
+    [start-cia-sie.command] as start_cmd
+    [stop-cia-sie.command] as stop_cmd
+    
+    note right of start_cmd
+        Double-click to start
+        Opens Terminal
+        Calls ignite.sh
+    end note
+    
+    note right of stop_cmd
+        Double-click to stop
+        Opens Terminal
+        Calls shutdown.sh
+    end note
+}
+
+package "Orchestration Layer" as orch #LightYellow {
+    [ignite.sh] as ignite
+    [shutdown.sh] as shutdown
+    
+    note bottom of ignite
+        • activate_venv()
+        • start_backend()
+        • start_ngrok()
+        • start_frontend()
+        • open_browser()
+        • report_status()
+    end note
+    
+    note bottom of shutdown
+        • stop_frontend()
+        • stop_ngrok()
+        • stop_backend()
+        • cleanup_pids()
+        • report_status()
+    end note
+}
+
+package "Utility Layer" as util #LightGray {
+    [config.sh] as config
+    [utils.sh] as utils
+    [health-check.sh] as health
+    
+    note bottom of config
+        PROJECT_ROOT
+        PORTS
+        TIMEOUTS
+        PATHS
+    end note
+    
+    note bottom of utils
+        print_*()
+        log_message()
+        save_pid()
+        get_pid()
+        is_process_running()
+    end note
+    
+    note bottom of health
+        check_backend_health()
+        wait_for_backend()
+        check_port()
+    end note
+}
+
+package "System Layer" as sys #LightBlue {
+    [Python/venv] as venv
+    [uvicorn] as uvicorn
+    [ngrok] as ngrok
+    [node/npm] as node
+    [Browser] as browser
+}
+
+package "Data Layer" as data #Pink {
+    database "pids/" as pids {
+        file "backend.pid"
+        file "ngrok.pid"
+        file "frontend.pid"
+    }
+    
+    database "logs/" as logs {
+        file "launcher.log"
+    }
+}
+
+' User Interface to Orchestration
+start_cmd --> ignite : sources & calls
+stop_cmd --> shutdown : sources & calls
+
+' Orchestration to Utilities
+ignite --> config : sources
+ignite --> utils : sources
+ignite --> health : calls wait_for_backend()
+shutdown --> config : sources
+shutdown --> utils : sources
+
+' Utilities dependencies
+utils --> config : reads
+health --> config : reads
+
+' Orchestration to System
+ignite --> venv : activates
+ignite --> uvicorn : starts
+ignite --> ngrok : starts
+ignite --> node : starts (if exists)
+ignite --> browser : opens
+
+shutdown --> uvicorn : stops
+shutdown --> ngrok : stops
+shutdown --> node : stops
+
+' Data interactions
+ignite --> pids : writes PIDs
+shutdown --> pids : reads & removes PIDs
+utils --> logs : writes entries
+
+' System to Data
+uvicorn --> logs : stdout/stderr
+
+@enduml

@@ -1,0 +1,97 @@
+@startuml Kite OAuth Integration Flow
+!theme cerulean
+title CIA-SIE - Zerodha Kite OAuth Flow
+
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+
+actor "User Browser" as USER #C8E6C9
+participant "CIA-SIE Backend" as APP #FFF9C4
+participant "Kite Adapter" as KITE_A #F3E5F5
+participant "Kite Connect API" as KITE #E3F2FD
+database "SQLite" as DB #FCE4EC
+
+autonumber
+
+== OAuth Initialization ==
+
+USER -> APP: Click "Connect Kite"
+activate APP
+
+APP -> KITE_A: initiate_oauth()
+activate KITE_A
+
+KITE_A -> KITE_A: generate state token
+KITE_A -> DB: store state token
+KITE_A --> APP: login_url + state
+deactivate KITE_A
+
+APP --> USER: Redirect to Kite Login
+deactivate APP
+
+== User Authentication ==
+
+USER -> KITE: Login with credentials
+activate KITE
+
+KITE -> KITE: Authenticate user
+KITE -> KITE: Generate request_token
+
+KITE --> USER: Redirect to callback URL\n?request_token=xxx&state=yyy
+deactivate KITE
+
+== Token Exchange ==
+
+USER -> APP: GET /callback\n?request_token=xxx
+activate APP
+
+APP -> KITE_A: exchange_token(request_token, state)
+activate KITE_A
+
+KITE_A -> DB: verify state token
+KITE_A -> KITE: POST /session/token\n{api_key, request_token, checksum}
+activate KITE
+
+KITE -> KITE: Validate request_token
+KITE --> KITE_A: {access_token, user_info}
+deactivate KITE
+
+KITE_A -> DB: store access_token (encrypted)
+KITE_A --> APP: Connection successful
+deactivate KITE_A
+
+APP --> USER: "Connected to Kite!"
+deactivate APP
+
+== Watchlist Import ==
+
+USER -> APP: Click "Import Watchlist"
+activate APP
+
+APP -> KITE_A: import_watchlist()
+activate KITE_A
+
+KITE_A -> KITE: GET /portfolio/holdings\nAuthorization: token xxx
+activate KITE
+
+KITE --> KITE_A: {holdings: [...]}
+deactivate KITE
+
+KITE_A -> KITE_A: Transform holdings to instruments
+KITE_A -> DB: INSERT instruments
+
+KITE_A --> APP: {imported_count: N}
+deactivate KITE_A
+
+APP --> USER: "Imported N instruments"
+deactivate APP
+
+note over USER, KITE
+  **Security Notes:**
+  - Access tokens expire daily (Kite requirement)
+  - Tokens stored encrypted in database
+  - State token prevents CSRF attacks
+  - API secret never exposed to client
+end note
+
+@enduml

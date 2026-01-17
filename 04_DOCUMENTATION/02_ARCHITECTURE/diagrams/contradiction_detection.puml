@@ -1,0 +1,97 @@
+@startuml Contradiction Detection Flow
+!theme cerulean
+title CIA-SIE - Exposure Engine: Contradiction & Confirmation Detection
+
+skinparam backgroundColor #FEFEFE
+skinparam activityBackgroundColor #FFFFFF
+
+start
+
+:New Signal Received;
+note right: From TradingView webhook
+
+:Fetch All Signals\nfor Same Instrument;
+
+:Group Signals by\nChart/Timeframe;
+
+partition "**Signal Comparison Matrix**" #E3F2FD {
+    :Compare Each Signal Pair;
+
+    fork
+        :Signal A: BULLISH\nTimeframe: Daily;
+    fork again
+        :Signal B: BEARISH\nTimeframe: 1-Hour;
+    end fork
+
+    if (Same Direction?) then (YES)
+        if (Same Timeframe?) then (YES)
+            #FFF9C4:REINFORCEMENT\nMultiple indicators agree;
+        else (NO)
+            #C8E6C9:**CONFIRMATION**\nMultiple timeframes agree;
+            :Calculate Confirmation Weight;
+            note right
+              Weight based on:
+              - Timeframe spread
+              - Signal strength
+              - Indicator diversity
+            end note
+        endif
+    else (NO)
+        if (Different Timeframes?) then (YES)
+            #FFCDD2:**CONTRADICTION**\nTimeframes disagree;
+            :Calculate Contradiction Severity;
+            note right
+              Severity levels:
+              - LOW: Adjacent timeframes
+              - MEDIUM: 2+ timeframe gap
+              - HIGH: Major divergence
+              - CRITICAL: All vs one
+            end note
+        else (NO)
+            #FFE0B2:**CONFLICT**\nSame timeframe, different direction;
+        endif
+    endif
+}
+
+partition "**Exposure Recording**" #F3E5F5 {
+    :Create Exposure Record;
+
+    fork
+        :Record Type: CONTRADICTION;
+        :Store Signal IDs involved;
+        :Set Severity Level;
+        :Flag for UI Alert;
+    fork again
+        :Record Type: CONFIRMATION;
+        :Store Signal IDs involved;
+        :Set Confidence Score;
+    end fork
+
+    :Save to Database;
+}
+
+partition "**Alert Generation**" #FFCCBC {
+    if (Is CONTRADICTION with severity >= MEDIUM?) then (YES)
+        :Generate Alert for UI;
+        :Queue Notification;
+    else (NO)
+        :Log exposure silently;
+    endif
+
+    if (Should trigger narrative?) then (YES)
+        :Queue Narrative Generation;
+    else (NO)
+    endif
+}
+
+stop
+
+legend right
+  **Exposure Types:**
+  |<#C8E6C9>| CONFIRMATION: Same direction, different timeframes |
+  |<#FFCDD2>| CONTRADICTION: Opposite direction, different timeframes |
+  |<#FFF9C4>| REINFORCEMENT: Same direction, same timeframe |
+  |<#FFE0B2>| CONFLICT: Opposite direction, same timeframe |
+endlegend
+
+@enduml

@@ -1,0 +1,228 @@
+# CIA-SIE PROJECT CONTEXT & RULES
+# =================================
+# This file provides essential context for AI agents working on this project.
+# Last Updated: January 13, 2026
+# Project Development Span: January 3, 2026 - Present (44+ conversations, 6,600+ messages)
+
+## PROJECT IDENTITY
+
+**Name:** CIA-SIE (Chart Intelligence Auditor & Signal Intelligence Engine)
+**Version:** 2.3.0
+**Owner:** Neville Mehta
+**Purpose:** Decision-SUPPORT system for chart signal analysis - NOT decision-making
+
+---
+
+## CRITICAL: THREE CONSTITUTIONAL RULES (INVIOLABLE)
+
+These rules are ABSOLUTE and NON-NEGOTIABLE. Any code violating these MUST be rejected:
+
+### PRINCIPLE 1: Decision-Support, NOT Decision-Making
+- The system provides INFORMATION for user decisions
+- NEVER makes decisions FOR the user
+- FORBIDDEN words: "should", "recommend", "suggest", "consider buying/selling"
+- REQUIRED pattern: "Chart X shows BULLISH signal" (descriptive only)
+
+### PRINCIPLE 2: Expose Contradictions, NEVER Resolve Them
+- When charts disagree, show BOTH with EQUAL visual prominence
+- NEVER suggest which is "correct" or "more reliable"
+- FORBIDDEN: "Overall trend is...", "Net direction is...", larger visual weight on one side
+- REQUIRED: Equal visual size, neutral warning styling (amber/yellow)
+
+### PRINCIPLE 3: Descriptive AI, NOT Prescriptive AI
+- AI output DESCRIBES what charts show
+- AI output NEVER PRESCRIBES what user should do
+- MANDATORY DISCLAIMER (on ALL AI output, cannot be abbreviated):
+  "This is a description of what your charts are showing. The interpretation and any decision is entirely yours."
+
+---
+
+## PROHIBITED FEATURES (NEVER IMPLEMENT)
+
+| Code | Feature | Reason |
+|------|---------|--------|
+| PR-01 | Buy/Sell buttons | Implies decision-making |
+| PR-02 | Signal strength scores | Implies judgment |
+| PR-03 | Chart weights | Implies hierarchy |
+| PR-04 | Confidence percentages | Implies prediction |
+| PR-05 | "Overall direction" | Implies aggregation |
+| PR-06 | Price predictions | Implies forecasting |
+
+---
+
+## ARCHITECTURE OVERVIEW
+
+### Technology Stack
+- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0 (async), aiosqlite
+- **Frontend:** React 18, TypeScript 5, Vite 5, TailwindCSS, React Query
+- **AI:** Claude API (Anthropic) - Haiku/Sonnet/Opus models
+- **Database:** SQLite (async via aiosqlite)
+
+### Project Structure
+```
+CIA-SIE-PURE/
+├── src/cia_sie/           # Backend Python code
+│   ├── api/routes/        # FastAPI route modules
+│   ├── ai/                # Claude AI integration
+│   ├── dal/               # Data Access Layer (models, repositories)
+│   ├── core/              # Core utilities, config, enums
+│   └── exposure/          # Relationship exposure logic
+├── frontend/src/          # React frontend
+│   ├── components/        # React components (atoms, layout, ai, etc.)
+│   ├── hooks/             # React Query hooks
+│   ├── services/          # API service layer
+│   ├── pages/             # Page components
+│   └── types/             # TypeScript definitions
+├── AI_HANDOFF/            # Comprehensive handoff documents
+├── tests/                 # Backend tests (834+ tests, 80%+ coverage)
+└── documentation/         # Specifications and governance docs
+```
+
+### Core Data Model
+- **Instrument** → has many **Silos** → has many **Charts** → has many **Signals**
+- Each Signal has: direction (BULLISH/BEARISH/NEUTRAL), freshness (CURRENT/RECENT/STALE/UNAVAILABLE)
+- Contradictions: Two charts in same silo with opposing directions
+- Confirmations: Two charts in same silo with same direction
+
+---
+
+## DEVELOPMENT PRINCIPLES (User Preference)
+
+Per Neville's established preferences:
+1. **Deep verification** at each stage before proceeding
+2. **Surgical precision** over speed
+3. **Quality gates** must pass before visual/runtime testing
+4. **Constitutional compliance** is non-negotiable and programmatically verified
+5. **Each critical step** should be validated twice
+6. **Comprehensive documentation** and audit trails
+7. **No shortcuts** - "Short cuts are an illusion of speed"
+
+Approach should mirror **mission-critical systems development** (aerospace/financial systems).
+
+---
+
+## API ENDPOINTS REFERENCE
+
+### Core Endpoints
+- `GET /api/v1/instruments` - List all instruments
+- `GET /api/v1/silos` - List silos (optionally by instrument)
+- `GET /api/v1/charts` - List charts (optionally by silo)
+- `GET /api/v1/signals/{chart_id}/latest` - Get latest signal
+- `POST /api/v1/webhook` - Receive TradingView alerts
+
+### Relationship Endpoints
+- `GET /api/v1/relationships/silo/{silo_id}` - Get silo relationships
+- `GET /api/v1/relationships/instrument/{instrument_id}` - Get instrument relationships
+
+### AI Endpoints
+- `GET /api/v1/ai/models` - List available Claude models
+- `GET /api/v1/ai/usage/{period}` - Get token usage stats
+- `GET /api/v1/ai/budget` - Check budget status
+- `POST /api/v1/chat/{scrip_id}` - Send chat message
+- `GET /api/v1/chat/{scrip_id}/history` - Get conversation history
+- `POST /api/v1/narratives/silo/{silo_id}` - Generate AI narrative
+
+---
+
+## FRESHNESS LOGIC
+
+| Status | Condition | Color |
+|--------|-----------|-------|
+| CURRENT | Signal within threshold (default 2 min) | 🟢 Green |
+| RECENT | Signal within 10 min | 🟡 Yellow |
+| STALE | Signal within 30 min | 🔴 Red |
+| UNAVAILABLE | No signal or > 30 min | ⚫ Gray |
+
+---
+
+## KEY DECISIONS MADE IN PREVIOUS CONVERSATIONS
+
+1. **Database:** SQLite (async) chosen for single-user deployment simplicity
+2. **Frontend Framework:** React + TailwindCSS (not Next.js - overkill for this use case)
+3. **State Management:** React Query for server state (no Redux/Zustand needed)
+4. **AI Provider:** Anthropic Claude (not OpenAI) for better reasoning
+5. **Budget Alerts:** 80% warning, 90% critical, 100% blocked
+6. **Webhook Format:** TradingView JSON alerts with specific schema
+7. **Contradiction Display:** Amber/yellow theme, bi-directional arrows, equal visual weight
+
+---
+
+## HANDOFF DOCUMENTS (For Deep Context)
+
+When you need comprehensive context, read these in order:
+1. `AI_HANDOFF/HANDOFF_03_CONSTITUTIONAL_RULES.md` - Inviolable rules
+2. `AI_HANDOFF/HANDOFF_04_TECHNICAL_STANDARDS.md` - Engineering standards
+3. `AI_HANDOFF/AUTONOMOUS_HANDOFF_COMPREHENSIVE.md` - Complete implementation guide
+4. `AI_HANDOFF/HANDOFF_02_API_ENDPOINTS.md` - Full API documentation
+
+---
+
+## CURRENT IMPLEMENTATION STATUS
+
+| Layer | Status | Notes |
+|-------|--------|-------|
+| Backend Core | ✅ 100% | All routes, models, repositories complete |
+| Backend AI | ✅ 100% | Claude integration, budget tracking, validation |
+| Backend Tests | ✅ 834 tests | 80%+ coverage |
+| Frontend Foundation | ✅ Complete | Layout, routing, API services |
+| Frontend Components | ✅ Complete | All 22+ components implemented |
+| Frontend Pages | ✅ Complete | All 7 pages implemented |
+| Frontend Tests | 🔄 Partial | Need more coverage |
+
+---
+
+## COMMANDS REFERENCE
+
+```bash
+# Start backend
+cd /Users/nevillemehta/Downloads/CIA-SIE-PURE
+source .venv/bin/activate  # if venv exists
+cd src && uvicorn cia_sie.main:app --reload --port 8000
+
+# Start frontend
+cd /Users/nevillemehta/Downloads/CIA-SIE-PURE/frontend
+npm run dev
+
+# Run backend tests
+cd /Users/nevillemehta/Downloads/CIA-SIE-PURE
+pytest tests/ -v
+
+# Run frontend tests
+cd /Users/nevillemehta/Downloads/CIA-SIE-PURE/frontend
+npm test
+```
+
+---
+
+## CONVERSATION HISTORY ACCESS
+
+Previous agent conversations are stored in Cursor's database and can be exported using:
+```bash
+cd /Users/nevillemehta/Downloads/CIA-SIE-PURE
+python3 generate_chronicle.py
+# Opens: chat_history_export/CIA_SIE_COMPLETE_CHAT_CHRONICLE.html
+```
+
+This exports all 44+ conversations (6,600+ messages) to a searchable HTML document.
+
+---
+
+## AGENT INSTRUCTIONS
+
+When working on this project:
+
+1. **Always verify constitutional compliance** before implementing any feature
+2. **Read relevant handoff documents** for deep context on specific areas
+3. **Follow the methodical approach** - no shortcuts, surgical precision
+4. **Validate changes twice** when they're critical
+5. **Document decisions** and rationale for audit trails
+6. **Check for prohibited patterns** before committing code
+
+If you need historical context from previous conversations, ask the user to:
+1. Open the Chat Chronicle HTML file
+2. Search for the specific topic
+3. Paste relevant excerpts for context
+
+---
+
+## END OF CONTEXT

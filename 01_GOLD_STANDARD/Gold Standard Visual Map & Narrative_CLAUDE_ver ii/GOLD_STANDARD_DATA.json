@@ -1,0 +1,620 @@
+{
+  "$schema": "gold-standard-v1.0",
+  "$version": "1.0",
+  "$generated": "2026-01-15",
+  "$author": "Neville Mehta",
+  "$description": "Gold Standard Development Framework - Complete Data Export for AI Systems",
+  "$companion": "GOLD_STANDARD_COMPLETE_REFERENCE_v2.html",
+  "$usage": {
+    "purpose": "Pure data extraction for AI systems (Cursor, Replit, Claude Code, etc.)",
+    "parsing": "Load entire JSON or access specific paths",
+    "paths": {
+      "principles": "$.coreKernel.firstPrinciples.eightPrinciples",
+      "laws": "$.coreKernel.firstPrinciples.fiveImmutableLaws",
+      "absolutes": "$.commandProtocol.genesis.threeAbsolutes",
+      "phases": "$.lifecycleModules.phases",
+      "modules": "$.bibleModules",
+      "verificationLayers": "$.coreKernel.verificationDoctrine.tenLayers"
+    }
+  },
+
+  "summary": {
+    "totalPrinciples": 8,
+    "totalLaws": 5,
+    "totalAbsolutes": 3,
+    "totalArchitecturePrinciples": 6,
+    "totalVerificationLayers": 10,
+    "totalBibleModules": 7,
+    "totalLifecyclePhases": 11,
+    "totalIntegrationPillars": 4,
+    "totalGapTypes": 8
+  },
+
+  "coreKernel": {
+    "id": "CORE_KERNEL",
+    "description": "Immutable foundation principles that cannot be modified or overridden",
+
+    "firstPrinciples": {
+      "id": "GS-CK-001",
+      "title": "First Principles",
+      "category": "AXIOMS",
+
+      "eightPrinciples": [
+        {
+          "number": 1,
+          "name": "NASA-Style Rigour",
+          "description": "Apply aerospace-grade discipline to software development. Every decision documented, every assumption validated, every outcome verified."
+        },
+        {
+          "number": 2,
+          "name": "Audit Before Build",
+          "description": "Understand the current state completely before making changes. No assumptions without evidence."
+        },
+        {
+          "number": 3,
+          "name": "Zero Drift Policy",
+          "description": "Documentation and implementation must remain synchronized. Drift is debt; debt compounds."
+        },
+        {
+          "number": 4,
+          "name": "Living Documentation",
+          "description": "Documentation is not an afterthought. It evolves with the code, tested alongside the code."
+        },
+        {
+          "number": 5,
+          "name": "Full Bidirectional Traceability",
+          "description": "Every requirement traces to implementation. Every implementation traces to requirement. No orphans."
+        },
+        {
+          "number": 6,
+          "name": "Evidence-Based Validation",
+          "description": "Assertions require proof. Tests are evidence. Passing tests are the only acceptable evidence."
+        },
+        {
+          "number": 7,
+          "name": "Single Source of Truth (SSOT)",
+          "description": "One authoritative source per artifact. Duplication is divergence waiting to happen."
+        },
+        {
+          "number": 8,
+          "name": "Defensive Documentation",
+          "description": "Document for the skeptic. Assume the reader questions everything. Provide evidence for every claim."
+        }
+      ],
+
+      "fiveImmutableLaws": [
+        {
+          "number": 1,
+          "name": "Meaning Precedes Implementation",
+          "meaning": "Understand what before how. Define semantics before syntax."
+        },
+        {
+          "number": 2,
+          "name": "Structure Precedes Intelligence",
+          "meaning": "Get the architecture right before adding complexity."
+        },
+        {
+          "number": 3,
+          "name": "Validation Precedes Optimization",
+          "meaning": "Make it work, make it right, then make it fast."
+        },
+        {
+          "number": 4,
+          "name": "Explicit Precedes Implicit",
+          "meaning": "No magic. No hidden behavior. Everything visible and documented."
+        },
+        {
+          "number": 5,
+          "name": "Reversibility Precedes Commitment",
+          "meaning": "Every decision should be reversible until proven correct."
+        }
+      ],
+
+      "sixArchitecturePrinciples": [
+        {"number": 1, "name": "Single Source of Truth (SSOT)", "description": "One authoritative source per data element"},
+        {"number": 2, "name": "Loose Coupling", "description": "Components interact through well-defined interfaces"},
+        {"number": 3, "name": "High Cohesion", "description": "Related functionality grouped together"},
+        {"number": 4, "name": "Explicit Contracts", "description": "All interfaces formally specified"},
+        {"number": 5, "name": "Fail-Safe Defaults", "description": "System fails to safe state"},
+        {"number": 6, "name": "Deterministic Behavior", "description": "Same input always produces same output"}
+      ]
+    },
+
+    "modularityDoctrine": {
+      "id": "GS-CK-002",
+      "title": "Modularity Doctrine",
+      "category": "ARCHITECTURE",
+
+      "sevenProperties": [
+        {"property": "Self-Contained", "definition": "All dependencies explicit and internal", "test": "Can be understood without external context"},
+        {"property": "Independently Testable", "definition": "Can be tested in isolation", "test": "Has its own test suite that runs independently"},
+        {"property": "Versioned", "definition": "Has explicit version number", "test": "Version changes when interface changes"},
+        {"property": "Documented", "definition": "Purpose, interface, and behavior documented", "test": "New developer can use without asking questions"},
+        {"property": "Interface-Defined", "definition": "Interaction only through defined interface", "test": "No direct access to internals"},
+        {"property": "Replaceable", "definition": "Can be swapped for alternative implementation", "test": "Interface remains stable across implementations"},
+        {"property": "Evolvable", "definition": "Can be updated without affecting dependents", "test": "Internal changes don't break consumers"}
+      ],
+
+      "antiPatterns": [
+        {"name": "Hidden Dependencies", "description": "Undeclared requirements on external components"},
+        {"name": "Circular Dependencies", "description": "A depends on B depends on A"},
+        {"name": "God Module", "description": "One module that does everything"},
+        {"name": "Leaky Abstraction", "description": "Internal details exposed through interface"},
+        {"name": "Version Lock", "description": "Rigid version requirements preventing updates"}
+      ]
+    },
+
+    "verificationDoctrine": {
+      "id": "GS-CK-003",
+      "title": "Verification Doctrine",
+      "category": "TESTING",
+
+      "tenLayers": [
+        {"layer": 10, "name": "ACCEPTANCE", "question": "Does it meet business goals?"},
+        {"layer": 9, "name": "SECURITY", "question": "Are there vulnerabilities?"},
+        {"layer": 8, "name": "PERFORMANCE", "question": "Is it within acceptable bounds?"},
+        {"layer": 7, "name": "END-TO-END", "question": "Do complete workflows work?"},
+        {"layer": 6, "name": "FUNCTIONAL", "question": "Do features work correctly?"},
+        {"layer": 5, "name": "REGRESSION", "question": "Did we break anything?"},
+        {"layer": 4, "name": "INTEGRATION", "question": "Do components connect properly?"},
+        {"layer": 3, "name": "CONTRACT", "question": "Are API contracts honored?"},
+        {"layer": 2, "name": "UNIT", "question": "Do individual functions work?"},
+        {"layer": 1, "name": "SYNTAX", "question": "Does the code compile/run?"}
+      ],
+
+      "coverageTargets": [
+        {"category": "Safety-Critical", "target": "100%", "rationale": "No untested paths in critical code"},
+        {"category": "Business-Critical", "target": "95%", "rationale": "Core business logic fully covered"},
+        {"category": "Standard", "target": "90%", "rationale": "Comprehensive coverage for normal code"},
+        {"category": "Utility", "target": "80%", "rationale": "Helper functions adequately tested"}
+      ],
+
+      "testPyramid": [
+        {"type": "Unit Tests", "percentage": 50, "characteristics": "Fast, isolated, deterministic"},
+        {"type": "Contract Tests", "percentage": 20, "characteristics": "API boundary verification"},
+        {"type": "Integration Tests", "percentage": 20, "characteristics": "Component interaction"},
+        {"type": "E2E Tests", "percentage": 10, "characteristics": "Full user workflows"}
+      ],
+
+      "rule": "Lower layers must pass before higher layers are tested"
+    }
+  },
+
+  "commandProtocol": {
+    "id": "COMMAND_PROTOCOL",
+    "description": "Session control and authority documents",
+
+    "genesis": {
+      "id": "GS-CP-001",
+      "title": "Genesis Protocol",
+      "category": "START",
+
+      "identity": {
+        "principal": "Neville Mehta",
+        "role": "Product Owner, Standards Authority, Quality Arbiter",
+        "authorityLevel": "Final decision on all matters of implementation, architecture, and quality"
+      },
+
+      "threeAbsolutes": [
+        {
+          "name": "Accuracy Over Speed",
+          "quote": "Shortcuts are an illusion of speed and the bane of accuracy.",
+          "meaning": "Every output must be correct. Rushed work that requires rework is slower than careful work done once."
+        },
+        {
+          "name": "Modularity Is Law",
+          "quote": "Every worthy system is composed of autonomous, self-contained units.",
+          "meaning": "Code, documentation, and processes must be modular - independently developable, testable, upgradeable, and replaceable."
+        },
+        {
+          "name": "Verification Is Continuous",
+          "quote": "Testing is not a phase. It is a constant companion to every action.",
+          "meaning": "Every artifact produced must be verified before the next artifact begins. No layer can be skipped."
+        }
+      ],
+
+      "rulesOfEngagement": {
+        "mustDo": [
+          "Read before acting - Load the relevant phase playbook before implementation",
+          "Verify continuously - Check work against phase verification criteria",
+          "Document as you go - Living documentation, not retrospective",
+          "State assumptions explicitly - No hidden logic, no magic",
+          "Flag uncertainties - When unsure, state confidence level and rationale"
+        ],
+        "neverDo": [
+          "Never skip verification layers",
+          "Never make undocumented assumptions",
+          "Never proceed past a failed gate",
+          "Never optimize before correct",
+          "Never violate module boundaries"
+        ]
+      },
+
+      "qualityExpectations": [
+        {"dimension": "Correctness", "standard": "100% functional accuracy"},
+        {"dimension": "Coverage", "standard": "Every requirement implemented"},
+        {"dimension": "Verification", "standard": "Every implementation tested"},
+        {"dimension": "Documentation", "standard": "Every public interface documented"},
+        {"dimension": "Traceability", "standard": "Every artifact traceable to source"}
+      ],
+
+      "communicationTemplates": {
+        "whenUncertain": "I am [X]% confident in this approach because [rationale]. My assumption is [assumption]. Please confirm or redirect.",
+        "whenBlocked": "I cannot proceed because [blocker]. Options are: [A], [B], [C]. My recommendation is [X] because [rationale].",
+        "whenComplete": "Phase [X] complete. Verification criteria satisfied: [list]. Ready for: [next phase or review]."
+      }
+    },
+
+    "lifecycleDefinition": {
+      "id": "GS-CP-002",
+      "title": "Lifecycle Definition",
+      "category": "PATHWAY",
+
+      "pathwayStructure": "IDEA → CONCEPTION (1-3) → DESIGN (4-5) → CONSTRUCTION (6-7) → DELIVERY (8-10) → OPERATION (11)",
+
+      "streams": [
+        {"name": "CONCEPTION", "phases": [1, 2, 3], "purpose": "Define what to build"},
+        {"name": "DESIGN", "phases": [4, 5], "purpose": "Design how to build it"},
+        {"name": "CONSTRUCTION", "phases": [6, 7], "purpose": "Build and connect"},
+        {"name": "DELIVERY", "phases": [8, 9, 10], "purpose": "Verify and deploy"},
+        {"name": "OPERATION", "phases": [11], "purpose": "Run and evolve"}
+      ],
+
+      "iterationRule": "Return to the EARLIEST affected phase and proceed forward again",
+
+      "iterationTriggers": [
+        {"discovery": "Requirements gap found", "returnTo": 3},
+        {"discovery": "Architecture flaw found", "returnTo": 4},
+        {"discovery": "Specification ambiguity", "returnTo": 5},
+        {"discovery": "Integration failure", "returnTo": 6}
+      ]
+    }
+  },
+
+  "bibleModules": {
+    "id": "BIBLE_MODULES",
+    "description": "Domain-specific standards organized into 7 comprehensive modules",
+
+    "governance": {
+      "id": "GS-BM-001",
+      "title": "Governance Module",
+      "category": "DECISIONS",
+      "sevenPrinciples": [
+        "Accountability is Singular - One person owns each decision",
+        "Decisions are Documented - ADRs for all significant choices",
+        "Changes are Controlled - No untracked modifications",
+        "Gates are Non-Negotiable - Must pass to proceed",
+        "Risks are Managed - Identified, assessed, mitigated",
+        "Stakeholders are Engaged - Communication is continuous",
+        "Authority Matches Responsibility - Power to act on obligations"
+      ],
+      "stageGates": [
+        {"gate": "Design Review", "purpose": "Validate architecture decisions"},
+        {"gate": "Specification Review", "purpose": "Confirm technical completeness"},
+        {"gate": "Code Review", "purpose": "Ensure code quality"},
+        {"gate": "Integration Review", "purpose": "Verify system connectivity"},
+        {"gate": "Release Review", "purpose": "Approve for production"}
+      ]
+    },
+
+    "architecture": {
+      "id": "GS-BM-002",
+      "title": "Architecture Module",
+      "category": "STRUCTURE",
+      "layeredArchitecture": [
+        {"layer": "Presentation", "responsibility": "User interface, API endpoints", "dependsOn": "Application"},
+        {"layer": "Application", "responsibility": "Use cases, orchestration", "dependsOn": "Domain"},
+        {"layer": "Domain", "responsibility": "Business logic, entities", "dependsOn": "None (core)"},
+        {"layer": "Infrastructure", "responsibility": "Database, external services", "dependsOn": "Domain"}
+      ],
+      "c4Model": [
+        {"level": 1, "name": "Context", "description": "System and its environment"},
+        {"level": 2, "name": "Container", "description": "High-level technical building blocks"},
+        {"level": 3, "name": "Component", "description": "Components within containers"},
+        {"level": 4, "name": "Code", "description": "Implementation details"}
+      ]
+    },
+
+    "development": {
+      "id": "GS-BM-003",
+      "title": "Development Module",
+      "category": "BUILD",
+      "mantras": [
+        "Make It Work → Make It Right → Make It Fast",
+        "Test Early, Test Often, Test Automatically",
+        "Code Is Read More Than Written",
+        "The Best Code Is No Code"
+      ],
+      "qualityHeuristics": [
+        {"acronym": "SRP", "name": "Single Responsibility Principle", "meaning": "One reason to change"},
+        {"acronym": "DRY", "name": "Don't Repeat Yourself", "meaning": "Single source of knowledge"},
+        {"acronym": "KISS", "name": "Keep It Simple, Stupid", "meaning": "Simplicity over cleverness"},
+        {"acronym": "YAGNI", "name": "You Aren't Gonna Need It", "meaning": "Build for today"}
+      ],
+      "errorPhilosophy": [
+        {"principle": "Fail Fast", "meaning": "Detect errors at earliest point"},
+        {"principle": "Fail Loud", "meaning": "Make failures visible and actionable"},
+        {"principle": "Fail Safe", "meaning": "Protect system state on failure"}
+      ]
+    },
+
+    "verification": {
+      "id": "GS-BM-004",
+      "title": "Verification Module",
+      "category": "TESTING",
+      "tenLaws": [
+        "Coverage Non-Negotiable - Meet target coverage or justify",
+        "Layers Cannot be Skipped - All 10 layers must pass",
+        "Evidence Beats Assertion - Show proof, not claims",
+        "Regression Mandatory - Full suite on every change",
+        "Tests First-Class Code - Same quality standards",
+        "Failure is Information - Learn from what breaks",
+        "Automation Mandatory - Manual testing doesn't scale",
+        "Independence Required - Tests don't depend on each other",
+        "Determinism Essential - Same test, same result",
+        "Verification Continuous - Test after every change"
+      ]
+    },
+
+    "integration": {
+      "id": "GS-BM-005",
+      "title": "Integration Module",
+      "category": "CONNECT",
+      "fourPillars": [
+        {"pillar": "C4 Model", "purpose": "Architectural visualization", "artifact": "Context, Container, Component diagrams"},
+        {"pillar": "RTM", "purpose": "Requirements Traceability Matrix", "artifact": "Bidirectional requirement mapping"},
+        {"pillar": "OpenAPI", "purpose": "Contract Testing", "artifact": "Single source of truth for APIs"},
+        {"pillar": "Event Storming", "purpose": "Domain discovery", "artifact": "Event flow diagrams"}
+      ],
+      "gapTaxonomy": [
+        {"type": "Schema Drift", "description": "Naming mismatch between layers", "detection": "Contract test"},
+        {"type": "Orphaned Endpoint", "description": "Backend API not used by frontend", "detection": "Coverage analysis"},
+        {"type": "Phantom Feature", "description": "Frontend expects missing backend", "detection": "Integration test"},
+        {"type": "State Mismatch", "description": "Lifecycle confusion", "detection": "State machine analysis"},
+        {"type": "Error Handling Gap", "description": "Unhandled error codes", "detection": "Error injection test"},
+        {"type": "Auth Session Gap", "description": "Token/session issues", "detection": "Auth flow test"},
+        {"type": "Timing Gap", "description": "Async/sync mismatch", "detection": "Race condition test"},
+        {"type": "Protocol Mismatch", "description": "REST vs WebSocket confusion", "detection": "Protocol analysis"}
+      ],
+      "attribution": [
+        {"location": "API not returning expected data", "attribution": "Backend Provider"},
+        {"location": "UI not calling API correctly", "attribution": "Frontend Consumer"},
+        {"location": "Data transformation issues", "attribution": "Orchestration Handoff"}
+      ]
+    },
+
+    "documentation": {
+      "id": "GS-BM-006",
+      "title": "Documentation Module",
+      "category": "RECORD",
+      "sevenPrinciples": [
+        "Documentation is a Product - Treated with same rigor as code",
+        "Accuracy Over Existence - Wrong docs worse than no docs",
+        "Write for the Reader - Audience-appropriate content",
+        "Live Documentation - Evolves with codebase",
+        "Right Level of Detail - Not too much, not too little",
+        "Single Source of Truth - One authoritative location",
+        "Defensive Documentation - Anticipate questions"
+      ],
+      "qualityDimensions": ["Accurate", "Complete", "Clear", "Consistent", "Current", "Findable"]
+    },
+
+    "operations": {
+      "id": "GS-BM-007",
+      "title": "Operations Module",
+      "category": "RUN",
+      "tenPrinciples": [
+        "Everything Fails - Design for failure",
+        "Changes Are Risky - Change management essential",
+        "Observability Mandatory - Can't fix what you can't see",
+        "Automate Repetitive Tasks - Humans make mistakes",
+        "Runbooks for Everything - Documented procedures",
+        "Practice Failure - Chaos engineering",
+        "Blameless Postmortems - Learn from incidents",
+        "On-Call Responsibility - Clear escalation paths",
+        "Production Sacred - Highest standards apply",
+        "Continuous Improvement - Always getting better"
+      ],
+      "monitoringPillars": [
+        {"pillar": "Metrics", "purpose": "Quantitative measurements", "examples": "CPU, Memory, Latency"},
+        {"pillar": "Logs", "purpose": "Event records", "examples": "Application logs, Audit logs"},
+        {"pillar": "Traces", "purpose": "Request flow", "examples": "Distributed tracing"},
+        {"pillar": "Alerts", "purpose": "Anomaly notification", "examples": "PagerDuty, Slack"}
+      ],
+      "sloTerms": [
+        {"term": "SLI", "name": "Service Level Indicator", "definition": "What you measure", "example": "Request latency p95"},
+        {"term": "SLO", "name": "Service Level Objective", "definition": "Target value", "example": "p95 latency < 200ms"},
+        {"term": "Error Budget", "name": "Error Budget", "definition": "Acceptable failure allowance", "example": "0.1% errors/month"}
+      ]
+    }
+  },
+
+  "lifecycleModules": {
+    "id": "LIFECYCLE_MODULES",
+    "description": "Complete development pathway from idea to operations",
+
+    "phases": [
+      {
+        "number": 1,
+        "id": "GS-LM-001",
+        "name": "Ideation",
+        "stream": "CONCEPTION",
+        "purpose": "Capture the initial spark of an idea",
+        "deliverables": ["Idea Statement", "Problem Statement", "Success Vision", "Initial Constraints"],
+        "exitCriteria": "Principal confirms: 'This is what I want to explore.'"
+      },
+      {
+        "number": 2,
+        "id": "GS-LM-002",
+        "name": "Concept Crystallization",
+        "stream": "CONCEPTION",
+        "purpose": "Transform idea into defined concept with clear boundaries",
+        "deliverables": ["Concept Document", "Scope Definition", "Component Overview", "Risk Register", "Success Criteria"],
+        "exitCriteria": "Principal confirms: 'This is the shape of what we're building.'"
+      },
+      {
+        "number": 3,
+        "id": "GS-LM-003",
+        "name": "Requirements Analysis",
+        "stream": "CONCEPTION",
+        "purpose": "Define exactly what the system must do",
+        "deliverables": ["Requirements Specification (REQ-XXX IDs)", "MoSCoW Prioritization", "RTM", "Acceptance Criteria"],
+        "exitCriteria": "No TBD or ambiguous requirements remain."
+      },
+      {
+        "number": 4,
+        "id": "GS-LM-004",
+        "name": "Architecture Design",
+        "stream": "DESIGN",
+        "purpose": "Define structural solution to meet requirements",
+        "deliverables": ["C4 Diagrams (Context, Container)", "ADRs", "Quality Attributes", "Technology Selection"],
+        "exitCriteria": "Architecture reviewed and approved."
+      },
+      {
+        "number": 5,
+        "id": "GS-LM-005",
+        "name": "Detailed Specification",
+        "stream": "DESIGN",
+        "purpose": "Define precise technical blueprint for implementation",
+        "deliverables": ["Component Specs (C4 Level 3)", "Interface Specs (OpenAPI/AsyncAPI)", "Data Models", "State Machines", "Error Handling", "UI/UX Specs"],
+        "exitCriteria": "All components specified. Developer can implement without questions."
+      },
+      {
+        "number": 6,
+        "id": "GS-LM-006",
+        "name": "Development",
+        "stream": "CONSTRUCTION",
+        "purpose": "Build components according to specification",
+        "deliverables": ["Working Code", "Unit Tests (>90% coverage)", "Contract Tests (100% interfaces)", "Code Reviews", "CI/CD Pipeline"],
+        "exitCriteria": "All components implemented. All tests pass. CI pipeline green."
+      },
+      {
+        "number": 7,
+        "id": "GS-LM-007",
+        "name": "Integration",
+        "stream": "CONSTRUCTION",
+        "purpose": "Connect components into working system",
+        "deliverables": ["Integration Matrix", "Dependency Graph", "Integration Tests", "Working System"],
+        "exitCriteria": "All components integrated. No critical defects."
+      },
+      {
+        "number": 8,
+        "id": "GS-LM-008",
+        "name": "Verification",
+        "stream": "DELIVERY",
+        "purpose": "Prove system works as specified",
+        "deliverables": ["Full Test Pyramid", "Performance Results (<200ms p95)", "Security Scan", "RTM Complete", "UAT Sign-off"],
+        "exitCriteria": "All tests passing. UAT approved."
+      },
+      {
+        "number": 9,
+        "id": "GS-LM-009",
+        "name": "Security Review",
+        "stream": "DELIVERY",
+        "purpose": "Verify system security before production",
+        "deliverables": ["Auth Review", "OWASP Top 10", "SAST/DAST Scans", "Vulnerability Assessment", "Security Sign-off"],
+        "exitCriteria": "Security sign-off obtained. No critical vulnerabilities."
+      },
+      {
+        "number": 10,
+        "id": "GS-LM-010",
+        "name": "Deployment",
+        "stream": "DELIVERY",
+        "purpose": "Safely release to production",
+        "deliverables": ["Release Artifacts", "Deployment Plan (blue-green/canary/rolling)", "Rollback Plan", "Health Checks", "Smoke Tests"],
+        "exitCriteria": "Deployment successful. All health checks passing. Stakeholders notified."
+      },
+      {
+        "number": 11,
+        "id": "GS-LM-011",
+        "name": "Operations",
+        "stream": "OPERATION",
+        "purpose": "Maintain and evolve system in production",
+        "activities": ["Monitoring 24/7", "Incident Response", "Runbooks", "On-Call Rotation", "Postmortems", "SLO Dashboards", "Continuous Improvement"],
+        "exitCriteria": "No exit - continuous phase."
+      }
+    ]
+  },
+
+  "quickReference": {
+    "keyNumbers": {
+      "principles": 8,
+      "immutableLaws": 5,
+      "absolutes": 3,
+      "architecturePrinciples": 6,
+      "verificationLayers": 10,
+      "bibleModules": 7,
+      "lifecyclePhases": 11,
+      "integrationPillars": 4,
+      "gapTypes": 8
+    },
+
+    "phaseQuickLookup": [
+      {"activity": "Discussing what to build", "phase": "1-2"},
+      {"activity": "Defining what it must do", "phase": "3"},
+      {"activity": "Designing how it's structured", "phase": "4"},
+      {"activity": "Specifying precise behaviors", "phase": "5"},
+      {"activity": "Writing code", "phase": "6"},
+      {"activity": "Connecting components", "phase": "7"},
+      {"activity": "Testing everything", "phase": "8"},
+      {"activity": "Security verification", "phase": "9"},
+      {"activity": "Releasing to production", "phase": "10"},
+      {"activity": "Running in production", "phase": "11"}
+    ]
+  },
+
+  "glossary": {
+    "ADR": "Architecture Decision Record - documented architecture decision",
+    "C4": "Context, Container, Component, Code - architecture visualization model",
+    "DAST": "Dynamic Application Security Testing",
+    "DRY": "Don't Repeat Yourself",
+    "E2E": "End-to-End testing",
+    "KISS": "Keep It Simple, Stupid",
+    "MoSCoW": "Must/Should/Could/Won't - prioritization method",
+    "RTM": "Requirements Traceability Matrix",
+    "SAST": "Static Application Security Testing",
+    "SLI": "Service Level Indicator",
+    "SLO": "Service Level Objective",
+    "SSOT": "Single Source of Truth",
+    "UAT": "User Acceptance Testing",
+    "YAGNI": "You Aren't Gonna Need It"
+  },
+
+  "crossReferenceMatrix": {
+    "moduleToPhaseMapping": [
+      {"module": "Governance", "primaryPhases": "All", "secondaryPhases": null},
+      {"module": "Architecture", "primaryPhases": [4, 5], "secondaryPhases": [3, 6]},
+      {"module": "Development", "primaryPhases": [6], "secondaryPhases": [5, 7]},
+      {"module": "Verification", "primaryPhases": [8], "secondaryPhases": [6, 7, 9]},
+      {"module": "Integration", "primaryPhases": [7], "secondaryPhases": [6, 8]},
+      {"module": "Documentation", "primaryPhases": "All", "secondaryPhases": null},
+      {"module": "Operations", "primaryPhases": [10, 11], "secondaryPhases": [9]}
+    ]
+  },
+
+  "searchIndex": [
+    {"id": "first-principles", "title": "First Principles", "category": "CORE_KERNEL", "tags": ["principles", "axioms", "laws", "nasa", "traceability", "ssot"]},
+    {"id": "modularity-doctrine", "title": "Modularity Doctrine", "category": "CORE_KERNEL", "tags": ["modularity", "architecture", "components", "interfaces"]},
+    {"id": "verification-doctrine", "title": "Verification Doctrine", "category": "CORE_KERNEL", "tags": ["verification", "testing", "validation", "layers", "pyramid"]},
+    {"id": "genesis", "title": "Genesis Protocol", "category": "COMMAND_PROTOCOL", "tags": ["genesis", "authority", "session", "absolutes"]},
+    {"id": "lifecycle-definition", "title": "Lifecycle Definition", "category": "COMMAND_PROTOCOL", "tags": ["lifecycle", "phases", "pathway", "streams"]},
+    {"id": "governance", "title": "Governance Module", "category": "BIBLE_MODULES", "tags": ["governance", "decisions", "gates", "adr"]},
+    {"id": "architecture", "title": "Architecture Module", "category": "BIBLE_MODULES", "tags": ["architecture", "patterns", "c4", "layers"]},
+    {"id": "development", "title": "Development Module", "category": "BIBLE_MODULES", "tags": ["development", "coding", "dry", "kiss", "yagni"]},
+    {"id": "verification", "title": "Verification Module", "category": "BIBLE_MODULES", "tags": ["testing", "verification", "quality", "automation"]},
+    {"id": "integration", "title": "Integration Module", "category": "BIBLE_MODULES", "tags": ["integration", "api", "contracts", "gaps"]},
+    {"id": "documentation", "title": "Documentation Module", "category": "BIBLE_MODULES", "tags": ["documentation", "technical-writing", "living-docs"]},
+    {"id": "operations", "title": "Operations Module", "category": "BIBLE_MODULES", "tags": ["operations", "monitoring", "incidents", "slo"]},
+    {"id": "phase-01", "title": "Phase 1: Ideation", "category": "LIFECYCLE", "tags": ["ideation", "concept", "idea"]},
+    {"id": "phase-02", "title": "Phase 2: Concept", "category": "LIFECYCLE", "tags": ["concept", "scope", "crystallization"]},
+    {"id": "phase-03", "title": "Phase 3: Requirements", "category": "LIFECYCLE", "tags": ["requirements", "rtm", "moscow"]},
+    {"id": "phase-04", "title": "Phase 4: Architecture", "category": "LIFECYCLE", "tags": ["architecture", "c4", "adr"]},
+    {"id": "phase-05", "title": "Phase 5: Specification", "category": "LIFECYCLE", "tags": ["specification", "openapi", "design"]},
+    {"id": "phase-06", "title": "Phase 6: Development", "category": "LIFECYCLE", "tags": ["development", "coding", "tests"]},
+    {"id": "phase-07", "title": "Phase 7: Integration", "category": "LIFECYCLE", "tags": ["integration", "connect", "system"]},
+    {"id": "phase-08", "title": "Phase 8: Verification", "category": "LIFECYCLE", "tags": ["verification", "testing", "uat"]},
+    {"id": "phase-09", "title": "Phase 9: Security", "category": "LIFECYCLE", "tags": ["security", "owasp", "vulnerabilities"]},
+    {"id": "phase-10", "title": "Phase 10: Deployment", "category": "LIFECYCLE", "tags": ["deployment", "release", "production"]},
+    {"id": "phase-11", "title": "Phase 11: Operations", "category": "LIFECYCLE", "tags": ["operations", "monitoring", "runbooks"]}
+  ]
+}

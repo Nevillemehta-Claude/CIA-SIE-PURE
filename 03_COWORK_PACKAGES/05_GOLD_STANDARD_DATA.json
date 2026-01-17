@@ -1,0 +1,268 @@
+{
+  "$schema": "gold-standard-v1.0",
+  "$generated": "2026-01-15",
+  "$purpose": "Context rehydration for AI systems",
+  "$usage": {
+    "description": "Load this JSON to restore Gold Standard framework context",
+    "paths": {
+      "principles": "$.coreKernel.firstPrinciples.eightPrinciples",
+      "laws": "$.coreKernel.firstPrinciples.fiveImmutableLaws",
+      "absolutes": "$.commandProtocol.genesis.threeAbsolutes",
+      "phases": "$.lifecycleModules.phases",
+      "verificationLayers": "$.coreKernel.verificationDoctrine.tenLayers"
+    }
+  },
+
+  "coreKernel": {
+    "classification": "IMMUTABLE",
+    "description": "Foundational principles that govern all development activities",
+
+    "firstPrinciples": {
+      "eightPrinciples": [
+        {
+          "id": "GS-P1",
+          "name": "NASA-Style Rigour",
+          "axiom": "Exhaustive, systematic, evidence-based validation where every claim is verifiable and reproducible",
+          "test": "Can another qualified person reach the identical conclusion?"
+        },
+        {
+          "id": "GS-P2",
+          "name": "Audit Before Build",
+          "axiom": "Validation must precede construction. Building upon unvalidated foundations propagates defects exponentially",
+          "sequence": ["Audit existing artifacts", "Document discrepancies", "Remediate", "Construct"]
+        },
+        {
+          "id": "GS-P3",
+          "name": "Zero Drift Policy",
+          "axiom": "Specifications and implementation shall remain synchronized at all times",
+          "test": "Does the documentation accurately describe what the code does right now?"
+        },
+        {
+          "id": "GS-P4",
+          "name": "Living Documentation",
+          "axiom": "Documentation is maintained contemporaneously, not retrospectively",
+          "test": "Can a qualified engineer understand the complete system from documentation alone?"
+        },
+        {
+          "id": "GS-P5",
+          "name": "Full Bidirectional Traceability",
+          "axiom": "Every line of code traces to a requirement; every requirement traces to implementation and verification",
+          "chain": "REQUIREMENT <--> IMPLEMENTATION <--> VERIFICATION"
+        },
+        {
+          "id": "GS-P6",
+          "name": "Evidence-Based Validation",
+          "axiom": "Assertions without evidence are invalid. Every compliance claim requires verifiable proof",
+          "rule": "If you cannot point to the exact location, you have not verified it"
+        },
+        {
+          "id": "GS-P7",
+          "name": "Single Source of Truth",
+          "axiom": "For any category of information, exactly one authoritative source exists",
+          "test": "If this information changes, how many places must be updated? Answer must be ONE"
+        },
+        {
+          "id": "GS-P8",
+          "name": "Defensive Documentation",
+          "axiom": "Documentation anticipates failure modes and explicitly addresses edge cases",
+          "includes": ["Known limitations", "Failure modes", "Security considerations", "Performance boundaries"]
+        }
+      ],
+
+      "fiveImmutableLaws": [
+        {
+          "id": "GS-L1",
+          "name": "Meaning Precedes Implementation",
+          "statement": "WHAT before HOW",
+          "requirements": ["No code without documented requirements", "Every function has defined purpose before implementation"]
+        },
+        {
+          "id": "GS-L2",
+          "name": "Structure Precedes Intelligence",
+          "statement": "Data structures before algorithms",
+          "requirements": ["Schema before logic", "Data models before service layer"]
+        },
+        {
+          "id": "GS-L3",
+          "name": "Validation Precedes Optimization",
+          "statement": "Correct before fast",
+          "requirements": ["Working before elegant", "Tested before deployed"]
+        },
+        {
+          "id": "GS-L4",
+          "name": "Explicit Precedes Implicit",
+          "statement": "No magic, no hidden behavior",
+          "requirements": ["All dependencies declared", "All side effects documented"]
+        },
+        {
+          "id": "GS-L5",
+          "name": "Reversibility Precedes Commitment",
+          "statement": "Design for rollback",
+          "requirements": ["Every migration has rollback", "Every deployment reversible"]
+        }
+      ]
+    },
+
+    "verificationDoctrine": {
+      "foundationalTruth": "Testing is not a phase. It is a constant companion to every action.",
+      "tenLayers": [
+        {"layer": 1, "name": "Syntax", "question": "Does the code compile/parse?", "when": "Every file save"},
+        {"layer": 2, "name": "Static Analysis", "question": "Does code follow quality rules?", "when": "Before commit"},
+        {"layer": 3, "name": "Unit", "question": "Does this function work?", "when": "After every function"},
+        {"layer": 4, "name": "Contract", "question": "Does this honor its interface?", "when": "After component complete"},
+        {"layer": 5, "name": "Integration", "question": "Do connected parts work together?", "when": "After connecting"},
+        {"layer": 6, "name": "Functional", "question": "Does the feature work as specified?", "when": "After feature complete"},
+        {"layer": 7, "name": "Regression", "question": "Did new code break old functionality?", "when": "After every change"},
+        {"layer": 8, "name": "Performance", "question": "Does it meet speed/resource requirements?", "when": "At system level"},
+        {"layer": 9, "name": "Security", "question": "Is the system secure against threats?", "when": "Before deployment"},
+        {"layer": 10, "name": "Acceptance", "question": "Does it satisfy the original need?", "when": "Before release"}
+      ],
+      "law": "You cannot skip layers. A system that passes integration tests but has no unit tests is a house built on sand."
+    },
+
+    "modularityDoctrine": {
+      "coreTruth": "Every worthy system is composed of autonomous, self-contained units",
+      "moduleProperties": [
+        "Self-Contained",
+        "Independently Testable",
+        "Versioned",
+        "Documented",
+        "Interface-Defined",
+        "Replaceable"
+      ],
+      "integrationLaw": "Modules connect through defined contracts, not assumptions"
+    }
+  },
+
+  "commandProtocol": {
+    "genesis": {
+      "threeAbsolutes": [
+        {
+          "id": "CIA-ABS-1",
+          "name": "Decision-Support ONLY",
+          "mandate": "The system describes what signals show. It NEVER prescribes what the user should do.",
+          "prohibited": ["you should", "I recommend", "consider buying"]
+        },
+        {
+          "id": "CIA-ABS-2",
+          "name": "Never Resolve Contradictions",
+          "mandate": "When charts show opposing signals, EXPOSE the contradiction. NEVER determine which is 'correct'.",
+          "prohibited": ["overall direction", "net signal", "stronger signal"]
+        },
+        {
+          "id": "CIA-ABS-3",
+          "name": "Descriptive, Not Prescriptive",
+          "mandate": "Every output DESCRIBES signal states. No output PRESCRIBES action.",
+          "enforcement": "AI responses validated against prohibited patterns"
+        }
+      ],
+      "constitutionalProhibitions": {
+        "database": ["weight column", "score column", "confidence column", "recommendation column"],
+        "code": ["aggregation functions", "ranking logic", "resolution algorithms"],
+        "aiOutput": ["recommendation language", "probability statements", "trading advice"]
+      }
+    }
+  },
+
+  "bibleModules": {
+    "description": "Domain-specific operational guides",
+    "modules": [
+      {"id": "BM-01", "name": "Governance", "purpose": "Project governance and decision-making"},
+      {"id": "BM-02", "name": "Architecture", "purpose": "System design patterns and principles"},
+      {"id": "BM-03", "name": "Development", "purpose": "Coding standards and practices"},
+      {"id": "BM-04", "name": "Verification", "purpose": "Testing and quality assurance"},
+      {"id": "BM-05", "name": "Integration", "purpose": "Component connection protocols"},
+      {"id": "BM-06", "name": "Documentation", "purpose": "Documentation standards"},
+      {"id": "BM-07", "name": "Operations", "purpose": "Deployment and maintenance"}
+    ]
+  },
+
+  "lifecycleModules": {
+    "description": "11 phases of the development lifecycle",
+    "phases": [
+      {"phase": 1, "name": "Ideation", "purpose": "Concept exploration"},
+      {"phase": 2, "name": "Concept", "purpose": "Feasibility validation"},
+      {"phase": 3, "name": "Requirements", "purpose": "Requirement specification"},
+      {"phase": 4, "name": "Architecture", "purpose": "System design"},
+      {"phase": 5, "name": "Specification", "purpose": "Detailed specifications"},
+      {"phase": 6, "name": "Development", "purpose": "Implementation"},
+      {"phase": 7, "name": "Integration", "purpose": "Component integration"},
+      {"phase": 8, "name": "Verification", "purpose": "Testing and validation"},
+      {"phase": 9, "name": "Documentation", "purpose": "Documentation completion"},
+      {"phase": 10, "name": "Deployment", "purpose": "Production release"},
+      {"phase": 11, "name": "Operations", "purpose": "Maintenance and monitoring"}
+    ],
+    "entryExitGates": "Each phase has ENTRY CRITERIA (must be GREEN before starting) and EXIT CRITERIA (must be GREEN before leaving)"
+  },
+
+  "integrationLayer": {
+    "fourPillars": [
+      {
+        "pillar": "C4 Model",
+        "purpose": "Hierarchical architecture visualization",
+        "levels": ["Context", "Container", "Component", "Code"]
+      },
+      {
+        "pillar": "Requirements Traceability Matrix",
+        "purpose": "Bidirectional traceability",
+        "chain": "Requirement → Implementation → Test → Verification"
+      },
+      {
+        "pillar": "OpenAPI Schema",
+        "purpose": "API contract definition",
+        "enforcement": "Contract tests validate implementation against schema"
+      },
+      {
+        "pillar": "Event Storming",
+        "purpose": "Domain event modeling",
+        "artifacts": ["Domain events", "Commands", "Aggregates", "Policies"]
+      }
+    ],
+    "gapTypes": [
+      "Schema Drift",
+      "Orphaned Endpoint",
+      "Phantom Feature",
+      "Stale Documentation",
+      "Missing Test",
+      "Constitutional Violation",
+      "Broken Integration",
+      "Dead Code"
+    ]
+  },
+
+  "ciaSieSpecific": {
+    "section0B": {
+      "description": "Constitutional requirements for CIA-SIE signal intelligence system",
+      "prohibitedDatabaseColumns": ["weight", "score", "confidence", "recommendation", "priority", "rank"],
+      "prohibitedPatterns": [
+        "you should",
+        "I recommend",
+        "consider buying",
+        "overall direction",
+        "net signal",
+        "consensus",
+        "confidence: X%",
+        "probability of",
+        "stronger signal",
+        "signal strength"
+      ],
+      "mandatoryDisclaimer": "This is a description of what your charts are showing. The interpretation and any decision is entirely yours.",
+      "enforcementPoints": {
+        "dal/models.py": "No prohibited columns",
+        "core/models.py": "No confidence fields",
+        "ai/response_validator.py": "Pattern matching for violations",
+        "ai/prompt_builder.py": "Constraint injection",
+        "exposure/*.py": "Expose only, never resolve"
+      }
+    },
+    "backendModules": {
+      "api": "FastAPI application and routes",
+      "core": "Enums, config, models, security, exceptions",
+      "dal": "SQLAlchemy models, database, repositories",
+      "ai": "Claude integration, prompts, validation, usage tracking",
+      "exposure": "Contradiction and confirmation detection",
+      "ingestion": "Webhook handling, signal normalization",
+      "platforms": "Kite, TradingView adapters"
+    }
+  }
+}
